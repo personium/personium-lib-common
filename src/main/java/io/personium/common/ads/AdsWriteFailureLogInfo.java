@@ -239,7 +239,7 @@ public class AdsWriteFailureLogInfo {
             throw new AdsWriteFailureLogException(String.format(message, indata));
         }
         // 各フィールドの格納
-        // dc1-coreにて自動的に作成するログであるため、詳細なチェックは実施しない。
+        // personium-coreにて自動的に作成するログであるため、詳細なチェックは実施しない。
         newObj.indexName = fields[LOG_FIELD_INDEX_NAME].trim();
         newObj.type = fields[LOG_FIELD_TYPE].trim();
         newObj.lockKey = fields[LOG_FIELD_LOCK_KEY].trim();

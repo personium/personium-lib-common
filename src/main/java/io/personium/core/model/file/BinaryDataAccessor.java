@@ -45,14 +45,14 @@ public class BinaryDataAccessor {
 
     /**
      * Davファイルの読み書き時、ハードリンク作成/ファイル名改変時の最大リトライ回数.
-     * ※本クラスは、Dc-Coreに含まれないため、personnium-unit-config.propertiesを参照できないものと考え、システムプロパティで処理を行うものとする
+     * ※本クラスは、Coreに含まれないため、personnium-unit-config.propertiesを参照できないものと考え、システムプロパティで処理を行うものとする
      */
     private static int maxRetryCount = Integer.parseInt(System.getProperty(
             "io.personium.core.binaryData.dav.retry.count", "100"));
 
     /**
      * Davファイルの読み書き時、ハードリンク作成/ファイル名改変時のリトライ間隔(msec).
-     * ※本クラスは、Dc-Coreに含まれないため、personium-unit-config.propertiesを参照できないものと考え、システムプロパティで処理を行うものとする
+     * ※本クラスは、Coreに含まれないため、personium-unit-config.propertiesを参照できないものと考え、システムプロパティで処理を行うものとする
      */
     private static long retryInterval = Long.parseLong(System.getProperty(
             "io.personium.core.binaryData.dav.retry.interval", "50"));

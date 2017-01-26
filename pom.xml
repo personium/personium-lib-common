@@ -196,7 +196,7 @@
 				<version>2.8</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
-					<configLocation>dc-checks.xml</configLocation>
+					<configLocation>personium-checks.xml</configLocation>
 					<propertiesLocation>checkstyle_maven.properties</propertiesLocation>
 				</configuration>
 				<reportSets>

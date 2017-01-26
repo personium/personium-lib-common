@@ -34,7 +34,7 @@ public class RoleTest {
      */
     @Test
     public void testRoleConstruct() throws MalformedURLException {
-        String baseUrl = "https://localhost:8080/dc1-core/testcell1/";
+        String baseUrl = "https://localhost:8080/personium-core/testcell1/";
         String roleUrl = "__role/__/role1";
         URL url = new URL(baseUrl + roleUrl);
         Role role = new Role(url);
@@ -48,7 +48,7 @@ public class RoleTest {
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBaseUrl() throws MalformedURLException {
-        String baseUrl = "https://localhost:8080/dc1-core/testcell1/";
+        String baseUrl = "https://localhost:8080/personium-core/testcell1/";
         String roleUrl = "";
         URL url = new URL(baseUrl + roleUrl);
         new Role(url);
@@ -60,7 +60,7 @@ public class RoleTest {
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithUnderbar() throws MalformedURLException {
-        String baseUrl = "https://localhost:8080/dc1-core/testcell1/";
+        String baseUrl = "https://localhost:8080/personium-core/testcell1/";
         String roleUrl = "__role";
         URL url = new URL(baseUrl + roleUrl);
         new Role(url);
@@ -72,7 +72,7 @@ public class RoleTest {
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBox() throws MalformedURLException {
-        String baseUrl = "https://localhost:8080/dc1-core/testcell1/";
+        String baseUrl = "https://localhost:8080/personium-core/testcell1/";
         String roleUrl = "__role/__";
         URL url = new URL(baseUrl + roleUrl);
         new Role(url);

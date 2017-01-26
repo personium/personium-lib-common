@@ -18,9 +18,9 @@
  * ADS書き込み失敗ログへの出力処理に関するパッケージ.
  * 本パッケージで扱うADS書き込み失敗ログの仕様は以下のとおり。
  * <ul>
- * <li>格納ディレクトリ名：/fjnfs/dc-core/writeFailureLog</li>
- * <li>出力中ログファイル名：adswriteFailureLog_【PCSバージョン】_【ファイル作成時のtimestamp】.log</li>
- * <li>ローテートされたログファイル名：adswriteFailure_【PCSバージョン】.log.【ファイル作成時のtimestamp】</li>
+ * <li>格納ディレクトリ名：/personium_nfs/personium-core/writeFailureLog</li>
+ * <li>出力中ログファイル名：adswriteFailureLog_【Personiumバージョン】_【ファイル作成時のtimestamp】.log</li>
+ * <li>ローテートされたログファイル名：adswriteFailure_【Personiumバージョン】.log.【ファイル作成時のtimestamp】</li>
  * </ul>
  * ADSへのリペア処理では、上記「ローテートされたログファイル名」を処理対象としてADSへのリペアを実施する。
  * <p>

@@ -63,7 +63,7 @@ public class TokenTest {
      */
     @Test
     public void testTranceCellRefreshToken() throws MalformedURLException {
-        String base = "https://localhost:8080/dc1-core/testcell1/__role/__/";
+        String base = "https://localhost:8080/personium-core/testcell1/__role/__/";
         List<Role> roleList = new ArrayList<Role>();
         roleList.add(new Role(new URL(base + "admin")));
         roleList.add(new Role(new URL(base + "staff")));
@@ -125,7 +125,7 @@ public class TokenTest {
      */
     @Test
     public void testCellLocalAccessToken() throws MalformedURLException {
-        String base = "https://localhost:8080/dc1-core/testcell1/__role/__/";
+        String base = "https://localhost:8080/personium-core/testcell1/__role/__/";
         List<Role> roleList = new ArrayList<Role>();
         roleList.add(new Role(new URL(base + "admin")));
         roleList.add(new Role(new URL(base + "staff")));

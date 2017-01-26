@@ -61,7 +61,7 @@ public abstract class AbstractAdsWriteFailureLog {
     String pcsVersion;
 
     /**
-     * ADS書き込み失敗ログ格納ディレクトリ(default: /fjnfs/dc-core/ads) . <br />
+     * ADS書き込み失敗ログ格納ディレクトリ(default: /personium_nfs/personium-core/ads) . <br />
      * personium-unit-config.propertiesを参照できないものと考え、システムプロパティで処理を行うものとする.<br />
      * ただし、クラスロード時に設定内容が確定してしまうため、書き換えできない。
      */
