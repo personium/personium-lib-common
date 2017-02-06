@@ -3,7 +3,7 @@
 	<groupId>io.personium</groupId>
 	<artifactId>personium-lib-common</artifactId>
 	<packaging>jar</packaging>
-	<version>1.4.2-SNAPSHOT</version>
+	<version>1.4.2</version>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -134,7 +134,7 @@
 						<exclude>checkstyle.header</exclude>
 						<exclude>checkstyle_maven.properties</exclude>
 						<exclude>checkstyle-suppressions.xml</exclude>
-						<exclude>dc-checks.xml</exclude>
+						<exclude>personium-checkstyle.xml</exclude>
 						<exclude>findbugs-exclude.xml</exclude>
 						<exclude>pom.xml</exclude>
 						<exclude>logback.xml</exclude>
@@ -196,7 +196,7 @@
 				<version>2.8</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
-					<configLocation>dc-checks.xml</configLocation>
+					<configLocation>personium-checks.xml</configLocation>
 					<propertiesLocation>checkstyle_maven.properties</propertiesLocation>
 				</configuration>
 				<reportSets>
@@ -241,7 +241,7 @@
 	<distributionManagement>
 		<repository>
 			<id>personium.io</id>
-			<name>personium.io</name>
+			<name>Personium Repository</name>
 			<url>http://personium.io/mvnrepo</url>
 		</repository>
 	</distributionManagement>
