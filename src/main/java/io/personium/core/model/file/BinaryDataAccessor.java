@@ -66,15 +66,6 @@ public class BinaryDataAccessor {
     /**
      * コンストラクタ.
      * @param path 格納ディレクトリ
-     * @param fsyncEnabled ファイル書き込み時にfsyncを有効にするか否か（true: 有効, false: 無効）
-     */
-    public BinaryDataAccessor(String path, boolean fsyncEnabled) {
-        this(path, null, fsyncEnabled);
-    }
-
-    /**
-     * コンストラクタ.
-     * @param path 格納ディレクトリ
      * @param unitUserName ユニットユーザ名
      * @param fsyncEnabled ファイル書き込み時にfsyncを有効にするか否か（true: 有効, false: 無効）
      */
@@ -105,43 +96,6 @@ public class BinaryDataAccessor {
     }
 
     /**
-     * ファイル削除時に物理削除するかどうかの設定.
-     * @return true: 物理削除, false: 論理削除
-     */
-    public boolean isPhysicalDeleteMode() {
-        return isPhysicalDeleteMode;
-    }
-
-    /**
-     * ストリームから読み込んだデータをファイルに書き込む.
-     * @param inputStream 入力元のストリーム
-     * @param filename ファイル名
-     * @throws BinaryDataAccessException ファイル出力で異常が発生した場合にスローする
-     * @return 書き込んだバイト数
-     */
-    public long create(InputStream inputStream, String filename) throws BinaryDataAccessException {
-        String directory = getSubDirectoryName(filename);
-        String fullPathName = this.baseDir + directory + filename;
-        createSubDirectories(this.baseDir + directory);
-        return writeToTmpFile(inputStream, fullPathName);
-    }
-
-    /**
-     * ストリームから読み込んだデータをファイルに書き込む.
-     * @param inputStream 入力元のストリーム
-     * @param filename ファイル名
-     * @throws BinaryDataAccessException ファイル入出力で異常が発生した場合にスローする
-     * @return 書き込んだバイト数
-     */
-    public long update(InputStream inputStream, String filename) throws BinaryDataAccessException {
-        String fullPathName = getFilePath(filename);
-        if (!exists(fullPathName)) {
-            throw new BinaryDataNotFoundException(fullPathName);
-        }
-        return writeToTmpFile(inputStream, fullPathName);
-    }
-
-    /**
      * ファイルをストリームにコピーする.
      * @param filename ファイル名
      * @param outputStream コピー先ストリーム
@@ -154,25 +108,6 @@ public class BinaryDataAccessor {
             throw new BinaryDataNotFoundException(fullPathName);
         }
         return writeToStream(fullPathName, outputStream);
-    }
-
-    /**
-     * ファイルをストリームで取得する.
-     * @param filename ファイル名
-     * @return ファイルのストリーム
-     * @throws BinaryDataAccessException ファイル入出力で異常が発生した場合にスローする
-     */
-    public InputStream getFileStream(String filename) throws BinaryDataAccessException {
-        String fullPathName = getFilePath(filename);
-        if (!exists(fullPathName)) {
-            throw new BinaryDataNotFoundException(fullPathName);
-        }
-        try {
-            FileInputStream fis = new FileInputStream(fullPathName);
-            return new BufferedInputStream(fis);
-        } catch (FileNotFoundException e) {
-            throw new BinaryDataNotFoundException(fullPathName);
-        }
     }
 
     /**
@@ -197,71 +132,6 @@ public class BinaryDataAccessor {
             } else {
                 deleteFile(filepath);
             }
-        }
-    }
-
-    /**
-     * ファイルサイズを返す.
-     * @param filename ファイル名
-     * @return ファイルサイズ(bytes)
-     */
-    public long getSize(String filename) {
-        String fullPathName = getFilePath(filename);
-        return getFileSize(fullPathName);
-    }
-
-    /**
-     * ファイル存在有無チェック.
-     * @param filename ファイル名
-     * @return true：存在する、false：存在しない
-     */
-    public boolean existsForFilename(String filename) {
-        String fullPathName = getFilePath(filename);
-        return exists(fullPathName);
-    }
-
-    /**
-     * 一時ファイルをリネームする.
-     * @param filename ファイル名
-     * @throws BinaryDataAccessException BinaryDataAccessException
-     */
-    public void copyFile(String filename) throws BinaryDataAccessException {
-        String fullPathName = getFilePath(filename);
-        String tmpName = fullPathName + ".tmp";
-        File tmpFile = new File(tmpName);
-        File dstFile = new File(fullPathName);
-
-        if (!exists(tmpName)) {
-            throw new BinaryDataNotFoundException(tmpName);
-        }
-        for (int i = 0; i < maxRetryCount; i++) {
-            try {
-                synchronized (fullPathName) {
-                    Files.move(tmpFile.toPath(), dstFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
-                }
-                // 処理成功すれば、その場で復帰する。
-                return;
-            } catch (IOException e) {
-                logger.debug("Failed to copy file:" + tmpFile + " to " + dstFile + ". Will try again.");
-                try {
-                    Thread.sleep(retryInterval);
-                } catch (InterruptedException e2) {
-                    logger.debug("Thread interrupted.");
-                }
-            }
-        }
-        throw new BinaryDataAccessException("Failed to copy file:" + tmpFile + " to " + dstFile);
-    }
-
-    /**
-     * ファイルを物理削除する. 対象ファイルが存在しない場合は何もしない
-     * @param filename ファイル名
-     * @throws BinaryDataAccessException ファイル入出力で異常が発生した場合にスローする
-     */
-    public void deletePhysicalFile(String filename) throws BinaryDataAccessException {
-        String fullPathName = getFilePath(filename);
-        if (exists(fullPathName)) {
-            deletePhysicalFileWithFullPath(fullPathName);
         }
     }
 
@@ -324,31 +194,6 @@ public class BinaryDataAccessor {
 
     private String splitDirectoryName(String filename, int index) {
         return filename.substring(index, index + SUBDIR_NAME_LEN);
-    }
-
-    private void createSubDirectories(String directory) throws BinaryDataAccessException {
-        File newDir = new File(directory);
-        // 既にディレクトリがあれば、何もしない
-        if (!newDir.exists()) {
-            try {
-                Files.createDirectories(newDir.toPath());
-            } catch (IOException e) {
-                throw new BinaryDataAccessException("DirectoryCreateFailed:" + directory, e);
-            }
-        }
-    }
-
-    private long writeToTmpFile(InputStream inputStream, String fullPathName) throws BinaryDataAccessException {
-        FileOutputStream outputStream = null;
-        String tmpfileName = fullPathName + ".tmp";
-        try {
-            outputStream = new FileOutputStream(tmpfileName);
-            return copyStream(inputStream, outputStream);
-        } catch (IOException ex) {
-            throw new BinaryDataAccessException("WriteToFileFailed:" + tmpfileName, ex);
-        } finally {
-            closeOutputStream(outputStream);
-        }
     }
 
     private long writeToStream(String fullPathName, OutputStream outputStream) throws BinaryDataAccessException {
@@ -477,11 +322,6 @@ public class BinaryDataAccessor {
             }
         }
         throw new BinaryDataAccessException("Failed to delete file: " + srcFullPathName);
-    }
-
-    private long getFileSize(String fullPathName) {
-        File file = new File(fullPathName);
-        return file.length();
     }
 
 }
