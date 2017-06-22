@@ -20,53 +20,66 @@ import java.util.List;
 
 
 /**
- *  DC1で用いるOAuth2.0リフレッシュトークンのインターフェース.
+ *  Interface class of OAuth2.0 refresh token used by Personium.
  */
 public interface IRefreshToken {
     /**
-     * IDを返します.
-     * @return ID文字列
+     * getter of ID.
+     * @return ID String
      */
     String getId();
 
     /**
-     * Schema URL(OAuth2 クライアント認証のClientId相当）を返します.
+     * Returning Schema URL, equivalent to OAuth2.0 Client ID.
      * @return Schema URL
      */
     String getSchema();
 
     /**
-     * Subject文字列を返します.
-     * @return Subject文字列
+     * Return Subject string.
+     * @return Subject string
      */
     String getSubject();
 
     /**
-     * トークン文字列を返します.
-     * @return トークン文字列
+     * Return token string.
+     * @return token string
      */
     String toTokenString();
 
     /**
-     * このトークンを使って、新たにアクセストークンをリフレッシュ生成する.
-     * @param issuedAt 発行時刻
-     * @param target 宛先Cell URL
-     * @param cellUrl 発行主体CellUrl
-     * @param roleList ロールのリスト
-     * @return アクセストークン
+     * Refresh to new Access Token with old refresh token.
+     * @param issuedAt Issued time stamp
+     * @param target Target cell URL
+     * @param cellUrl Issuer cell URL
+     * @param roleList List of roles
+     * @return Access token
      */
-    IAccessToken refreshAccessToken(long issuedAt, String target, final String cellUrl, List<Role> roleList);
+    IAccessToken refreshAccessToken(long issuedAt, String target, String cellUrl,
+            List<Role> roleList);
 
     /**
-     * このトークンを使って、新たにリフレッシュトークンをリフレッシュ生成する.
-     * @param issuedAt 発行時刻
-     * @return リフレッシュトークン
+     * Refresh to new Access Token with old refresh token.
+     * @param issuedAt Issued time stamp
+     * @param target Target cell URL
+     * @param cellUrl Issuer cell URL
+     * @param roleList List of roles
+     * @param schema Schema URI
+     * @return Access token
+     */
+    IAccessToken refreshAccessToken(long issuedAt, String target, String cellUrl,
+            List<Role> roleList, String schema);
+
+    /**
+     * Refresh to new Refresh Token with old refresh token.
+     * @param issuedAt Issued time stamp
+     * @return Refresh Token
      */
     IRefreshToken refreshRefreshToken(long issuedAt);
 
     /**
-     *  リフレッシュトークン失効までの秒数を返します.
-     * @return 失効までの秒数
+     * Expiration time in second of Refresh token.
+     * @return Expiration time in second
      */
     int refreshExpiresIn();
 }
