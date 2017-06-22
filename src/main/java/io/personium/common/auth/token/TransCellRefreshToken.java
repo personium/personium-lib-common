@@ -173,12 +173,27 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
         return this.id;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt, final String target, String url, List<Role> role) {
+        return refreshAccessToken(issuedAt, target, url, role, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IAccessToken refreshAccessToken(final long issuedAt, final String target, String url, List<Role> role,
+            String schema) {
+        if (schema == null) {
+            schema = this.getSchema();
+        }
         if (target == null) {
-            return new CellLocalAccessToken(issuedAt, url, this.getSubject(), role, this.getSchema());
+            return new CellLocalAccessToken(issuedAt, url, this.getSubject(), role, schema);
         } else {
-            return new TransCellAccessToken(issuedAt, url, this.getSubject(), target, role, this.getSchema());
+            return new TransCellAccessToken(issuedAt, url, this.getSubject(), target, role, schema);
         }
     }
 

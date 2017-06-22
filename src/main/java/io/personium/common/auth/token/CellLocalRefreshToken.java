@@ -131,15 +131,30 @@ public final class CellLocalRefreshToken extends LocalToken implements IRefreshT
         return this.subject + this.issuedAt;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt,
             final String target, final String cellUrl, List<Role> roleList) {
+        return refreshAccessToken(issuedAt, target, cellUrl, roleList, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IAccessToken refreshAccessToken(final long issuedAt,
+            final String target, final String cellUrl, List<Role> roleList, String schema) {
+        if (schema == null) {
+            schema = this.getSchema();
+        }
         if (target == null) {
-            return new AccountAccessToken(issuedAt, this.issuer, this.getSubject(), this.getSchema());
+            return new AccountAccessToken(issuedAt, this.issuer, this.getSubject(), schema);
         } else {
             // 自分セルローカル払い出し時に払い出されるリフレッシュトークンにはロール入ってないので取得する。
             return new TransCellAccessToken(issuedAt, this.issuer, cellUrl + "#" + this.getSubject(),
-                    target, roleList, this.getSchema());
+                    target, roleList, schema);
         }
     }
 
