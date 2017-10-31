@@ -16,8 +16,8 @@
  */
 package io.personium.core.model.file;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.FilterInputStream;
@@ -109,7 +109,7 @@ public class DataCryptorTest {
         // --------------------
         DataCryptor cryptor = new DataCryptor("zyxwvutsrqponmlk");
         CipherInputStream encodedInputStream = null;
-        encodedInputStream = (CipherInputStream) cryptor.encode(input);
+        encodedInputStream = (CipherInputStream) cryptor.encode(input, true);
 
         // --------------------
         // Confirm result
@@ -158,7 +158,7 @@ public class DataCryptorTest {
         // --------------------
         DataCryptor cryptor = new DataCryptor("zyxwvutsrqponmlk");
         CipherInputStream encodedInputStream = null;
-        encodedInputStream = (CipherInputStream) cryptor.decode(input);
+        encodedInputStream = (CipherInputStream) cryptor.decode(input, DataCryptor.ENCRYPTION_TYPE_AES);
 
         // --------------------
         // Confirm result

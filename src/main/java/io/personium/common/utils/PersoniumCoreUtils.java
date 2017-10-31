@@ -211,29 +211,21 @@ public final class PersoniumCoreUtils {
     }
 
     /**
-     * サービスコレクションタイプを定数としてこの下に定義します.
+     * Constant definition for XML.
      */
     public static class XmlConst {
-        /**
-         * service.
-         */
-        public static final String SERVICE = "service";
-
-        /**
-         * odata.
-         */
-        public static final String ODATA = "odata";
-
-        /**
-         * urn:x-personium:xmlns.
-         */
+        /** urn:x-personium:xmlns. */
         public static final String NS_PERSONIUM = "urn:x-personium:xmlns";
-
-        /**
-         * XML Name Space p:.
-         */
+        /** XML Name Space p:. */
         public static final String NS_PREFIX_PERSONIUM = "p";
 
+        /** service. */
+        public static final String SERVICE = "service";
+        /** odata. */
+        public static final String ODATA = "odata";
+
+        /** cellstatus. */
+        public static final String CELL_STATUS = "cellstatus";
     }
 
     /**

@@ -83,10 +83,15 @@ public class DataCryptor {
 
     /**
      * Generate InputStream for encryption from Input and return it.
+     * If encryptEnable is false, it returns input as is.
      * @param input input data
+     * @param encryptEnable encryption flag
      * @return InputStream for encryption
      */
-    public InputStream encode(InputStream input) {
+    public InputStream encode(InputStream input, boolean encryptEnable) {
+        if (!encryptEnable) {
+            return input;
+        }
         try {
             Cipher cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
             cipher.init(Cipher.ENCRYPT_MODE, aesKey, new IvParameterSpec(iv));
@@ -100,18 +105,24 @@ public class DataCryptor {
 
     /**
      * Generate InputStream for decryption from Input and return it.
+     * If encryptionType is NONE, it returns input as is.
      * @param input input data
+     * @param encryptionType encryption type
      * @return InputStream for decryption
      */
-    public InputStream decode(InputStream input) {
-        try {
-            Cipher cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
-            cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(iv));
-            CipherInputStream decodedInputStream = new CipherInputStream(input, cipher);
+    public InputStream decode(InputStream input, String encryptionType) {
+        if (ENCRYPTION_TYPE_AES.equals(encryptionType)) {
+            try {
+                Cipher cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
+                cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(iv));
+                CipherInputStream decodedInputStream = new CipherInputStream(input, cipher);
 
-            return decodedInputStream;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+                return decodedInputStream;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            return input;
         }
     }
 
