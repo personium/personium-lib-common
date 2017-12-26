@@ -18,6 +18,7 @@ package io.personium.common.utils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class that executes thread using thread pool.
@@ -50,5 +51,23 @@ public class PersoniumThread {
      */
     public static void execute(Runnable command) {
         threadPool.execute(command);
+    }
+
+    /**
+     * Shutdown thread pool.
+     * @param timeout the maximum seconds to wait
+     */
+    public static void shutdown(long timeout) {
+        if (threadPool != null) {
+            threadPool.shutdown();
+            try {
+                if (!threadPool.awaitTermination(timeout, TimeUnit.SECONDS)) {
+                    threadPool.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                threadPool.shutdownNow();
+            }
+            threadPool = null;
+        }
     }
 }
