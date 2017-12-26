@@ -1,6 +1,6 @@
 /**
  * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Copyright 2014-2017 FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,26 @@ public final class PersoniumCoreUtils {
     static Logger log = LoggerFactory.getLogger(PersoniumCoreUtils.class);
 
     private PersoniumCoreUtils() {
+    }
+
+    private static String fqdn = null;
+
+    /**
+     * Set FQDN.
+     * @param fqdnValue FQDN of this unit
+     */
+    public static void setFQDN(String fqdnValue) {
+        if (fqdn == null) {
+            fqdn = fqdnValue;
+        }
+    }
+
+    /**
+     * Get FQDN.
+     * @return FQDN of this unit.
+     */
+    public static String getFQDN() {
+      return fqdn;
     }
 
     /**

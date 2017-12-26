@@ -1,6 +1,6 @@
 /**
  * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Copyright 2014-2017 FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import javax.xml.crypto.KeySelectorException;
 import javax.xml.crypto.MarshalException;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -504,10 +507,12 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * @throws NoSuchAlgorithmException NoSuchAlgorithmException
      * @throws InvalidKeySpecException InvalidKeySpecException
      * @throws CertificateException CertificateException
+     * @throws InvalidNameException InvalidNameException
      */
     public static void configureX509(String privateKeyFileName, String certificateFileName,
             String[] rootCertificateFileNames)
-            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException {
+            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException,
+                    InvalidNameException {
 
         xmlSignatureFactory = XMLSignatureFactory.getInstance("DOM");
 
@@ -555,6 +560,16 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         x509Content.add(x509Certificate);
         X509Data xd = keyInfoFactory.newX509Data(x509Content);
         keyInfo = keyInfoFactory.newKeyInfo(Collections.singletonList(xd));
+
+        // Get FQDN from Certificate and set FQDN to PersoniumCoreUtils
+        String dn = x509Certificate.getSubjectX500Principal().getName();
+        LdapName ln = new LdapName(dn);
+        for (Rdn rdn : ln.getRdns()) {
+            if (rdn.getType().equalsIgnoreCase("CN")) {
+                PersoniumCoreUtils.setFQDN(rdn.getValue().toString());
+                break;
+            }
+        }
 
         // http://java.sun.com/developer/technicalArticles/xml/dig_signature_api/
 
