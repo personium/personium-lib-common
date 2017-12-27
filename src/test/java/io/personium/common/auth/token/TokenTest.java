@@ -51,7 +51,7 @@ public class TokenTest {
     @BeforeClass
     public static void beforeClass()
             throws NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, IOException,
-            javax.security.cert.CertificateException {
+            javax.security.cert.CertificateException, javax.naming.InvalidNameException {
         TransCellAccessToken.configureX509(null, null, null);
         LocalToken.setKeyString("abcdef0123456789");
     }
