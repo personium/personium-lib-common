@@ -1,6 +1,6 @@
 /**
  * personium.io
- * Copyright 2014-2017 FUJITSU LIMITED
+ * Copyright 2014-2018 FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,6 +140,14 @@ public final class PersoniumCoreUtils {
          * X-Personium-RequestKeyヘッダ.
          */
         public static final String X_PERSONIUM_REQUESTKEY = "X-Personium-RequestKey";
+        /**
+         * X-Personium-EventId header.
+         */
+        public static final String X_PERSONIUM_EVENTID = "X-Personium-EventId";
+        /**
+         * X-Personium-RuleChain header.
+         */
+        public static final String X_PERSONIUM_RULECHAIN = "X-Personium-RuleChain";
         /**
          * Access-Control-Allow-Originヘッダ.
          */
