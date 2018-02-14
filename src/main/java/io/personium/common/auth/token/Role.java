@@ -1,6 +1,6 @@
 /**
  * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Copyright 2014-2018 FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,27 +80,8 @@ public class Role {
     }
 
     /**
-     * コンストラクタ.
-     * @param name ロール名.
-     * @param boxName ロールの属するボックス名.
-     * @param boxSchema ロールの属するボックスのSchema
-     */
-    public Role(final String name, final String boxName, final String boxSchema) {
-        this(name, boxName, boxSchema, null);
-    }
-
-    /**
-     * コンストラクタ.
-     * @param name ロール名.
-     * @param boxName ロールの属するボックス名.
-     */
-    public Role(final String name, final String boxName) {
-        this(name, boxName, null, null);
-    }
-
-    /**
-     * コンストラクタ.
-     * @param name ロール名.
+     * Constructor for test.
+     * @param name role name.
      */
     public Role(final String name) {
         this(name, null, null, null);
