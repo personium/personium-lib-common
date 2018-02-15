@@ -149,6 +149,10 @@ public final class PersoniumCoreUtils {
          */
         public static final String X_PERSONIUM_RULECHAIN = "X-Personium-RuleChain";
         /**
+         * X-Personium-Via header.
+         */
+        public static final String X_PERSONIUM_VIA = "X-Personium-Via";
+        /**
          * Access-Control-Allow-Originヘッダ.
          */
         public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
