@@ -51,22 +51,23 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 /**
- * 各種ユーティリティ関数を集めたクラス.
- */
-/**
- * @author shimono
+ * Class that defines various utility functions.
  */
 public final class PersoniumCoreUtils {
 
-    /**
-     * ログ.
-     */
+    /** Logger. */
     static Logger log = LoggerFactory.getLogger(PersoniumCoreUtils.class);
+
+    private static final String AUTHZ_BASIC = "Basic ";
+    private static final int BITS_HEX_DIGIT = 4;
+    private static final int HEX_DIGIT_MASK = 0x0F;
+    private static final int CHARS_PREFIX_ODATA_DATE = 7;
+    private static final int CHARS_SUFFIX_ODATA_DATE = 3;
+
+    private static String fqdn = null;
 
     private PersoniumCoreUtils() {
     }
-
-    private static String fqdn = null;
 
     /**
      * Set FQDN.
@@ -87,12 +88,10 @@ public final class PersoniumCoreUtils {
     }
 
     /**
-     * 独自のHttpヘッダを定数としてこの下に定義します.
+     * Personium's http headers.
      */
     public static class HttpHeaders {
-        /**
-         * Accountのパスワード設定・変更を受け付けるヘッダ.
-         */
+        /** Accountのパスワード設定・変更を受け付けるヘッダ. */
         public static final String X_PERSONIUM_CREDENTIAL = "X-Personium-Credential";
         /**
          * X-Personium-Unit-Userヘッダ.
@@ -100,93 +99,53 @@ public final class PersoniumCoreUtils {
          * ヘッダ値で指定された任意のユニットユーザとして振る舞う。
          */
         public static final String X_PERSONIUM_UNIT_USER = "X-Personium-Unit-User";
-        /**
-         * Depthヘッダ.
-         */
+        /** Depthヘッダ. */
         public static final String DEPTH = "Depth";
-        /**
-         * X-HTTP-Method-Overrideヘッダ.
-         */
+        /** X-HTTP-Method-Overrideヘッダ. */
         public static final String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
-        /**
-         * X-Overrideヘッダ.
-         */
+        /** X-Overrideヘッダ. */
         public static final String X_OVERRIDE = "X-Override";
-        /**
-         * X-Forwarded-Protoヘッダ.
-         */
+        /** X-Forwarded-Protoヘッダ. */
         public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
-        /**
-         * X-Forwarded-Hostヘッダ.
-         */
+        /** X-Forwarded-Hostヘッダ. */
         public static final String X_FORWARDED_HOST = "X-Forwarded-Host";
-        /**
-         * X-Forwarded-Pathヘッダ.
-         */
+        /** X-Forwarded-Pathヘッダ. */
         public static final String X_FORWARDED_PATH = "X-Forwarded-Path";
-        /**
-         * X-Personium-Unit-Hostヘッダ.
-         */
+        /** X-Personium-Unit-Hostヘッダ. */
         public static final String X_PERSONIUM_UNIT_HOST = "X-Personium-Unit-Host";
-        /**
-         * X-Personium-Versionヘッダ.
-         */
+        /** X-Personium-Versionヘッダ. */
         public static final String X_PERSONIUM_VERSION = "X-Personium-Version";
-        /**
-         * X-Personium-Recursiveヘッダ.
-         */
+        /** X-Personium-Recursiveヘッダ. */
         public static final String X_PERSONIUM_RECURSIVE = "X-Personium-Recursive";
-        /**
-         * X-Personium-RequestKeyヘッダ.
-         */
+        /** X-Personium-RequestKeyヘッダ. */
         public static final String X_PERSONIUM_REQUESTKEY = "X-Personium-RequestKey";
-        /**
-         * X-Personium-EventId header.
-         */
+        /** X-Personium-EventId header. */
         public static final String X_PERSONIUM_EVENTID = "X-Personium-EventId";
-        /**
-         * X-Personium-RuleChain header.
-         */
+        /** X-Personium-RuleChain header. */
         public static final String X_PERSONIUM_RULECHAIN = "X-Personium-RuleChain";
-        /**
-         * X-Personium-Via header.
-         */
+        /** X-Personium-Via header. */
         public static final String X_PERSONIUM_VIA = "X-Personium-Via";
-        /**
-         * Access-Control-Allow-Originヘッダ.
-         */
+        // CORS
+        /** Access-Control-Allow-Origin. */
         public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
-        /**
-         * Access-Control-Allow-Headersヘッダ.
-         */
+        /** Access-Control-Allow-Headers. */
         public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
-        /**
-         * Access-Control-Request-Headersヘッダ.
-         */
+        /** Access-Control-Request-Headers. */
         public static final String ACCESS_CONTROL_REQUEST_HEADERS = "Access-Control-Request-Headers";
-        /**
-         * Access-Control-Allow-Methodsヘッダ.
-         */
+        /** Access-Control-Allow-Methods. */
         public static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
-        /**
-         * Originヘッダ.
-         */
+        /** Access-Control-Expose-Headers. */
+        public static final String ACCESS_CONTROLE_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+
+        /** Originヘッダ. */
         public static final String ORIGIN = "Origin";
-        /**
-         * Allowヘッダ.
-         */
+        /** Allowヘッダ. */
         public static final String ALLOW = "Allow";
-        /**
-         * Rangeヘッダ.
-         */
+        /** Rangeヘッダ. */
         public static final String RANGE = "Range";
-        /**
-         * Accept-Rangeヘッダ.
-         */
+        /** Accept-Rangeヘッダ. */
         public static final String ACCEPT_RANGES = "Accept-Ranges";
-        /**
-         * Content-Rangeヘッダ.
-         */
+        /** Content-Rangeヘッダ. */
         public static final String CONTENT_RANGE = "Content-Range";
 
         /**
@@ -201,44 +160,26 @@ public final class PersoniumCoreUtils {
     }
 
     /**
-     * Httpメソッドを定数としてこの下に定義します.
+     * Definition of http methods.
      */
     public static class HttpMethod {
-        /**
-         * MERGE.
-         */
+        /** MERGE. */
         public static final String MERGE = "MERGE";
-        /**
-         * MKCOL.
-         */
+        /** MKCOL. */
         public static final String MKCOL = "MKCOL";
-        /**
-         * PROPFIND.
-         */
+        /** PROPFIND. */
         public static final String PROPFIND = "PROPFIND";
-        /**
-         * PROPPATCH.
-         */
+        /** PROPPATCH. */
         public static final String PROPPATCH = "PROPPATCH";
-        /**
-         * ACL.
-         */
+        /** ACL. */
         public static final String ACL = "ACL";
-        /**
-         * COPY.
-         */
+        /** COPY. */
         public static final String COPY = "COPY";
-        /**
-         * MOVE.
-         */
+        /** MOVE. */
         public static final String MOVE = "MOVE";
-        /**
-         * LOCK.
-         */
+        /** LOCK. */
         public static final String LOCK = "LOCK";
-        /**
-         * UNLOCK.
-         */
+        /** UNLOCK. */
         public static final String UNLOCK = "UNLOCK";
     }
 
@@ -370,9 +311,6 @@ public final class PersoniumCoreUtils {
         return Base64.decodeBase64(in);
     }
 
-    static final int BITS_HEX_DIGIT = 4;
-    static final int HEX_DIGIT_MASK = 0x0F;
-
     /**
      * バイト列を16進数の文字列に変換する. TODO さすがにこんなのどこかにライブラリありそうだけど.
      * @param input 入力バイト列
@@ -457,10 +395,6 @@ public final class PersoniumCoreUtils {
         return bodyString;
     }
 
-
-
-    private static final String AUTHZ_BASIC = "Basic ";
-
     /**
      * Authorizationヘッダの内容をBasic認証のものとしてパースする.
      * @param authzHeaderValue Authorizationヘッダの内容
@@ -524,9 +458,6 @@ public final class PersoniumCoreUtils {
         PersoniumUriInfo ret = new PersoniumUriInfo(uriInfo, baseLevelsAbove, add);
         return ret;
     }
-
-    static final int CHARS_PREFIX_ODATA_DATE = 7;
-    static final int CHARS_SUFFIX_ODATA_DATE = 3;
 
     /**
      * ODataのDatetime JSONリテラル(Date(\/ ... \/) 形式)を解釈してDateオブジェクトに変換します.
