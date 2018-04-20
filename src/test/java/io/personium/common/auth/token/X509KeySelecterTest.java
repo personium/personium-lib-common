@@ -30,7 +30,6 @@ import javax.xml.crypto.KeySelectorException;
 import javax.xml.crypto.dsig.XMLSignatureException;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.personium.common.auth.token.AbstractOAuth2Token.TokenDsigException;
