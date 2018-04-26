@@ -47,6 +47,7 @@ public class TokenTest {
      * @throws InvalidKeySpecException InvalidKeySpecException
      * @throws NoSuchAlgorithmException NoSuchAlgorithmException
      * @throws javax.security.cert.CertificateException CertificateException
+     * @throws javax.naming.InvalidNameException InvalidNameException
      */
     @BeforeClass
     public static void beforeClass()
