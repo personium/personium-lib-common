@@ -25,10 +25,17 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Please use this class in principle when executing thread.
  */
-public class PersoniumThread {
+public enum PersoniumThread {
+
+    /** For cell export, import uses. */
+    CELL_IO,
+    /** For box import uses. */
+    BOX_IO,
+    /** For miscellaneous uses. */
+    MISC;
 
     /** Thread pool. */
-    private static ExecutorService threadPool;
+    private ExecutorService threadPool;
 
     /**
      * Constructor.
@@ -37,27 +44,49 @@ public class PersoniumThread {
     }
 
     /**
-     * Create thread pool.
-     * @param num Thread pool num
-     */
-    public static void createThreadPool(int num) {
-        threadPool = Executors.newFixedThreadPool(num);
-    }
-
-    /**
      * Execute the specified command.
      * If no free thread exists, it waits until it becomes executable.
      * @param command Command to execute
      */
-    public static void execute(Runnable command) {
+    public void execute(Runnable command) {
         threadPool.execute(command);
+    }
+
+    /**
+     * Create thread pool.
+     * @param cellIONum Thread pool num for cell io
+     * @param boxIONum Thread pool num for box io
+     * @param miscNum Thread pool num for misc
+     */
+    public static void start(int cellIONum, int boxIONum, int miscNum) {
+        CELL_IO.createThreadPool(cellIONum);
+        BOX_IO.createThreadPool(boxIONum);
+        MISC.createThreadPool(miscNum);
     }
 
     /**
      * Shutdown thread pool.
      * @param timeout the maximum seconds to wait
      */
-    public static void shutdown(long timeout) {
+    public static void stop(long timeout) {
+        CELL_IO.shutdown(timeout);
+        BOX_IO.shutdown(timeout);
+        MISC.shutdown(timeout);
+    }
+
+    /**
+     * Create thread pool.
+     * @param num Thread pool num
+     */
+    private void createThreadPool(int num) {
+        threadPool = Executors.newFixedThreadPool(num);
+    }
+
+    /**
+     * Shutdown thread pool.
+     * @param timeout the maximum seconds to wait
+     */
+    private void shutdown(long timeout) {
         if (threadPool != null) {
             threadPool.shutdown();
             try {
