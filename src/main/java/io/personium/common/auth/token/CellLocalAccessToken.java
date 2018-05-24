@@ -106,6 +106,7 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         ret.append(doCreateCodeString(new String[] {this.makeRolesString()}));
         return ret.toString();
     }
+
     String doCreateCodeString(final String[] contents) {
         StringBuilder raw = new StringBuilder();
 
