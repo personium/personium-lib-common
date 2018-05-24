@@ -136,6 +136,10 @@ public final class PersoniumCoreUtils {
         public static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
         /** Access-Control-Expose-Headers. */
         public static final String ACCESS_CONTROLE_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+        /** Access-Control-Allow-Credentials. */
+        public static final String ACCESS_CONTROLE_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
+        /** Access-Control-Max-Age. */
+        public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
 
         /** Originヘッダ. */
         public static final String ORIGIN = "Origin";
