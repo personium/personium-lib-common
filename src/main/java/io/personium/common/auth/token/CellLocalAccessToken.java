@@ -38,6 +38,8 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
      * トークンのプレフィックス.
      */
     public static final String PREFIX_ACCESS = "AL~";
+    public static final String PREFIX_CODE = "GC~";
+    private static final String SEPARATOR = "\t";
     /**
      * トークンの有効時間.
      */
@@ -98,6 +100,47 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         return ret.toString();
     }
 
+    // TODO 仮実装
+    public String toCodeString() {
+        StringBuilder ret = new StringBuilder(PREFIX_CODE);
+        ret.append(doCreateCodeString(new String[] {this.makeRolesString()}));
+        return ret.toString();
+    }
+
+    String doCreateCodeString(final String[] contents) {
+        StringBuilder raw = new StringBuilder();
+
+        // 発行時刻のEpochからのミリ秒を逆順にした文字列が先頭から入るため、推測しづらい。
+        String iaS = Long.toString(this.issuedAt);
+        String iaSr = StringUtils.reverse(iaS);
+        raw.append(iaSr);
+        raw.append(SEPARATOR);
+
+        raw.append("CODE");
+        raw.append(SEPARATOR);
+
+        raw.append(Long.toString(this.lifespan));
+        raw.append(SEPARATOR);
+        raw.append(this.subject);
+        raw.append(SEPARATOR);
+        if (this.schema != null) {
+            raw.append(this.schema);
+        }
+
+        if (contents != null) {
+            for (String cont : contents) {
+                raw.append(SEPARATOR);
+                if (cont != null) {
+                    raw.append(cont);
+                }
+            }
+        }
+
+        raw.append(SEPARATOR);
+        raw.append(this.issuer);
+        return encode(raw.toString(), getIvBytes(issuer));
+    }
+
     static final int IDX_COUNT = 6;
     static final int IDX_ISSUED_AT = 0;
     static final int IDX_LIFESPAN = 1;
@@ -128,6 +171,31 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
                     frag[IDX_SUBJECT],
                     AbstractOAuth2Token.parseRolesString(frag[IDX_ROLE_LIST]),
                     frag[IDX_SCHEMA]);
+
+            return ret;
+        } catch (MalformedURLException e) {
+            throw new TokenParseException(e.getMessage(), e);
+        } catch (IllegalStateException e) {
+            throw new TokenParseException(e.getMessage(), e);
+        }
+    }
+
+    // TODO 仮実装
+    public static CellLocalAccessToken parseCode(String code, String issuer)
+            throws AbstractOAuth2Token.TokenParseException {
+        if (!code.startsWith(PREFIX_CODE) || issuer == null) {
+            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+        }
+        String[] frag = LocalToken.doParse(code.substring(PREFIX_CODE.length()), issuer, IDX_COUNT + 1);
+
+        try {
+            CellLocalAccessToken ret = new CellLocalAccessToken(
+                    Long.valueOf(StringUtils.reverse(frag[IDX_ISSUED_AT])),
+                    Long.valueOf(frag[IDX_LIFESPAN + 1]),
+                    frag[IDX_ISSUER + 1],
+                    frag[IDX_SUBJECT + 1],
+                    AbstractOAuth2Token.parseRolesString(frag[IDX_ROLE_LIST + 1]),
+                    frag[IDX_SCHEMA + 1]);
 
             return ret;
         } catch (MalformedURLException e) {

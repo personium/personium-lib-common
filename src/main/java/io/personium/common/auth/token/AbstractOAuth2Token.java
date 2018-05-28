@@ -270,6 +270,8 @@ public abstract class AbstractOAuth2Token {
             return TransCellRefreshToken.parse(token, issuer);
         } else if (token.startsWith(UnitLocalUnitUserToken.PREFIX_UNIT_LOCAL_UNIT_USER)) {
             return UnitLocalUnitUserToken.parse(token, host);
+        } else if (token.startsWith(CellLocalAccessToken.PREFIX_CODE)) {
+            return CellLocalAccessToken.parseCode(token, issuer);
         } else {
             return TransCellAccessToken.parse(token);
         }
