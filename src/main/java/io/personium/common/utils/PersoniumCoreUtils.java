@@ -23,18 +23,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
-import java.util.List;
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -43,9 +35,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.CharEncoding;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -441,29 +431,6 @@ public final class PersoniumCoreUtils {
     }
 
     /**
-     * 任意のBaseUriをもつUriInfoオブジェクトを生成して返します.
-     * @param uriInfo UriInfo
-     * @param baseLevelsAbove BaseUriをRequestUriから何階層上にするか
-     * @return UriInfo
-     */
-    public static UriInfo createUriInfo(final UriInfo uriInfo, final int baseLevelsAbove) {
-        PersoniumUriInfo ret = new PersoniumUriInfo(uriInfo, baseLevelsAbove, null);
-        return ret;
-    }
-
-    /**
-     * 任意のBaseUriをもつUriInfoオブジェクトを生成して返します.
-     * @param uriInfo UriInfo
-     * @param baseLevelsAbove BaseUriをRequestUriから何階層上にするか
-     * @param add 追加パス情報
-     * @return UriInfo
-     */
-    public static UriInfo createUriInfo(final UriInfo uriInfo, final int baseLevelsAbove, final String add) {
-        PersoniumUriInfo ret = new PersoniumUriInfo(uriInfo, baseLevelsAbove, add);
-        return ret;
-    }
-
-    /**
      * ODataのDatetime JSONリテラル(Date(\/ ... \/) 形式)を解釈してDateオブジェクトに変換します.
      * @param odataDatetime ODataのDatetime JSONリテラル
      * @return Dateオブジェクト
@@ -472,143 +439,5 @@ public final class PersoniumCoreUtils {
         String dateValue = odataDatetime
                 .substring(CHARS_PREFIX_ODATA_DATE, odataDatetime.length() - CHARS_SUFFIX_ODATA_DATE);
         return new Date(Long.valueOf(dateValue));
-    }
-
-    /**
-     * OPTIONSメソッドに対する正常応答につかうResponseBuilderを作って返します.
-     * @param allowedMethods 許可されるHTTPメソッド文字列.
-     * @return ResponseBuilder
-     */
-    public static ResponseBuilder responseBuilderForOptions(String... allowedMethods) {
-        StringBuilder allowedMethodsBuilder = new StringBuilder(javax.ws.rs.HttpMethod.OPTIONS);
-        if (allowedMethods != null && allowedMethods.length > 0) {
-            allowedMethodsBuilder.append(", ");
-            allowedMethodsBuilder.append(StringUtils.join(allowedMethods, ", "));
-        }
-        return Response.ok().header(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, allowedMethodsBuilder.toString())
-                .header(HttpHeaders.ALLOW, allowedMethodsBuilder.toString());
-    }
-
-    /**
-     * 指定階層上のパスをBaseUri(ルート)とするUriInfoとして振る舞うUriInfoのWrapper.
-     */
-    public static final class PersoniumUriInfo implements UriInfo {
-        UriBuilder baseUriBuilder;
-        UriInfo core;
-
-        /**
-         * Constructor.
-         * @param uriInfo UriInfo
-         * @param baseLevelsAbove 何階層上のパスをルートとするか
-         * @param add 追加パス情報
-         */
-        public PersoniumUriInfo(final UriInfo uriInfo, final int baseLevelsAbove, final String add) {
-            this.core = uriInfo;
-            String reqUrl = uriInfo.getRequestUri().toASCIIString();
-            if (reqUrl.endsWith("/")) {
-                reqUrl = reqUrl.substring(0, reqUrl.length() - 1);
-            }
-            String[] urlSplitted = reqUrl.split("/");
-            urlSplitted = (String[]) ArrayUtils.subarray(urlSplitted, 0, urlSplitted.length - baseLevelsAbove);
-            reqUrl = StringUtils.join(urlSplitted, "/") + "/";
-            if (add != null && add.length() != 0) {
-                reqUrl = reqUrl + add + "/";
-            }
-            this.baseUriBuilder = UriBuilder.fromUri(reqUrl);
-        }
-
-        @Override
-        public String getPath() {
-            return this.getPath(true);
-        }
-
-        @Override
-        public String getPath(final boolean decode) {
-            String sReq = null;
-            String sBas = null;
-            if (decode) {
-                sReq = this.getRequestUri().toString();
-                sBas = this.getBaseUri().toString();
-            } else {
-                sReq = this.getRequestUri().toASCIIString();
-                sBas = this.getBaseUri().toASCIIString();
-            }
-            return sReq.substring(sBas.length());
-        }
-
-        @Override
-        public List<PathSegment> getPathSegments() {
-            return this.core.getPathSegments();
-        }
-
-        @Override
-        public List<PathSegment> getPathSegments(final boolean decode) {
-            return this.core.getPathSegments(decode);
-        }
-
-        @Override
-        public URI getRequestUri() {
-            return this.core.getRequestUri();
-        }
-
-        @Override
-        public UriBuilder getRequestUriBuilder() {
-            return this.core.getRequestUriBuilder();
-        }
-
-        @Override
-        public URI getAbsolutePath() {
-            return this.core.getAbsolutePath();
-        }
-
-        @Override
-        public UriBuilder getAbsolutePathBuilder() {
-            return this.core.getAbsolutePathBuilder();
-        }
-
-        @Override
-        public URI getBaseUri() {
-            return this.baseUriBuilder.build();
-        }
-
-        @Override
-        public UriBuilder getBaseUriBuilder() {
-            return this.baseUriBuilder;
-        }
-
-        @Override
-        public MultivaluedMap<String, String> getPathParameters() {
-            return this.core.getPathParameters();
-        }
-
-        @Override
-        public MultivaluedMap<String, String> getPathParameters(final boolean decode) {
-            return this.core.getPathParameters(decode);
-        }
-
-        @Override
-        public MultivaluedMap<String, String> getQueryParameters() {
-            return this.core.getQueryParameters();
-        }
-
-        @Override
-        public MultivaluedMap<String, String> getQueryParameters(final boolean decode) {
-            return this.core.getQueryParameters(decode);
-        }
-
-        @Override
-        public List<String> getMatchedURIs() {
-            return this.core.getMatchedURIs();
-        }
-
-        @Override
-        public List<String> getMatchedURIs(final boolean decode) {
-            return this.core.getMatchedURIs(decode);
-        }
-
-        @Override
-        public List<Object> getMatchedResources() {
-            return this.core.getMatchedResources();
-        }
     }
 }
