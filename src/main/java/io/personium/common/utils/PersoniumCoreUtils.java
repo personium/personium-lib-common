@@ -201,8 +201,6 @@ public final class PersoniumCoreUtils {
     public static class ContentType {
         /** application/zip+x-personium-bar. */
         public static final String CONTENT_TYPE_BAR = "application/zip+x-personium-bar";
-        /** application/json+x-personium-metadata. */
-        public static final String METADATA = "application/json+x-personium-metadata";
     }
 
     /**
