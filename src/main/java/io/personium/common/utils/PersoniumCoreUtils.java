@@ -196,6 +196,14 @@ public final class PersoniumCoreUtils {
     }
 
     /**
+     * Constant definition for ContentType.
+     */
+    public static class ContentType {
+        /** application/zip+x-personium-bar. */
+        public static final String CONTENT_TYPE_BAR = "application/zip+x-personium-bar";
+    }
+
+    /**
      * XMLのDOMノードを文字列に変換します.
      * @param node 文字列化したいノード
      * @return 変換結果の文字列
