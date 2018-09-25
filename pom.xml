@@ -3,7 +3,7 @@
     <groupId>io.personium</groupId>
     <artifactId>personium-lib-common</artifactId>
     <packaging>jar</packaging>
-    <version>1.4.15-SNAPSHOT</version>
+    <version>1.4.15</version>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
