@@ -295,7 +295,7 @@ public class PersoniumFixedWindowRollingPolicy extends RollingPolicyBase {
                 logger.info("oldestFile Name: " + oldest.getPath() + ", timestamp: " + oldestTime.toMillis());
                 logger.info("number of existing files:" + files.length + ", max number of files: "
                         + (maxIndex - minIndex + 1));
-                if (oldest.delete()) {
+                if (!oldest.delete()) {
                     logger.warn("Failed to oldest archive file: " + oldest.getPath());
                 }
             }
