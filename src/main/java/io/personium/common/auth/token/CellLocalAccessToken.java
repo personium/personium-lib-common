@@ -61,7 +61,9 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
             final List<Role> roleList,
             final String schema) {
         super(issuedAt, lifespan, issuer, subject, schema);
-        this.roleList = roleList;
+        if (roleList != null) {
+            this.roleList = roleList;
+        }
     }
 
     /**
