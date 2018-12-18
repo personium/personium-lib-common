@@ -190,6 +190,8 @@ public final class PersoniumCoreUtils {
         public static final String SERVICE = "service";
         /** odata. */
         public static final String ODATA = "odata";
+        /** stream collection type. */
+        public static final String STREAM = "stream";
 
         /** cellstatus. */
         public static final String CELL_STATUS = "cellstatus";
