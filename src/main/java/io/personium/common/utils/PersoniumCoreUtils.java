@@ -49,6 +49,7 @@ public final class PersoniumCoreUtils {
     static Logger log = LoggerFactory.getLogger(PersoniumCoreUtils.class);
 
     private static final String AUTHZ_BASIC = "Basic ";
+    private static final String AUTHZ_BEARER = "Bearer ";
     private static final int BITS_HEX_DIGIT = 4;
     private static final int HEX_DIGIT_MASK = 0x0F;
     private static final int CHARS_PREFIX_ODATA_DATE = 7;
@@ -438,6 +439,27 @@ public final class PersoniumCoreUtils {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Parse Authorization header as Bearer.
+     * @param authzHeaderValue Authorization Header
+     * @return token
+     */
+    public static String parseBearerAuthzHeader(String authzHeaderValue) {
+        if (authzHeaderValue == null || !authzHeaderValue.startsWith(AUTHZ_BEARER)) {
+            return null;
+        }
+        return authzHeaderValue.substring(AUTHZ_BEARER.length());
+    }
+
+    /**
+     * Create Bearer Authorization header.
+     * @param token token string
+     * @return bearer authorization header
+     */
+    public static String createBearerAuthzHeader(final String token) {
+        return AUTHZ_BEARER + token;
     }
 
     /**

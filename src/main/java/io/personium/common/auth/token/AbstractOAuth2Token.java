@@ -1,6 +1,6 @@
 /**
  * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Copyright 2014-2018 FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -200,22 +200,29 @@ public abstract class AbstractOAuth2Token {
     static final TokenParseException PARSE_EXCEPTION = new TokenParseException("failed to parse token");
 
     /**
-     * トークン失効までの秒数を返します.
-     * @return トークン失効までの秒数
+     * Get the time when this token was issued.
+     * @return integer timestamp of seconds
      */
-    public final int expiresIn() {
-        return SECS_IN_A_HOUR;
+    public final int getIssuedAt() {
+        return (int) (this.issuedAt / MILLISECS_IN_A_SEC);
     }
 
     /**
-     * トークンが失効しているかどうかチェック.
+     * Get the period that this token is active.
+     * @return integer period of seconds
+     */
+    public final int expiresIn() {
+        return (int) (this.lifespan / MILLISECS_IN_A_SEC);
+    }
+
+    /**
+     * Check if this token is active.
      * @return boolean
      */
     public final boolean isExpired() {
         long now = new Date().getTime();
 
-        // 有効期限のリミット=認証した時刻＋有効期限
-        long expiresLimit = this.issuedAt + this.expiresIn() * MILLISECS_IN_A_SEC;
+        long expiresLimit = this.issuedAt + this.lifespan;
 
         if (now > expiresLimit) {
             return true;
@@ -224,29 +231,20 @@ public abstract class AbstractOAuth2Token {
     }
 
     /**
-     * リフレッシュトークン失効までの秒数を返します.
-     * @return リフレッシュトークン失効までの秒数
+     * Expiration time in second of Refresh token.
+     * @return Expiration time in second
      */
     public final int refreshExpiresIn() {
-        return SECS_IN_AN_DAY;
+        return expiresIn();
     }
 
     /**
-     * リフレッシュトークンが失効しているかどうかチェック.
+     * Check if this token is active.
      * @return boolean
      */
     public final boolean isRefreshExpired() {
-        long now = new Date().getTime();
-
-        // 有効期限のリミット=認証した時刻＋有効期限
-        long expiresLimit = this.issuedAt + this.refreshExpiresIn() * MILLISECS_IN_A_SEC;
-
-        if (now > expiresLimit) {
-            return true;
-        }
-        return false;
+        return isExpired();
     }
-
 
     /**
      * トークン文字列をissuerで指定されたCellとしてパースする.
