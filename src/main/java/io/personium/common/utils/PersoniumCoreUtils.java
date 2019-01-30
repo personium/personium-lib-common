@@ -435,7 +435,7 @@ public final class PersoniumCoreUtils {
     public static String createBasicAuthzHeader(final String id, final String pw) {
         String line = encodeUrlComp(id) + ":" + encodeUrlComp(pw);
         try {
-            return encodeBase64Url(line.getBytes(CharEncoding.UTF_8));
+            return AUTHZ_BASIC + encodeBase64Url(line.getBytes(CharEncoding.UTF_8));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
