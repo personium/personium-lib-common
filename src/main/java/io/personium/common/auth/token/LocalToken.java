@@ -123,6 +123,8 @@ public abstract class LocalToken extends AbstractOAuth2Token {
 
     /**
      * パース処理.
+     * パース結果のフィールド数がnumFieldsと一致すること.
+     * パース結果のissuerがissuerと一致すること.
      * @param token トークン
      * @param issuer 発行者
      * @param numFields フィールド数
