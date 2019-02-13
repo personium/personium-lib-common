@@ -40,10 +40,56 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
     public static final String PREFIX_ACCESS = "AL~";
     public static final String PREFIX_CODE = "GC~";
     private static final String SEPARATOR = "\t";
-    /**
-     * トークンの有効時間.
-     */
+
+    private static final int IDX_COUNT = 6;
+    private static final int IDX_ISSUED_AT = 0;
+    private static final int IDX_LIFESPAN = 1;
+    private static final int IDX_SUBJECT = 2;
+    private static final int IDX_SCHEMA = 3;
+    private static final int IDX_ROLE_LIST = 4;
+    private static final int IDX_ISSUER = 5;
+
+    private static final int IDX_CODE_COUNT = 8;
+    private static final int IDX_CODE_ISSUED_AT = 0;
+    // private static final int IDX_CODE_DUMMY_CODE_STR = 1;
+    private static final int IDX_CODE_LIFESPAN = 2;
+    private static final int IDX_CODE_SUBJECT = 3;
+    private static final int IDX_CODE_SCHEMA = 4;
+    private static final int IDX_CODE_ROLE_LIST = 5;
+    private static final int IDX_CODE_SCOPE = 6;
+    private static final int IDX_CODE_ISSUER = 7;
+
+    /** トークンの有効時間. */
     public static final int ACCESS_TOKEN_EXPIRES_HOUR = 1;
+    /** Code valid time (ms). */
+    public static final int CODE_EXPIRES = 10 * 60 * 1000; // 10 minuts
+
+    /** Used to create code string. */
+    protected String scope;
+
+    /**
+     * Constructor for generating code.
+     * @param issuedAt
+     * @param lifespan
+     * @param issuer
+     * @param subject
+     * @param roleList
+     * @param schema
+     * @param scope
+     */
+    public CellLocalAccessToken(final long issuedAt,
+            final long lifespan,
+            final String issuer,
+            final String subject,
+            final List<Role> roleList,
+            final String schema,
+            final String scope) {
+        super(issuedAt, lifespan, issuer, subject, schema);
+        if (roleList != null) {
+            this.roleList = roleList;
+        }
+        this.scope = scope;
+    }
 
     /**
      * 明示的な有効期間を設定してトークンを生成する.
@@ -60,10 +106,7 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
             final String subject,
             final List<Role> roleList,
             final String schema) {
-        super(issuedAt, lifespan, issuer, subject, schema);
-        if (roleList != null) {
-            this.roleList = roleList;
-        }
+        this(issuedAt, lifespan, issuer, subject, roleList, schema, null);
     }
 
     /**
@@ -102,7 +145,6 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         return ret.toString();
     }
 
-    // TODO 仮実装
     public String toCodeString() {
         StringBuilder ret = new StringBuilder(PREFIX_CODE);
         ret.append(doCreateCodeString(new String[] {this.makeRolesString()}));
@@ -139,17 +181,11 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         }
 
         raw.append(SEPARATOR);
+        raw.append(this.scope);
+        raw.append(SEPARATOR);
         raw.append(this.issuer);
         return encode(raw.toString(), getIvBytes(issuer));
     }
-
-    static final int IDX_COUNT = 6;
-    static final int IDX_ISSUED_AT = 0;
-    static final int IDX_LIFESPAN = 1;
-    static final int IDX_ISSUER = 5;
-    static final int IDX_SUBJECT = 2;
-    static final int IDX_ROLE_LIST = 4;
-    static final int IDX_SCHEMA = 3;
 
     /**
      * トークン文字列をissuerで指定されたCellとしてパースする.
@@ -182,22 +218,29 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         }
     }
 
-    // TODO 仮実装
+    /**
+     *
+     * @param code
+     * @param issuer
+     * @return
+     * @throws AbstractOAuth2Token.TokenParseException
+     */
     public static CellLocalAccessToken parseCode(String code, String issuer)
             throws AbstractOAuth2Token.TokenParseException {
         if (!code.startsWith(PREFIX_CODE) || issuer == null) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
-        String[] frag = LocalToken.doParse(code.substring(PREFIX_CODE.length()), issuer, IDX_COUNT + 1);
+        String[] frag = LocalToken.doParse(code.substring(PREFIX_CODE.length()), issuer, IDX_CODE_COUNT);
 
         try {
             CellLocalAccessToken ret = new CellLocalAccessToken(
-                    Long.valueOf(StringUtils.reverse(frag[IDX_ISSUED_AT])),
-                    Long.valueOf(frag[IDX_LIFESPAN + 1]),
-                    frag[IDX_ISSUER + 1],
-                    frag[IDX_SUBJECT + 1],
-                    AbstractOAuth2Token.parseRolesString(frag[IDX_ROLE_LIST + 1]),
-                    frag[IDX_SCHEMA + 1]);
+                    Long.valueOf(StringUtils.reverse(frag[IDX_CODE_ISSUED_AT])),
+                    Long.valueOf(frag[IDX_CODE_LIFESPAN]),
+                    frag[IDX_CODE_ISSUER],
+                    frag[IDX_CODE_SUBJECT],
+                    AbstractOAuth2Token.parseRolesString(frag[IDX_CODE_ROLE_LIST]),
+                    frag[IDX_CODE_SCHEMA],
+                    frag[IDX_CODE_SCOPE]);
 
             return ret;
         } catch (MalformedURLException e) {
@@ -215,6 +258,14 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
     @Override
     public String getId() {
         return this.subject + ":" + this.issuedAt;
+    }
+
+    /**
+     * Get scope.
+     * @return scope
+     */
+    public String getScope() {
+        return this.scope;
     }
 
 }
