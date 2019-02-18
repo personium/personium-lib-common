@@ -166,7 +166,8 @@ public class X509KeySelector extends KeySelector {
         } catch (MalformedURLException e) {
             throw new KeySelectorException(e.getMessage(), e);
         }
-        if (cnStr == null || !cnStr.equals(issureUrl.getHost())) {
+        // support per-cell. It changed from exact match to backward match.
+        if (cnStr == null || !issureUrl.getHost().endsWith(cnStr)) {
             // トークンとルートCA証明書のissureが等しくない時
             throw new KeySelectorException("issure not equals.");
         }
