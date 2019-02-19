@@ -59,8 +59,6 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
     private static final int IDX_CODE_SCOPE = 6;
     private static final int IDX_CODE_ISSUER = 7;
 
-    /** トークンの有効時間. */
-    public static final int ACCESS_TOKEN_EXPIRES_HOUR = 1;
     /** Code valid time (ms). */
     public static final int CODE_EXPIRES = 10 * 60 * 1000; // 10 minuts
 
@@ -123,7 +121,7 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
             final String subject,
             final List<Role> roleList,
             final String schema) {
-        this(issuedAt, ACCESS_TOKEN_EXPIRES_HOUR * MILLISECS_IN_AN_HOUR, issuer, subject, roleList, schema);
+        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, roleList, schema);
     }
 
     /**

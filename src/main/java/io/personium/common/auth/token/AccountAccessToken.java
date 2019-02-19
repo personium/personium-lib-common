@@ -43,11 +43,6 @@ public final class AccountAccessToken extends CellLocalAccessToken implements IA
     static final int IDX_SCHEMA = 3;
 
     /**
-     * トークンの有効期間.
-     */
-    public static final int ACCESS_TOKEN_EXPIRES_HOUR = 1;
-
-    /**
      * 明示的な有効期間を設定してトークンを生成する.
      * @param issuedAt 発行時刻(epochからのミリ秒)
      * @param lifespan 有効期間(ミリ秒)
@@ -68,7 +63,7 @@ public final class AccountAccessToken extends CellLocalAccessToken implements IA
      * @param schema Schema
      */
     public AccountAccessToken(final long issuedAt, final String issuer, final String subject, final String schema) {
-        this(issuedAt, ACCESS_TOKEN_EXPIRES_HOUR * MILLISECS_IN_AN_HOUR, issuer, subject, schema);
+        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema);
     }
 
     @Override

@@ -30,10 +30,6 @@ public class UnitLocalUnitUserToken extends AbstractOAuth2Token implements IAcce
      * トークンのプレフィックス.
      */
     public static final String PREFIX_UNIT_LOCAL_UNIT_USER = "AU~";
-    /**
-     * トークンの有効時間.
-     */
-    public static final int ACCESS_TOKEN_EXPIRES_HOUR = 1;
 
     /**
      * AES/CBC/PKCS5Padding.

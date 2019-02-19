@@ -61,6 +61,18 @@ public interface IRefreshToken {
     /**
      * Refresh to new Access Token with old refresh token.
      * @param issuedAt Issued time stamp
+     * @param lifespan token lifespan
+     * @param target Target cell URL
+     * @param cellUrl Issuer cell URL
+     * @param roleList List of roles
+     * @return Access token
+     */
+    IAccessToken refreshAccessToken(long issuedAt, long lifespan, String target, String cellUrl,
+            List<Role> roleList);
+
+    /**
+     * Refresh to new Access Token with old refresh token.
+     * @param issuedAt Issued time stamp
      * @param target Target cell URL
      * @param cellUrl Issuer cell URL
      * @param roleList List of roles
@@ -71,11 +83,32 @@ public interface IRefreshToken {
             List<Role> roleList, String schema);
 
     /**
+     * Refresh to new Access Token with old refresh token.
+     * @param issuedAt Issued time stamp
+     * @param lifespan token lifespan
+     * @param target Target cell URL
+     * @param cellUrl Issuer cell URL
+     * @param roleList List of roles
+     * @param schema Schema URI
+     * @return Access token
+     */
+    IAccessToken refreshAccessToken(long issuedAt, long lifespan, String target, String cellUrl,
+            List<Role> roleList, String schema);
+
+    /**
      * Refresh to new Refresh Token with old refresh token.
      * @param issuedAt Issued time stamp
      * @return Refresh Token
      */
     IRefreshToken refreshRefreshToken(long issuedAt);
+
+    /**
+     * Refresh to new Refresh Token with old refresh token.
+     * @param issuedAt Issued time stamp
+     * @param lifespan token lifespan
+     * @return Refresh Token
+     */
+    IRefreshToken refreshRefreshToken(long issuedAt, long lifespan);
 
     /**
      * Expiration time in second of Refresh token.
