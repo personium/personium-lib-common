@@ -280,6 +280,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
         // Dummy Date
         DateTime dateTime = new DateTime(this.issuedAt);
+
         assertion.setAttribute("IssueInstant", dateTime.toString());
 
         DateTime notOnOrAfterDateTime = new DateTime(this.issuedAt + this.lifespan);
@@ -303,7 +304,6 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
         // Conditions
         Element conditions = doc.createElement("Conditions");
-        conditions.setAttribute("NotOnOrAfter", notOnOrAfterDateTime.toString());
         Element audienceRestriction = doc.createElement("AudienceRestriction");
         for (String aud : new String[] {this.target, this.schema}) {
             Element audience = doc.createElement("Audience");
@@ -316,7 +316,6 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         // AuthnStatement
         Element authnStmt = doc.createElement("AuthnStatement");
         authnStmt.setAttribute("AuthnInstant", dateTime.toString());
-        authnStmt.setAttribute("SessionNotOnOrAfter", notOnOrAfterDateTime.toString());
         Element authnCtxt = doc.createElement("AuthnContext");
         Element authnCtxtCr = doc.createElement("AuthnContextClassRef");
         authnCtxtCr.setTextContent("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
@@ -411,8 +410,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
             DateTime dt = new DateTime(issuedAtStr);
 
-            Element conditions = (Element) (assertion.getElementsByTagName("Conditions").item(0));
-            String notOnOrAfterStr = conditions.getAttribute("NotOnOrAfter");
+            Element sc = (Element) (subject.getElementsByTagName("SubjectConfirmation").item(0));
+            Element scd = (Element) (sc.getElementsByTagName("SubjectConfirmationData").item(0));
+            String notOnOrAfterStr = scd.getAttribute("NotOnOrAfter");
             long lifespan = ACCESS_TOKEN_EXPIRES_MILLISECS;
             if (notOnOrAfterStr != null && !notOnOrAfterStr.isEmpty()) {
                 DateTime notOnOrAfterDateTime = new DateTime(notOnOrAfterStr);
