@@ -62,9 +62,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.oauth.signature.pem.PEMReader;
-import net.oauth.signature.pem.PKCS1EncodedKeySpec;
-
 import org.apache.commons.lang.CharEncoding;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -76,6 +73,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import io.personium.common.utils.PersoniumCoreUtils;
+import net.oauth.signature.pem.PEMReader;
+import net.oauth.signature.pem.PKCS1EncodedKeySpec;
 
 /**
  * TransCellのAccessTokenを扱うクラス.
@@ -94,11 +93,6 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
     String id;
     String target;
-
-    /**
-     * トークンの有効期間.
-     */
-    public static final long LIFESPAN = 1 * MILLISECS_IN_AN_HOUR; // 1時間
 
     private static List<String> x509RootCertificateFileNames;
     private static XMLSignatureFactory xmlSignatureFactory;
@@ -182,7 +176,24 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String target,
             final List<Role> roleList,
             final String schema) {
-        this(id, issuedAt, LIFESPAN, issuer, subject, target, roleList, schema);
+        this(id, issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, target, roleList, schema);
+    }
+
+    /**
+     * コンストラクタ.
+     * @param issuer 発行 Cell URL
+     * @param subject アクセス主体URL
+     * @param target ターゲットURL
+     * @param roleList ロールリスト
+     * @param schema クライアント認証されたデータスキーマ
+     */
+    public TransCellAccessToken(
+            final String issuer,
+            final String subject,
+            final String target,
+            final List<Role> roleList,
+            final String schema) {
+        this(UUID.randomUUID().toString(), new Date().getTime(), issuer, subject, target, roleList, schema);
     }
 
     /**
@@ -205,7 +216,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * コンストラクタ.
+     * IDにUUIDを自動採番するコンストラクタ.
+     * @param issuedAt 発行時刻(epochからのミリ秒)
+     * @param lifespan token lifespan
      * @param issuer 発行 Cell URL
      * @param subject アクセス主体URL
      * @param target ターゲットURL
@@ -213,12 +226,14 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * @param schema クライアント認証されたデータスキーマ
      */
     public TransCellAccessToken(
+            final long issuedAt,
+            final long lifespan,
             final String issuer,
             final String subject,
             final String target,
             final List<Role> roleList,
             final String schema) {
-        this(UUID.randomUUID().toString(), new Date().getTime(), issuer, subject, target, roleList, schema);
+        this(UUID.randomUUID().toString(), issuedAt, lifespan, issuer, subject, target, roleList, schema);
     }
 
     /* (non-Javadoc)
@@ -268,6 +283,8 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
         assertion.setAttribute("IssueInstant", dateTime.toString());
 
+        DateTime notOnOrAfterDateTime = new DateTime(this.issuedAt + this.lifespan);
+
         // Issuer
         Element issuer = doc.createElement("Issuer");
         issuer.setTextContent(this.issuer);
@@ -278,6 +295,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         Element nameId = doc.createElement("NameID");
         nameId.setTextContent(this.subject);
         Element subjectConfirmation = doc.createElement("SubjectConfirmation");
+        Element subjectConfirmationData = doc.createElement("SubjectConfirmationData");
+        subjectConfirmationData.setAttribute("NotOnOrAfter", notOnOrAfterDateTime.toString());
+        subjectConfirmation.appendChild(subjectConfirmationData);
         subject.appendChild(nameId);
         subject.appendChild(subjectConfirmation);
         assertion.appendChild(subject);
@@ -390,6 +410,15 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
             DateTime dt = new DateTime(issuedAtStr);
 
+            Element sc = (Element) (subject.getElementsByTagName("SubjectConfirmation").item(0));
+            Element scd = (Element) (sc.getElementsByTagName("SubjectConfirmationData").item(0));
+            String notOnOrAfterStr = scd.getAttribute("NotOnOrAfter");
+            long lifespan = ACCESS_TOKEN_EXPIRES_MILLISECS;
+            if (notOnOrAfterStr != null && !notOnOrAfterStr.isEmpty()) {
+                DateTime notOnOrAfterDateTime = new DateTime(notOnOrAfterStr);
+                lifespan = notOnOrAfterDateTime.getMillis() - dt.getMillis();
+            }
+
             NodeList audienceList = assertion.getElementsByTagName("Audience");
             Element aud1 = (Element) (audienceList.item(0));
             String target = aud1.getTextContent();
@@ -476,9 +505,8 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
                 }
                 throw new TokenDsigException("Signature failed core validation. unkwnon reason.");
             }
-            return new TransCellAccessToken(id,
-                    dt.getMillis(), issuer.getTextContent(), subjectNameID.getTextContent(),
-                    target, roles, schema);
+            return new TransCellAccessToken(id, dt.getMillis(), lifespan, issuer.getTextContent(),
+                    subjectNameID.getTextContent(), target, roles, schema);
         } catch (UnsupportedEncodingException e) {
             throw new TokenParseException(e.getMessage(), e);
         } catch (SAXException e) {

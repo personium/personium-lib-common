@@ -38,10 +38,6 @@ public final class CellLocalRefreshToken extends LocalToken implements IRefreshT
      * この種類のトークンのプレフィックス.
      */
     public static final String PREFIX_REFRESH = "RA~";
-    /**
-     * トークンの有効時間.
-     */
-    public static final int REFRESH_TOKEN_EXPIRES_HOUR = 24;
 
     /**
      * 明示的な有効期間を設定してトークンを生成する.
@@ -72,7 +68,7 @@ public final class CellLocalRefreshToken extends LocalToken implements IRefreshT
             final String issuer,
             final String subject,
             final String schema) {
-        super(issuedAt, REFRESH_TOKEN_EXPIRES_HOUR * MILLISECS_IN_AN_HOUR, issuer, subject, schema);
+        super(issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema);
     }
 
     /**
@@ -137,7 +133,16 @@ public final class CellLocalRefreshToken extends LocalToken implements IRefreshT
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt,
             final String target, final String cellUrl, List<Role> roleList) {
-        return refreshAccessToken(issuedAt, target, cellUrl, roleList, null);
+        return refreshAccessToken(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, target, cellUrl, roleList, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IAccessToken refreshAccessToken(final long issuedAt, final long lifespan,
+            final String target, final String cellUrl, List<Role> roleList) {
+        return refreshAccessToken(issuedAt, lifespan, target, cellUrl, roleList, null);
     }
 
     /**
@@ -146,21 +151,41 @@ public final class CellLocalRefreshToken extends LocalToken implements IRefreshT
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt,
             final String target, final String cellUrl, List<Role> roleList, String schema) {
+        return refreshAccessToken(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, target, cellUrl, roleList, schema);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IAccessToken refreshAccessToken(final long issuedAt, final long lifespan,
+            final String target, final String cellUrl, List<Role> roleList, String schema) {
         if (schema == null) {
             schema = this.getSchema();
         }
         if (target == null) {
-            return new AccountAccessToken(issuedAt, this.issuer, this.getSubject(), schema);
+            return new AccountAccessToken(issuedAt, lifespan, this.issuer, this.getSubject(), schema);
         } else {
             // 自分セルローカル払い出し時に払い出されるリフレッシュトークンにはロール入ってないので取得する。
-            return new TransCellAccessToken(issuedAt, this.issuer, cellUrl + "#" + this.getSubject(),
+            return new TransCellAccessToken(issuedAt, lifespan, this.issuer, cellUrl + "#" + this.getSubject(),
                     target, roleList, schema);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IRefreshToken refreshRefreshToken(final long issuedAt) {
-        return new CellLocalRefreshToken(issuedAt, this.issuer, this.subject, this.schema);
+        return refreshRefreshToken(issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
+        return new CellLocalRefreshToken(issuedAt, lifespan, this.issuer, this.subject, this.schema);
     }
 
 }

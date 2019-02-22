@@ -46,6 +46,16 @@ public abstract class AbstractOAuth2Token {
      * 一日あたり秒数.
      */
     public static final int SECS_IN_AN_DAY = 24 * 60 * 60;
+
+    /** access token expires hour. */
+    public static final int ACCESS_TOKEN_EXPIRES_HOUR = 1;
+    /** access token expires millisecs. */
+    public static final long ACCESS_TOKEN_EXPIRES_MILLISECS = ACCESS_TOKEN_EXPIRES_HOUR * MILLISECS_IN_AN_HOUR;
+    /** refresh token expires hour.  */
+    public static final int REFRESH_TOKEN_EXPIRES_HOUR = 24;
+    /** refresh token expires millisecs.  */
+    public static final long REFRESH_TOKEN_EXPIRES_MILLISECS = REFRESH_TOKEN_EXPIRES_HOUR * MILLISECS_IN_AN_HOUR;
+
     /**
      * 本パッケージで用いるトークンパース例外クラス.
      */

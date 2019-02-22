@@ -41,10 +41,6 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
      * この種類のトークンのプレフィックス.
      */
     public static final String PREFIX_TC_REFRESH = "RT~";
-    /**
-     * トークンの有効時間.
-     */
-    public static final int REFRESH_TOKEN_EXPIRES_HOUR = 24;
 
     String id;
     String originalIssuer;
@@ -93,10 +89,7 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
             final String origIssuer,
             final List<Role> origRoleList,
             final String schema) {
-        this(id, issuedAt,
-                REFRESH_TOKEN_EXPIRES_HOUR * MILLISECS_IN_AN_HOUR,
-                issuer,
-                subject, origIssuer, origRoleList, schema);
+        this(id, issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS, issuer, subject, origIssuer, origRoleList, schema);
     }
 
     /**
@@ -178,7 +171,16 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
      */
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt, final String target, String url, List<Role> role) {
-        return refreshAccessToken(issuedAt, target, url, role, null);
+        return refreshAccessToken(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, target, url, role, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IAccessToken refreshAccessToken(final long issuedAt, final long lifespan, final String target, String url,
+            List<Role> role) {
+        return refreshAccessToken(issuedAt, lifespan, target, url, role, null);
     }
 
     /**
@@ -187,20 +189,41 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt, final String target, String url, List<Role> role,
             String schema) {
+        return refreshAccessToken(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, target, url, role, schema);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IAccessToken refreshAccessToken(final long issuedAt, final long lifespan, final String target, String url,
+            List<Role> role, String schema) {
         if (schema == null) {
             schema = this.getSchema();
         }
         if (target == null) {
-            return new CellLocalAccessToken(issuedAt, url, this.getSubject(), role, schema);
+            return new CellLocalAccessToken(issuedAt, lifespan, url, this.getSubject(), role, schema);
         } else {
-            return new TransCellAccessToken(issuedAt, url, this.getSubject(), target, role, schema);
+            return new TransCellAccessToken(issuedAt, lifespan, url, this.getSubject(), target, role, schema);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IRefreshToken refreshRefreshToken(final long issuedAt) {
         // TODO 本当は ROLEは再度読み直すべき。
-        return new TransCellRefreshToken(UUID.randomUUID().toString(), issuedAt, this.issuer, this.subject,
+        return refreshRefreshToken(issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
+        // TODO 本当は ROLEは再度読み直すべき。
+        return new TransCellRefreshToken(UUID.randomUUID().toString(), issuedAt, lifespan, this.issuer, this.subject,
                 this.originalIssuer, this.getRoles(), this.schema);
     }
 
