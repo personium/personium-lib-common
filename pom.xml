@@ -15,8 +15,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <final.name>personium-lib-common</final.name>
         <java.version>1.8</java.version>
-        <jvm.option>-Xms512m -Xmx512m -XX:MaxPermSize=256m -XX:-UseSplitVerifier</jvm.option>
         <logback.version>1.2.3</logback.version>
+        <jacoco.include.package>io.personium.*</jacoco.include.package>
     </properties>
     <repositories>
         <repository>
@@ -75,7 +75,14 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.21.0</version>
                 <configuration>
-                    <argLine>${jvm.option}</argLine>
+                    <argLine>${jacocoArgs} -Xms512m -Xmx512m</argLine>
+                    <!--
+                    <excludes>
+                        <exclude>**/jersey/box/ServiceRelayTest.java</exclude>
+                        <exclude>**/jersey/AcceptEncodingTest.java</exclude>
+                        <exclude>**/performance/**/*Test.java</exclude>
+                    </excludes>
+                    -->
                 </configuration>
             </plugin>
             <plugin>
@@ -144,6 +151,26 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.1</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <propertyName>jacocoArgs</propertyName>
+                            <includes>
+                                <include>${jacoco.include.package}</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -170,17 +197,6 @@
                         </reports>
                     </reportSet>
                 </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <formats>
-                        <format>xml</format>
-                        <format>html</format>
-                    </formats>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -229,6 +245,11 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>javancss-maven-plugin</artifactId>
                 <version>2.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.1</version>
             </plugin>
         </plugins>
     </reporting>
