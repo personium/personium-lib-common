@@ -40,7 +40,7 @@ public enum PersoniumThread {
     /**
      * Constructor.
      */
-    private PersoniumThread() {
+    PersoniumThread() {
     }
 
     /**

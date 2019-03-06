@@ -38,6 +38,7 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
      * トークンのプレフィックス.
      */
     public static final String PREFIX_ACCESS = "AL~";
+    /** prefix of code. */
     public static final String PREFIX_CODE = "GC~";
     private static final String SEPARATOR = "\t";
 
@@ -63,17 +64,17 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
     public static final int CODE_EXPIRES = 10 * 60 * 1000; // 10 minuts
 
     /** Used to create code string. */
-    protected String scope;
+    private String scope;
 
     /**
      * Constructor for generating code.
-     * @param issuedAt
-     * @param lifespan
-     * @param issuer
-     * @param subject
-     * @param roleList
-     * @param schema
-     * @param scope
+     * @param issuedAt issuedAt
+     * @param lifespan lifespan
+     * @param issuer issuer
+     * @param subject subject
+     * @param roleList roleList
+     * @param schema schema
+     * @param scope scope
      */
     public CellLocalAccessToken(final long issuedAt,
             final long lifespan,
@@ -143,6 +144,10 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         return ret.toString();
     }
 
+    /**
+     * Create code string and return.
+     * @return code string
+     */
     public String toCodeString() {
         StringBuilder ret = new StringBuilder(PREFIX_CODE);
         ret.append(doCreateCodeString(new String[] {this.makeRolesString()}));
@@ -217,11 +222,11 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
     }
 
     /**
-     *
-     * @param code
-     * @param issuer
-     * @return
-     * @throws AbstractOAuth2Token.TokenParseException
+     * Parse code string to token.
+     * @param code code string
+     * @param issuer issuer
+     * @return Parsed token
+     * @throws AbstractOAuth2Token.TokenParseException parse error
      */
     public static CellLocalAccessToken parseCode(String code, String issuer)
             throws AbstractOAuth2Token.TokenParseException {

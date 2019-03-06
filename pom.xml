@@ -76,13 +76,6 @@
                 <version>2.21.0</version>
                 <configuration>
                     <argLine>${jacocoArgs} -Xms512m -Xmx512m</argLine>
-                    <!--
-                    <excludes>
-                        <exclude>**/jersey/box/ServiceRelayTest.java</exclude>
-                        <exclude>**/jersey/AcceptEncodingTest.java</exclude>
-                        <exclude>**/performance/**/*Test.java</exclude>
-                    </excludes>
-                    -->
                 </configuration>
             </plugin>
             <plugin>
@@ -100,7 +93,6 @@
                     <propertiesLocation>checkstyle_maven.properties</propertiesLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <consoleOutput>true</consoleOutput>
-                    <excludes>**/logging/rolling/PersoniumFixedWindowRollingPolicy.java</excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -111,16 +103,6 @@
                     <locales>ja</locales>
                     <inputEncoding>UTF-8</inputEncoding>
                     <outputEncoding>UTF-8</outputEncoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.5</version>
-                <configuration>
-                    <effort>Max</effort>
-                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-                    <xmlOutput>true</xmlOutput>
                 </configuration>
             </plugin>
             <plugin>
@@ -144,7 +126,6 @@
                         <exclude>checkstyle_maven.properties</exclude>
                         <exclude>checkstyle-suppressions.xml</exclude>
                         <exclude>personium-checkstyle.xml</exclude>
-                        <exclude>findbugs-exclude.xml</exclude>
                         <exclude>pom.xml</exclude>
                         <exclude>**/x509/**</exclude>
                         <exclude>LICENSE.txt</exclude>
@@ -214,18 +195,6 @@
                         </reports>
                     </reportSet>
                 </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.5</version>
-                <configuration>
-                    <effort>Max</effort>
-                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-                    <findbugsXmlOutput>true</findbugsXmlOutput>
-                    <xmlOutput>true</xmlOutput>
-                    <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
