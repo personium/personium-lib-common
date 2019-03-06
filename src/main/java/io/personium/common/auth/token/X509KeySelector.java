@@ -132,8 +132,8 @@ public class X509KeySelector extends KeySelector {
      * @param algName
      */
     static boolean algEquals(final String algURI, final String algName) {
-        return  ((algName.equalsIgnoreCase("DSA") && algURI.equalsIgnoreCase(SignatureMethod.DSA_SHA1))
-                || (algName.equalsIgnoreCase("RSA") && algURI.equalsIgnoreCase(SignatureMethod.RSA_SHA1)));
+        return  ((algName.equalsIgnoreCase("DSA") && algURI.equalsIgnoreCase(SignatureMethod.DSA_SHA1)) //NOPMD
+                || (algName.equalsIgnoreCase("RSA") && algURI.equalsIgnoreCase(SignatureMethod.RSA_SHA1))); //NOPMD
     }
 
     /**
