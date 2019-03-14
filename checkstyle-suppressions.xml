@@ -7,6 +7,7 @@
 <suppressions>
   <suppress checks="." files="net[\\/]oauth[\\/]"/>
   <suppress checks="." files="CipherInputStream\.java"/>
+  <suppress checks="." files="PersoniumFixedWindowRollingPolicy\.java"/>
   <suppress checks="MethodName" files=".*Test\.java"/>
   <suppress checks="MagicNumber" files=".*Test\.java"/>
   <suppress checks="JavadocPackage" files="[\\/]test[\\/]"/>

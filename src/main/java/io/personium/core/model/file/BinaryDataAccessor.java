@@ -273,7 +273,7 @@ public class BinaryDataAccessor {
             }
         } else if (outputStream instanceof FilterOutputStream) {
             // FilterOutputStream の場合には、"out"field から FileOutputStream を取り出してfsyncする
-            fsyncIfFileOutputStream(getInternalOutputStream(((FilterOutputStream) outputStream)));
+            fsyncIfFileOutputStream(getInternalOutputStream((FilterOutputStream) outputStream));
         }
     }
 
