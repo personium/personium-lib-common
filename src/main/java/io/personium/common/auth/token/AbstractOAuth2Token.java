@@ -270,6 +270,8 @@ public abstract class AbstractOAuth2Token {
             throws TokenParseException, TokenDsigException, TokenRootCrtException {
         if (token.startsWith(AccountAccessToken.PREFIX_ACCESS)) {
             return AccountAccessToken.parse(token, issuer);
+        } else if (token.startsWith(PasswordChangeAccessToken.PREFIX_ACCESS)) {
+            return PasswordChangeAccessToken.parse(token, issuer);
         } else if (token.startsWith(CellLocalAccessToken.PREFIX_ACCESS)) {
             return CellLocalAccessToken.parse(token, issuer);
         } else if (token.startsWith(CellLocalRefreshToken.PREFIX_REFRESH)) {
