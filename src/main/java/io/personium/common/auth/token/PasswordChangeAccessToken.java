@@ -61,7 +61,8 @@ public final class PasswordChangeAccessToken extends CellLocalAccessToken implem
      * @param subject Subject
      * @param schema Schema
      */
-    public PasswordChangeAccessToken(final long issuedAt, final String issuer, final String subject, final String schema) {
+    public PasswordChangeAccessToken(final long issuedAt, final String issuer, final String subject,
+            final String schema) {
         this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema);
     }
 
