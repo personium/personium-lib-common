@@ -18,7 +18,6 @@ package io.personium.common.auth.token;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -37,19 +36,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
  * Unit Test class for CellLocalRefreshToken.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransCellRefreshToken.class})
+@PrepareForTest({VisitorRefreshToken.class})
 @PowerMockIgnore({ "javax.xml.crypto.dsig.*", "javax.security.auth.*" })
 public class TransCellRefreshTokenTest {
 
     /** Target class of unit test. */
-    private TransCellRefreshToken transCellRefreshToken;
+    private VisitorRefreshToken transCellRefreshToken;
 
     /**
      * Before.
      */
     @Before
     public void befor() {
-        transCellRefreshToken = PowerMockito.spy(new TransCellRefreshToken(null, null, null, null, null, null));
+        transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(null, null, null, null, null, null));
     }
 
     /**
@@ -71,15 +70,14 @@ public class TransCellRefreshTokenTest {
         // --------------------
         // Mock settings
         // --------------------
-        IAccessToken ret = new AccountAccessToken(1L, null, null, null);
+        IAccessToken ret = new AccountAccessToken(1L, null, null, null, null);
         ArgumentCaptor<Long> issuedAtCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> targetCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> cellUrlCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<List> roleListCaptor = ArgumentCaptor.forClass(List.class);
-        ArgumentCaptor<String> schemaCaptor = ArgumentCaptor.forClass(String.class);
         PowerMockito.doReturn(ret).when(transCellRefreshToken).refreshAccessToken(
                 issuedAtCaptor.capture(), targetCaptor.capture(), cellUrlCaptor.capture(),
-                roleListCaptor.capture(), schemaCaptor.capture());
+                roleListCaptor.capture());
 
         // --------------------
         // Expected result
@@ -98,7 +96,6 @@ public class TransCellRefreshTokenTest {
         assertThat(targetCaptor.getValue(), is(target));
         assertThat(cellUrlCaptor.getValue(), is(cellUrl));
         assertThat(roleListCaptor.getValue(), is(roleList));
-        assertNull(schemaCaptor.getValue());
     }
 
     /**
@@ -108,7 +105,7 @@ public class TransCellRefreshTokenTest {
      */
     @Test
     public void refreshAccessToken_Normal_schema_is_null_target_is_null() {
-        transCellRefreshToken = PowerMockito.spy(new TransCellRefreshToken(
+        transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(
                 null, null, "https://personium/subject/", null, null, "https://personium/schema/"));
         // --------------------
         // Test method args
@@ -138,7 +135,7 @@ public class TransCellRefreshTokenTest {
         // --------------------
         // Run method
         // --------------------
-        IAccessToken actual = transCellRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList, schema);
+        IAccessToken actual = transCellRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
 
         // --------------------
         // Confirm result
@@ -160,8 +157,20 @@ public class TransCellRefreshTokenTest {
      */
     @Test
     public void refreshAccessToken_Normal_schema_not_null_target_not_null() throws Exception {
-        transCellRefreshToken = PowerMockito.spy(new TransCellRefreshToken(
-                null, null, "https://personium/subject/", null, null, "https://personium/schema/"));
+        // --------------------
+        // Test method args
+        // --------------------
+        long issuedAt = 1L;
+        String subject = "https://personium/subject/";
+        String target = "https://personium/targetcell/";
+        String cellUrl = "https://personium/testcell02/";
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role("roleName");
+        roleList.add(role);
+        String schema = "https://personium/appcell/";
+
+        transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(
+                null, null, subject, null, null, schema));
 
         // X509 settings.
         String folderPath = "x509/effective/";
@@ -171,16 +180,6 @@ public class TransCellRefreshTokenTest {
         rootCertificateFileNames[0] = ClassLoader.getSystemResource(folderPath + "cacert.crt").getPath();
         TransCellAccessToken.configureX509(privateKeyFileName, certificateFileName, rootCertificateFileNames);
 
-        // --------------------
-        // Test method args
-        // --------------------
-        long issuedAt = 1L;
-        String target = "https://personium/targetcell/";
-        String cellUrl = "https://personium/testcell02/";
-        List<Role> roleList = new ArrayList<>();
-        Role role = new Role("roleName");
-        roleList.add(role);
-        String schema = "https://personium/appcell/";
 
         // --------------------
         // Mock settings
@@ -192,15 +191,15 @@ public class TransCellRefreshTokenTest {
         // --------------------
         Long expectedIssuedAt = issuedAt;
         String expectedIssuer = cellUrl;
-        String expectedSubject = "https://personium/subject/";
         String expectedTarget = target;
         List<Role> expectedRoleList = roleList;
         String expectedSchema = schema;
+        String expectedSubject = subject;
 
         // --------------------
         // Run method
         // --------------------
-        IAccessToken actual = transCellRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList, schema);
+        IAccessToken actual = transCellRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
 
         // --------------------
         // Confirm result

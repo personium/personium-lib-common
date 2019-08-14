@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2019 Personium Project
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ import java.util.List;
 
 
 /**
- *  Interface class of OAuth2.0 refresh token used by Personium.
+ * Interface class of OAuth2.0 refresh token used by Personium.
  */
 public interface IRefreshToken {
     /**
@@ -70,30 +71,6 @@ public interface IRefreshToken {
     IAccessToken refreshAccessToken(long issuedAt, long lifespan, String target, String cellUrl,
             List<Role> roleList);
 
-    /**
-     * Refresh to new Access Token with old refresh token.
-     * @param issuedAt Issued time stamp
-     * @param target Target cell URL
-     * @param cellUrl Issuer cell URL
-     * @param roleList List of roles
-     * @param schema Schema URI
-     * @return Access token
-     */
-    IAccessToken refreshAccessToken(long issuedAt, String target, String cellUrl,
-            List<Role> roleList, String schema);
-
-    /**
-     * Refresh to new Access Token with old refresh token.
-     * @param issuedAt Issued time stamp
-     * @param lifespan token lifespan
-     * @param target Target cell URL
-     * @param cellUrl Issuer cell URL
-     * @param roleList List of roles
-     * @param schema Schema URI
-     * @return Access token
-     */
-    IAccessToken refreshAccessToken(long issuedAt, long lifespan, String target, String cellUrl,
-            List<Role> roleList, String schema);
 
     /**
      * Refresh to new Refresh Token with old refresh token.

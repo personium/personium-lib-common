@@ -18,7 +18,6 @@ package io.personium.common.auth.token;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -48,8 +47,8 @@ public class CellLocalRefreshTokenTest {
      * Before.
      */
     @Before
-    public void befor() {
-        cellLocalRefreshToken = PowerMockito.spy(new CellLocalRefreshToken(null, null, null));
+    public void before() {
+        cellLocalRefreshToken = PowerMockito.spy(new CellLocalRefreshToken(null, null, null, null));
     }
 
     /**
@@ -71,15 +70,14 @@ public class CellLocalRefreshTokenTest {
         // --------------------
         // Mock settings
         // --------------------
-        IAccessToken ret = new AccountAccessToken(1L, null, null, null);
+        IAccessToken ret = new AccountAccessToken(1L, null, null, null, null);
         ArgumentCaptor<Long> issuedAtCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> targetCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> cellUrlCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<List> roleListCaptor = ArgumentCaptor.forClass(List.class);
-        ArgumentCaptor<String> schemaCaptor = ArgumentCaptor.forClass(String.class);
         PowerMockito.doReturn(ret).when(cellLocalRefreshToken).refreshAccessToken(
                 issuedAtCaptor.capture(), targetCaptor.capture(), cellUrlCaptor.capture(),
-                roleListCaptor.capture(), schemaCaptor.capture());
+                roleListCaptor.capture());
 
         // --------------------
         // Expected result
@@ -98,7 +96,6 @@ public class CellLocalRefreshTokenTest {
         assertThat(targetCaptor.getValue(), is(target));
         assertThat(cellUrlCaptor.getValue(), is(cellUrl));
         assertThat(roleListCaptor.getValue(), is(roleList));
-        assertNull(schemaCaptor.getValue());
     }
 
     /**
@@ -109,7 +106,7 @@ public class CellLocalRefreshTokenTest {
     @Test
     public void refreshAccessToken_Normal_schema_is_null_target_is_null() {
         cellLocalRefreshToken = PowerMockito.spy(new CellLocalRefreshToken(
-                "https://personium/issuer/", "https://personium/subject/", "https://personium/schema/"));
+                "https://personium/issuer/", "https://personium/subject/", "https://personium/schema/", "scope"));
         // --------------------
         // Test method args
         // --------------------
@@ -137,7 +134,7 @@ public class CellLocalRefreshTokenTest {
         // --------------------
         // Run method
         // --------------------
-        IAccessToken actual = cellLocalRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList, schema);
+        IAccessToken actual = cellLocalRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
 
         // --------------------
         // Confirm result
@@ -158,8 +155,9 @@ public class CellLocalRefreshTokenTest {
      */
     @Test
     public void refreshAccessToken_Normal_schema_not_null_target_not_null() throws Exception {
+        String schema = "https://personium/schema/";
         cellLocalRefreshToken = PowerMockito.spy(new CellLocalRefreshToken(
-                "https://personium/issuer/", "https://personium/subject/", "https://personium/schema/"));
+                "https://personium/issuer/", "https://personium/subject/", schema, "scope"));
 
         // X509 settings.
         String folderPath = "x509/effective/";
@@ -178,7 +176,6 @@ public class CellLocalRefreshTokenTest {
         List<Role> roleList = new ArrayList<>();
         Role role = new Role("roleName");
         roleList.add(role);
-        String schema = "https://personium/appcell/";
 
         // --------------------
         // Mock settings
@@ -198,7 +195,7 @@ public class CellLocalRefreshTokenTest {
         // --------------------
         // Run method
         // --------------------
-        IAccessToken actual = cellLocalRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList, schema);
+        IAccessToken actual = cellLocalRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
 
         // --------------------
         // Confirm result

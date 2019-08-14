@@ -20,24 +20,25 @@ import java.util.List;
 
 
 /**
- *  他人セルで発行されたロール情報とその他人セルのURLを保持するトークン.
+ *  interface of access token issued by a cell that the subject does not belong to and is visiting.
  */
-public interface IExtRoleContainingToken extends IAccessToken {
+public interface IExtRoleContainingToken {
     /**
-     * 他人セルURLを返します.
-     * @return 他人セルURL
+     * returns the URL of the visiting cell.
+     * TODO what is the difference from the issuer?
+     * @return visiting cell URL
      */
     String getExtCellUrl();
 
-    /**
-     * トークンのアクセス主体を返す.
-     * @return トークンのアクセス主体
-     */
+    String getIssuer();
+
     String getSubject();
 
+
+
     /**
-     * 他人セルで発行されたロール情報のリストを返します.
-     * @return 他人セルで発行されたロール情報のリスト
+     * returns a list of roles assigned at visiting cell (issuer cell).
+     * @return List of roles assigned at visiting cell
      */
     List<Role> getRoleList();
 }

@@ -1,6 +1,8 @@
 /**
- * personium.io
- * Copyright 2014-2018 FUJITSU LIMITED
+ * Personium
+ * Copyright 2019 Personium Project
+ * - FUJITSU LIMITED
+ * - (Add Authors here)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +29,7 @@ import java.util.Map;
 
 
 /**
- * 本パッケージ内で定義する様々なTokenクラスの基底抽象クラス.
+ * base abstract class for various Token classes defined in this package.
  */
 public abstract class AbstractOAuth2Token {
     /**
@@ -57,28 +59,28 @@ public abstract class AbstractOAuth2Token {
     public static final long REFRESH_TOKEN_EXPIRES_MILLISECS = REFRESH_TOKEN_EXPIRES_HOUR * MILLISECS_IN_AN_HOUR;
 
     /**
-     * 本パッケージで用いるトークンパース例外クラス.
+     * Token parse Exception class.
      */
     @SuppressWarnings("serial")
     public static class TokenParseException extends Exception {
         /**
-         * コンストラクタ.
-         * @param msg メッセージ
+         * Constructor.
+         * @param msg message
          */
         public TokenParseException(final String msg) {
             super(msg);
         }
         /**
-         * コンストラクタ.
-         * @param e 原因 Throwable
+         * Constructor.
+         * @param e cause Throwable
          */
         public TokenParseException(final Throwable e) {
             super(e);
         }
         /**
-         * コンストラクタ.
-         * @param msg メッセージ
-         * @param e 原因 Throwable
+         * Constructor.
+         * @param msg message
+         * @param e cause Throwable
          */
         public TokenParseException(final String msg, final Throwable e) {
             super(msg, e);
@@ -90,23 +92,23 @@ public abstract class AbstractOAuth2Token {
     @SuppressWarnings("serial")
     public static class TokenDsigException extends Exception {
         /**
-         * コンストラクタ.
-         * @param msg メッセージ
+         * Constructor.
+         * @param msg message
          */
         public TokenDsigException(final String msg) {
             super(msg);
         }
         /**
-         * コンストラクタ.
-         * @param e 原因 Throwable
+         * Constructor.
+         * @param e cause Throwable
          */
         public TokenDsigException(final Throwable e) {
             super(e);
         }
         /**
-         * コンストラクタ.
-         * @param msg メッセージ
-         * @param e 原因 Throwable
+         * Constructor.
+         * @param msg message
+         * @param e cause Throwable
          */
         public TokenDsigException(final String msg, final Throwable e) {
             super(msg, e);
@@ -118,23 +120,23 @@ public abstract class AbstractOAuth2Token {
     @SuppressWarnings("serial")
     public static class TokenRootCrtException extends Exception {
         /**
-         * コンストラクタ.
-         * @param msg メッセージ
+         * Constructor.
+         * @param msg message
          */
         public TokenRootCrtException(final String msg) {
             super(msg);
         }
         /**
-         * コンストラクタ.
-         * @param e 原因 Throwable
+         * Constructor.
+         * @param e cause Throwable
          */
         public TokenRootCrtException(final Throwable e) {
             super(e);
         }
         /**
-         * コンストラクタ.
-         * @param msg メッセージ
-         * @param e 原因 Throwable
+         * Constructor.
+         * @param msg message
+         * @param e cause Throwable
          */
         public TokenRootCrtException(final String msg, final Throwable e) {
             super(msg, e);
@@ -147,17 +149,18 @@ public abstract class AbstractOAuth2Token {
     String subject;
     String schema;
     List<Role> roleList = new ArrayList<Role>();
+    String scope;
 
     /**
-     * トークンの発行者 CELL URLを返します.
-     * @return トークンの発行者URL
+     * returns Token Issuer URL.
+     * @return Token Issuer URL
      */
     public final String getIssuer() {
         return this.issuer;
     }
 
     /**
-     * トークンが表す Subject (アクセス主体) のURLを返します.
+     * returns Token Subject URL.
      * @return Subject URL
      */
     public final String getSubject() {
@@ -165,7 +168,7 @@ public abstract class AbstractOAuth2Token {
     }
 
     /**
-     * スキーマURLを返します.
+     * returns schema URL.
      * @return Schema Url
      */
     public final String getSchema() {
@@ -173,8 +176,15 @@ public abstract class AbstractOAuth2Token {
     }
 
     /**
-     * ロールリストを返します.
-     * @return ロールリスト
+     * Get scope.
+     * @return scope
+     */
+    public String getScope() {
+        return this.scope;
+    }
+    /**
+     * returns Role List.
+     * @return Role list
      */
     public final List<Role> getRoles() {
         return this.roleList;
@@ -276,12 +286,12 @@ public abstract class AbstractOAuth2Token {
             return CellLocalAccessToken.parse(token, issuer);
         } else if (token.startsWith(CellLocalRefreshToken.PREFIX_REFRESH)) {
             return CellLocalRefreshToken.parse(token, issuer);
-        } else if (token.startsWith(TransCellRefreshToken.PREFIX_TC_REFRESH)) {
-            return TransCellRefreshToken.parse(token, issuer);
+        } else if (token.startsWith(VisitorRefreshToken.PREFIX_TC_REFRESH)) {
+            return VisitorRefreshToken.parse(token, issuer);
         } else if (token.startsWith(UnitLocalUnitUserToken.PREFIX_UNIT_LOCAL_UNIT_USER)) {
             return UnitLocalUnitUserToken.parse(token, host);
-        } else if (token.startsWith(CellLocalAccessToken.PREFIX_CODE)) {
-            return CellLocalAccessToken.parseCode(token, issuer);
+        } else if (token.startsWith(GrantCode.PREFIX_CODE)) {
+            return GrantCode.parse(token, issuer);
         } else {
             return TransCellAccessToken.parse(token);
         }
@@ -299,5 +309,4 @@ public abstract class AbstractOAuth2Token {
         }
         return map.toString();
     }
-
 }

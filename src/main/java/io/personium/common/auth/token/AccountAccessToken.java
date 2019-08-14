@@ -1,6 +1,8 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2019 Personium Project
+ *  - Fujitsu Ltd.
+ *  - (Add authors here)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +18,37 @@
  */
 package io.personium.common.auth.token;
 
-import org.apache.commons.lang.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Account Access Token の生成・パースを行うクラス.
  */
-public final class AccountAccessToken extends CellLocalAccessToken implements IAccessToken {
+public final class AccountAccessToken extends AbstractLocalAccessToken implements IAccessToken {
 
     /**
-     * ログ.
+     * Logger.
      */
     static Logger log = LoggerFactory.getLogger(AccountAccessToken.class);
 
     /**
-     * トークンのPREFIX文字列.
+     * Token PREFIX String.
      */
     public static final String PREFIX_ACCESS = "AA~";
 
-    static final int IDX_COUNT = 5;
-    static final int IDX_ISSUED_AT = 0;
-    static final int IDX_LIFESPAN = 1;
-    static final int IDX_ISSUER = 4;
-    static final int IDX_SUBJECT = 2;
-    static final int IDX_SCHEMA = 3;
+    /**
+     * Token Type String.
+     */
+    @Override
+    int getType() {
+        return AbstractLocalToken.Type.AccessToken.SELF_LOCAL;
+    }
+
+
+    public AccountAccessToken() {
+    }
+
 
     /**
      * 明示的な有効期間を設定してトークンを生成する.
@@ -51,8 +59,8 @@ public final class AccountAccessToken extends CellLocalAccessToken implements IA
      * @param schema Schema
      */
     public AccountAccessToken(final long issuedAt, final long lifespan, final String issuer,
-            final String subject, final String schema) {
-        super(issuedAt, lifespan, issuer, subject, null, schema);
+            final String subject, final String schema, String scope) {
+        super(issuedAt, lifespan, issuer, subject, schema, scope);
     }
 
     /**
@@ -62,8 +70,8 @@ public final class AccountAccessToken extends CellLocalAccessToken implements IA
      * @param subject Subject
      * @param schema Schema
      */
-    public AccountAccessToken(final long issuedAt, final String issuer, final String subject, final String schema) {
-        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema);
+    public AccountAccessToken(final long issuedAt, final String issuer, final String subject, final String schema, String scope) {
+        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scope);
     }
 
     @Override
@@ -85,18 +93,21 @@ public final class AccountAccessToken extends CellLocalAccessToken implements IA
         if (!token.startsWith(PREFIX_ACCESS) || issuer == null) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
-        String[] frag = LocalToken.doParse(token.substring(PREFIX_ACCESS.length()), issuer, IDX_COUNT);
+        AccountAccessToken ret = new AccountAccessToken();
+        ret.populate(token.substring(PREFIX_ACCESS.length()), issuer, 0);
+        return ret;
 
-        try {
-            AccountAccessToken ret = new AccountAccessToken(
-                    Long.valueOf(StringUtils.reverse(frag[IDX_ISSUED_AT])),
-                    Long.valueOf(frag[IDX_LIFESPAN]),
-                    frag[IDX_ISSUER],
-                    frag[IDX_SUBJECT],
-                    frag[IDX_SCHEMA]);
-            return ret;
-        } catch (Exception e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        }
+    }
+
+
+    @Override
+    public String getId() {
+        return this.issuer + ":" + this.issuedAt;
+    }
+
+
+    @Override
+    public String getTarget() {
+        return this.issuer;
     }
 }

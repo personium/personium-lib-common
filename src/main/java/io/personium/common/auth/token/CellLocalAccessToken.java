@@ -19,7 +19,6 @@ package io.personium.common.auth.token;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,44 +26,34 @@ import org.slf4j.LoggerFactory;
 /**
  * Cell Local Token の生成・パースを行うクラス.
  */
-public class CellLocalAccessToken extends LocalToken implements IAccessToken {
+public class CellLocalAccessToken extends AbstractLocalAccessToken implements IAccessToken, IExtRoleContainingToken {
 
     /**
-     * ログ.
+     * Logger.
      */
     static Logger log = LoggerFactory.getLogger(CellLocalAccessToken.class);
 
     /**
-     * トークンのプレフィックス.
+     * Token Prefix.
      */
     public static final String PREFIX_ACCESS = "AL~";
-    /** prefix of code. */
-    public static final String PREFIX_CODE = "GC~";
-    private static final String SEPARATOR = "\t";
 
-    private static final int IDX_COUNT = 6;
-    private static final int IDX_ISSUED_AT = 0;
-    private static final int IDX_LIFESPAN = 1;
-    private static final int IDX_SUBJECT = 2;
-    private static final int IDX_SCHEMA = 3;
-    private static final int IDX_ROLE_LIST = 4;
-    private static final int IDX_ISSUER = 5;
+    /**
+     * Token Type String.
+     */
+    @Override
+    int getType() {
+        return AbstractLocalToken.Type.AccessToken.VISITOR_LOCAL;
+    }
 
-    private static final int IDX_CODE_COUNT = 8;
-    private static final int IDX_CODE_ISSUED_AT = 0;
-    // private static final int IDX_CODE_DUMMY_CODE_STR = 1;
-    private static final int IDX_CODE_LIFESPAN = 2;
-    private static final int IDX_CODE_SUBJECT = 3;
-    private static final int IDX_CODE_SCHEMA = 4;
-    private static final int IDX_CODE_ROLE_LIST = 5;
-    private static final int IDX_CODE_SCOPE = 6;
-    private static final int IDX_CODE_ISSUER = 7;
 
-    /** Code valid time (ms). */
-    public static final int CODE_EXPIRES = 10 * 60 * 1000; // 10 minuts
+    private static final int IDX_ROLE_LIST = 5;
 
-    /** Used to create code string. */
-    private String scope;
+    private static final int COUNT_IDX = 6;
+
+
+    public CellLocalAccessToken() {
+    };
 
     /**
      * Constructor for generating code.
@@ -83,11 +72,10 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
             final List<Role> roleList,
             final String schema,
             final String scope) {
-        super(issuedAt, lifespan, issuer, subject, schema);
+        super(issuedAt, lifespan, issuer, subject, schema, scope);
         if (roleList != null) {
             this.roleList = roleList;
         }
-        this.scope = scope;
     }
 
     /**
@@ -144,51 +132,6 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         return ret.toString();
     }
 
-    /**
-     * Create code string and return.
-     * @return code string
-     */
-    public String toCodeString() {
-        StringBuilder ret = new StringBuilder(PREFIX_CODE);
-        ret.append(doCreateCodeString(new String[] {this.makeRolesString()}));
-        return ret.toString();
-    }
-
-    String doCreateCodeString(final String[] contents) {
-        StringBuilder raw = new StringBuilder();
-
-        // 発行時刻のEpochからのミリ秒を逆順にした文字列が先頭から入るため、推測しづらい。
-        String iaS = Long.toString(this.issuedAt);
-        String iaSr = StringUtils.reverse(iaS);
-        raw.append(iaSr);
-        raw.append(SEPARATOR);
-
-        raw.append("CODE");
-        raw.append(SEPARATOR);
-
-        raw.append(Long.toString(this.lifespan));
-        raw.append(SEPARATOR);
-        raw.append(this.subject);
-        raw.append(SEPARATOR);
-        if (this.schema != null) {
-            raw.append(this.schema);
-        }
-
-        if (contents != null) {
-            for (String cont : contents) {
-                raw.append(SEPARATOR);
-                if (cont != null) {
-                    raw.append(cont);
-                }
-            }
-        }
-
-        raw.append(SEPARATOR);
-        raw.append(this.scope);
-        raw.append(SEPARATOR);
-        raw.append(this.issuer);
-        return encode(raw.toString(), getIvBytes(issuer));
-    }
 
     /**
      * トークン文字列をissuerで指定されたCellとしてパースする.
@@ -202,56 +145,16 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         if (!token.startsWith(PREFIX_ACCESS) || issuer == null) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
-        String[] frag = LocalToken.doParse(token.substring(PREFIX_ACCESS.length()), issuer, IDX_COUNT);
-
+        CellLocalAccessToken ret = new CellLocalAccessToken();
+        String[] ext = ret.populate(token.substring(PREFIX_ACCESS.length()), issuer, 1);
         try {
-            CellLocalAccessToken ret = new CellLocalAccessToken(
-                    Long.valueOf(StringUtils.reverse(frag[IDX_ISSUED_AT])),
-                    Long.valueOf(frag[IDX_LIFESPAN]),
-                    frag[IDX_ISSUER],
-                    frag[IDX_SUBJECT],
-                    AbstractOAuth2Token.parseRolesString(frag[IDX_ROLE_LIST]),
-                    frag[IDX_SCHEMA]);
-
+            ret.roleList = AbstractOAuth2Token.parseRolesString(ext[0]);
             return ret;
         } catch (MalformedURLException e) {
-            throw new TokenParseException(e.getMessage(), e);
-        } catch (IllegalStateException e) {
             throw new TokenParseException(e.getMessage(), e);
         }
     }
 
-    /**
-     * Parse code string to token.
-     * @param code code string
-     * @param issuer issuer
-     * @return Parsed token
-     * @throws AbstractOAuth2Token.TokenParseException parse error
-     */
-    public static CellLocalAccessToken parseCode(String code, String issuer)
-            throws AbstractOAuth2Token.TokenParseException {
-        if (!code.startsWith(PREFIX_CODE) || issuer == null) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        }
-        String[] frag = LocalToken.doParse(code.substring(PREFIX_CODE.length()), issuer, IDX_CODE_COUNT);
-
-        try {
-            CellLocalAccessToken ret = new CellLocalAccessToken(
-                    Long.valueOf(StringUtils.reverse(frag[IDX_CODE_ISSUED_AT])),
-                    Long.valueOf(frag[IDX_CODE_LIFESPAN]),
-                    frag[IDX_CODE_ISSUER],
-                    frag[IDX_CODE_SUBJECT],
-                    AbstractOAuth2Token.parseRolesString(frag[IDX_CODE_ROLE_LIST]),
-                    frag[IDX_CODE_SCHEMA],
-                    frag[IDX_CODE_SCOPE]);
-
-            return ret;
-        } catch (MalformedURLException e) {
-            throw new TokenParseException(e.getMessage(), e);
-        } catch (IllegalStateException e) {
-            throw new TokenParseException(e.getMessage(), e);
-        }
-    }
 
     @Override
     public String getTarget() {
@@ -263,12 +166,14 @@ public class CellLocalAccessToken extends LocalToken implements IAccessToken {
         return this.subject + ":" + this.issuedAt;
     }
 
-    /**
-     * Get scope.
-     * @return scope
-     */
-    public String getScope() {
-        return this.scope;
+    @Override
+    public String getExtCellUrl() {
+        return this.issuer;
+    }
+
+    @Override
+    public List<Role> getRoleList() {
+        return this.roleList;
     }
 
 }

@@ -77,17 +77,17 @@ import net.oauth.signature.pem.PEMReader;
 import net.oauth.signature.pem.PKCS1EncodedKeySpec;
 
 /**
- * TransCellのAccessTokenを扱うクラス.
+ * TransCellのAccessTokenを扱うclass.
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public final class TransCellAccessToken extends AbstractOAuth2Token implements IExtRoleContainingToken {
+public final class TransCellAccessToken extends AbstractOAuth2Token implements IAccessToken, IExtRoleContainingToken {
 
     private SignedInfo signedInfo;
 
     private static final String URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion";
 
     /**
-     * ログ.
+     * log.
      */
     static Logger log = LoggerFactory.getLogger(TransCellAccessToken.class);
 
@@ -101,7 +101,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     private static PrivateKey privKey;
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param id トークンの一意識別子
      * @param issuedAt 発行時刻(epochからのミリ秒)
      * @param lifespan トークンの有効時間（ミリ秒）
@@ -160,7 +160,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param id トークンの一意識別子
      * @param issuedAt 発行時刻(epochからのミリ秒)
      * @param issuer 発行 Cell URL
@@ -180,7 +180,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param issuer 発行 Cell URL
      * @param subject アクセス主体URL
      * @param target ターゲットURL
@@ -613,6 +613,11 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     @Override
     public List<Role> getRoleList() {
         return this.getRoles();
+    }
+
+    @Override
+    public String getCookieString(String cookiePeer, String issuer) {
+        return null;
     }
 
 }

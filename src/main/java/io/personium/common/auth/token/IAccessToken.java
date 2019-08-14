@@ -1,6 +1,8 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2019 Personium Project
+ *  - FUJITSU LIMITED
+ *  - (Add authors here)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,36 +19,47 @@
 package io.personium.common.auth.token;
 
 /**
- *  DC1で用いるOAuth2.0アクセストークンのインターフェース.
+ * OAuth2.0 Access Token Interface used in Personium.
  */
 public interface IAccessToken {
     /**
-     * トークンの一意識別子を返します.
-     * @return トークンの一意識別子
+     * returns the token's identifier.
+     * @return the token's identifier
      */
     String getId();
-
     /**
-     * アクセストークンのターゲットを返します.
-     * @return ターゲット
+     * returns token subject.
+     * @return token subject
+     */
+    String getSubject();
+    /**
+     * returns access token target.
+     * @return access token target
      */
     String getTarget();
 
     /**
-     * アクセストークンのSCHEMAを返します.
-     * @return SCHEMA URL
+     * returns access token SCHEMA (client id).
+     * @return SCHEMA URL (client id)
      */
     String getSchema();
 
     /**
-     * トークン文字列を返します.
-     * @return トークン文字列
+     * constructs token string.
+     * @return token string
      */
     String toTokenString();
 
     /**
-     * トークン失効までの秒数を返します.
-     * @return 失効までの秒数
+     * constructs p_cookie string.
+     * @param cookiePeer
+     * @return cookie string
+     */
+    String getCookieString(String cookiePeer, String issuer);
+
+    /**
+     * returns the time in seconds till the token expiration.
+     * @return time in seconds till the token expiration
      */
     int expiresIn();
 }
