@@ -165,10 +165,12 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
       final int numFields) throws AbstractOAuth2Token.TokenParseException {
         String tokenDecoded = decode(token, getIvBytes(issuer));
 
-        String[] frag = tokenDecoded.split(SEPARATOR);
+        // need 2nd argument -1 to handle the case where extra frags are empty
+        //
+        String[] frag = tokenDecoded.split(SEPARATOR, -1);
 
         // If wrong format, throw exception
-        if (frag.length != numFields || !issuer.equals(frag[IDX_ISSUER])) {
+        if (!issuer.equals(frag[IDX_ISSUER])) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
 
