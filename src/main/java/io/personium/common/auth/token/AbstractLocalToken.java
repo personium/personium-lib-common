@@ -61,7 +61,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
             public static int PASSWORDCHANGE = 4;
         }
         public static class RefreshToken {
-            public static int SELF = 3;
+            public static int RESIDENT = 3;
             public static int VISITOR = 4;
         }
         public static int GRANT_CODE = 5;

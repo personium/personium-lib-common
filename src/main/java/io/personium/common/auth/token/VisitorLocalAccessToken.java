@@ -26,17 +26,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Cell Local Token の生成・パースを行うクラス.
  */
-public class CellLocalAccessToken extends AbstractLocalAccessToken implements IAccessToken, IExtRoleContainingToken {
+public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements IAccessToken, IExtRoleContainingToken {
 
     /**
      * Logger.
      */
-    static Logger log = LoggerFactory.getLogger(CellLocalAccessToken.class);
+    static Logger log = LoggerFactory.getLogger(VisitorLocalAccessToken.class);
 
     /**
      * Token Prefix.
      */
-    public static final String PREFIX_ACCESS = "AL~";
+    public static final String PREFIX_ACCESS = "AV~";
 
     /**
      * Token Type String.
@@ -52,7 +52,7 @@ public class CellLocalAccessToken extends AbstractLocalAccessToken implements IA
     private static final int COUNT_IDX = 6;
 
 
-    public CellLocalAccessToken() {
+    public VisitorLocalAccessToken() {
     };
 
     /**
@@ -65,7 +65,7 @@ public class CellLocalAccessToken extends AbstractLocalAccessToken implements IA
      * @param schema schema
      * @param scope scope
      */
-    public CellLocalAccessToken(final long issuedAt,
+    public VisitorLocalAccessToken(final long issuedAt,
             final long lifespan,
             final String issuer,
             final String subject,
@@ -87,7 +87,7 @@ public class CellLocalAccessToken extends AbstractLocalAccessToken implements IA
      * @param roleList ロールリスト
      * @param schema クライアント認証されたデータスキーマ
      */
-    public CellLocalAccessToken(final long issuedAt,
+    public VisitorLocalAccessToken(final long issuedAt,
             final long lifespan,
             final String issuer,
             final String subject,
@@ -104,7 +104,7 @@ public class CellLocalAccessToken extends AbstractLocalAccessToken implements IA
      * @param roleList ロールリスト
      * @param schema クライアント認証されたデータスキーマ
      */
-    public CellLocalAccessToken(
+    public VisitorLocalAccessToken(
             final long issuedAt,
             final String issuer,
             final String subject,
@@ -120,7 +120,7 @@ public class CellLocalAccessToken extends AbstractLocalAccessToken implements IA
      * @param roleList ロールリスト
      * @param schema クライアント認証されたデータスキーマ
      */
-    public CellLocalAccessToken(final String issuer, final String subject,
+    public VisitorLocalAccessToken(final String issuer, final String subject,
             final List<Role> roleList, final String schema) {
         this(new DateTime().getMillis(), issuer, subject, roleList, schema);
     }
@@ -140,12 +140,12 @@ public class CellLocalAccessToken extends AbstractLocalAccessToken implements IA
      * @return パースされたCellLocalTokenオブジェクト
      * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
      */
-    public static CellLocalAccessToken parse(final String token, final String issuer)
+    public static VisitorLocalAccessToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {
         if (!token.startsWith(PREFIX_ACCESS) || issuer == null) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
-        CellLocalAccessToken ret = new CellLocalAccessToken();
+        VisitorLocalAccessToken ret = new VisitorLocalAccessToken();
         String[] ext = ret.populate(token.substring(PREFIX_ACCESS.length()), issuer, 1);
         try {
             ret.roleList = AbstractOAuth2Token.parseRolesString(ext[0]);

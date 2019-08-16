@@ -23,19 +23,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Account Access Token の生成・パースを行うクラス.
+ * Class for creating / parsing non-Trans-cell access token issued at and for the account subjects on the local cell.
+ * old name: AccountAccessToken.
  */
-public final class AccountAccessToken extends AbstractLocalAccessToken implements IAccessToken {
+public final class ResidentLocalAccessToken extends AbstractLocalAccessToken implements IAccessToken {
 
     /**
      * Logger.
      */
-    static Logger log = LoggerFactory.getLogger(AccountAccessToken.class);
+    static Logger log = LoggerFactory.getLogger(ResidentLocalAccessToken.class);
 
     /**
      * Token PREFIX String.
      */
-    public static final String PREFIX_ACCESS = "AA~";
+    public static final String PREFIX_ACCESS = "AR~";
 
     /**
      * Token Type String.
@@ -46,7 +47,7 @@ public final class AccountAccessToken extends AbstractLocalAccessToken implement
     }
 
 
-    public AccountAccessToken() {
+    public ResidentLocalAccessToken() {
     }
 
 
@@ -58,7 +59,7 @@ public final class AccountAccessToken extends AbstractLocalAccessToken implement
      * @param subject Subject
      * @param schema Schema
      */
-    public AccountAccessToken(final long issuedAt, final long lifespan, final String issuer,
+    public ResidentLocalAccessToken(final long issuedAt, final long lifespan, final String issuer,
             final String subject, final String schema, String scope) {
         super(issuedAt, lifespan, issuer, subject, schema, scope);
     }
@@ -70,7 +71,7 @@ public final class AccountAccessToken extends AbstractLocalAccessToken implement
      * @param subject Subject
      * @param schema Schema
      */
-    public AccountAccessToken(final long issuedAt, final String issuer, final String subject, final String schema, String scope) {
+    public ResidentLocalAccessToken(final long issuedAt, final String issuer, final String subject, final String schema, String scope) {
         this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scope);
     }
 
@@ -88,12 +89,12 @@ public final class AccountAccessToken extends AbstractLocalAccessToken implement
      * @return パースされたCellLocalTokenオブジェクト
      * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
      */
-    public static AccountAccessToken parse(final String token, final String issuer)
+    public static ResidentLocalAccessToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {
         if (!token.startsWith(PREFIX_ACCESS) || issuer == null) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
-        AccountAccessToken ret = new AccountAccessToken();
+        ResidentLocalAccessToken ret = new ResidentLocalAccessToken();
         ret.populate(token.substring(PREFIX_ACCESS.length()), issuer, 0);
         return ret;
 

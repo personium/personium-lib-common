@@ -65,13 +65,13 @@ public class TokenTest {
     @Test
     public void testAccountAccessToken() {
         String issuer = "http://issuer.example/";
-        AccountAccessToken token = new AccountAccessToken(new Date().getTime(), issuer,
+        ResidentLocalAccessToken token = new ResidentLocalAccessToken(new Date().getTime(), issuer,
                 "http://orig.com/orig/#subj", "http://schema.com/schema", "ROPC");
         String tokenStr = token.toTokenString();
 
-        AccountAccessToken token2 = null;
+        ResidentLocalAccessToken token2 = null;
         try {
-            token2 = AccountAccessToken.parse(tokenStr, issuer);
+            token2 = ResidentLocalAccessToken.parse(tokenStr, issuer);
             assertEquals(tokenStr, token2.toTokenString());
         } catch (AbstractOAuth2Token.TokenParseException e) {
             fail(e.getMessage());
@@ -87,13 +87,13 @@ public class TokenTest {
     public void testSelfRefreshToken() throws MalformedURLException {
         String issuer = "http://receiver.com/rcv";
 
-        CellLocalRefreshToken token = new CellLocalRefreshToken(new Date().getTime(), issuer,
+        ResidentRefreshToken token = new ResidentRefreshToken(new Date().getTime(), issuer,
                 "http://orig.com/orig/#subj",  "http://schema.com/schema", "ROPC");
         String tokenStr = token.toTokenString();
 
-        CellLocalRefreshToken token2 = null;
+        ResidentRefreshToken token2 = null;
         try {
-            token2 = CellLocalRefreshToken.parse(tokenStr, issuer);
+            token2 = ResidentRefreshToken.parse(tokenStr, issuer);
             assertEquals(tokenStr, token2.toTokenString());
         } catch (AbstractOAuth2Token.TokenParseException e) {
             fail(e.getMessage());
@@ -175,13 +175,13 @@ public class TokenTest {
         roleList.add(new Role(new URL(base + "staff")));
         roleList.add(new Role(new URL(base + "doctor")));
 
-        CellLocalAccessToken token = new CellLocalAccessToken("http://hogte.com/", "http://hige.com", roleList,
+        VisitorLocalAccessToken token = new VisitorLocalAccessToken("http://hogte.com/", "http://hige.com", roleList,
                 "http://example.com/schema");
 
         String tokenStr = token.toTokenString();
 
-        CellLocalAccessToken token2 = null;
-            token2 = CellLocalAccessToken.parse(tokenStr, "http://hogte.com/");
+        VisitorLocalAccessToken token2 = null;
+            token2 = VisitorLocalAccessToken.parse(tokenStr, "http://hogte.com/");
             assertEquals(tokenStr, token2.toTokenString());
     }
 }

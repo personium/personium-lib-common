@@ -26,8 +26,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * TransCellTokenで認証したときに発行するリフレッシュトークンを扱うクラス. 生成・パースが基本機能. このトークン自体はRefreshTokenなのでCellをまたぐ納涼は与えていない。
- * あくまで、このトークンを発行したCellがもう一度トークンを発行するのみの用途で用いる。 発行スコープ情報をここでは持っておきたい。
+ * Class to handle refresh token that is issued via Trans Cell Access Token assertion.
  */
 public final class VisitorRefreshToken extends AbstractLocalToken implements IRefreshToken, IExtRoleContainingToken {
 
@@ -39,7 +38,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     /**
      * Token prefix.
      */
-    public static final String PREFIX_TC_REFRESH = "RT~";
+    public static final String PREFIX_TC_REFRESH = "RV~";
 
     /**
      * Token Type String.
@@ -186,7 +185,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     public IAccessToken refreshAccessToken(final long issuedAt, final long lifespan, final String target, String url,
             List<Role> role) {
         if (target == null) {
-            return new CellLocalAccessToken(issuedAt, lifespan, url, this.getSubject(), role, schema);
+            return new VisitorLocalAccessToken(issuedAt, lifespan, url, this.getSubject(), role, schema);
         } else {
             return new TransCellAccessToken(issuedAt, lifespan, url, this.getSubject(), target, role, schema);
         }

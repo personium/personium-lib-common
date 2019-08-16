@@ -143,6 +143,12 @@ public abstract class AbstractOAuth2Token {
         }
     }
 
+    public static class Scope {
+        public static final String ROPC = "ROPC";
+        public static final String ENGINE = "engine";
+        public static final String EMPTY = "";
+    }
+
     long issuedAt;
     long lifespan;
     String issuer;
@@ -278,14 +284,14 @@ public abstract class AbstractOAuth2Token {
      */
     public static AbstractOAuth2Token parse(final String token, final String issuer, final String host)
             throws TokenParseException, TokenDsigException, TokenRootCrtException {
-        if (token.startsWith(AccountAccessToken.PREFIX_ACCESS)) {
-            return AccountAccessToken.parse(token, issuer);
+        if (token.startsWith(ResidentLocalAccessToken.PREFIX_ACCESS)) {
+            return ResidentLocalAccessToken.parse(token, issuer);
         } else if (token.startsWith(PasswordChangeAccessToken.PREFIX_ACCESS)) {
             return PasswordChangeAccessToken.parse(token, issuer);
-        } else if (token.startsWith(CellLocalAccessToken.PREFIX_ACCESS)) {
-            return CellLocalAccessToken.parse(token, issuer);
-        } else if (token.startsWith(CellLocalRefreshToken.PREFIX_REFRESH)) {
-            return CellLocalRefreshToken.parse(token, issuer);
+        } else if (token.startsWith(VisitorLocalAccessToken.PREFIX_ACCESS)) {
+            return VisitorLocalAccessToken.parse(token, issuer);
+        } else if (token.startsWith(ResidentRefreshToken.PREFIX_REFRESH)) {
+            return ResidentRefreshToken.parse(token, issuer);
         } else if (token.startsWith(VisitorRefreshToken.PREFIX_TC_REFRESH)) {
             return VisitorRefreshToken.parse(token, issuer);
         } else if (token.startsWith(UnitLocalUnitUserToken.PREFIX_UNIT_LOCAL_UNIT_USER)) {

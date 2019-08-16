@@ -28,27 +28,27 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for creating and parsing Cell Local Refresh Token.
  */
-public final class CellLocalRefreshToken extends AbstractLocalToken implements IRefreshToken {
+public final class ResidentRefreshToken extends AbstractLocalToken implements IRefreshToken {
 
     /**
      * Logger.
      */
-    static Logger log = LoggerFactory.getLogger(CellLocalRefreshToken.class);
+    static Logger log = LoggerFactory.getLogger(ResidentRefreshToken.class);
 
     /**
      * Token Prefix for this token.
      */
-    public static final String PREFIX_REFRESH = "RA~";
+    public static final String PREFIX_REFRESH = "RR~";
 
     @Override
     int getType() {
-        return AbstractLocalToken.Type.RefreshToken.SELF;
+        return AbstractLocalToken.Type.RefreshToken.RESIDENT;
     }
 
     /**
      * Default Constructor.
      */
-    public CellLocalRefreshToken() {
+    public ResidentRefreshToken() {
     }
 
     /**
@@ -59,7 +59,7 @@ public final class CellLocalRefreshToken extends AbstractLocalToken implements I
      * @param subject アクセス主体URL
      * @param schema クライアント認証されたデータスキーマ
      */
-    public CellLocalRefreshToken(
+    public ResidentRefreshToken(
             final long issuedAt,
             final long lifespan,
             final String issuer,
@@ -76,7 +76,7 @@ public final class CellLocalRefreshToken extends AbstractLocalToken implements I
      * @param subject アクセス主体URL
      * @param schema クライアント認証されたデータスキーマ
      */
-    public CellLocalRefreshToken(
+    public ResidentRefreshToken(
             final long issuedAt,
             final String issuer,
             final String subject,
@@ -92,7 +92,7 @@ public final class CellLocalRefreshToken extends AbstractLocalToken implements I
      * @param subject アクセス主体URL
      * @param schema クライアント認証されたデータスキーマ
      */
-    public CellLocalRefreshToken(final String issuer, final String subject, final String schema, String scope) {
+    public ResidentRefreshToken(final String issuer, final String subject, final String schema, String scope) {
         this(new DateTime().getMillis(), issuer, subject, schema, scope);
     }
 
@@ -110,12 +110,12 @@ public final class CellLocalRefreshToken extends AbstractLocalToken implements I
      * @return パースされたCellLocalTokenオブジェクト
      * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
      */
-    public static CellLocalRefreshToken parse(final String token, final String issuer)
+    public static ResidentRefreshToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {
         if (!token.startsWith(PREFIX_REFRESH) || issuer == null) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
-        CellLocalRefreshToken ret = new CellLocalRefreshToken();
+        ResidentRefreshToken ret = new ResidentRefreshToken();
         ret.populate(token.substring(PREFIX_REFRESH.length()), issuer, 0);
         return ret;
     }
@@ -145,7 +145,7 @@ public final class CellLocalRefreshToken extends AbstractLocalToken implements I
             schema = this.getSchema();
         }
         if (target == null) {
-            return new AccountAccessToken(issuedAt, lifespan, this.issuer, this.getSubject(), schema, scope);
+            return new ResidentLocalAccessToken(issuedAt, lifespan, this.issuer, this.getSubject(), schema, scope);
         } else {
             // 自分セルローカル払い出し時に払い出されるリフレッシュトークンにはロール入ってないので取得する。
             return new TransCellAccessToken(issuedAt, lifespan, this.issuer, cellUrl + "#" + this.getSubject(),
@@ -166,7 +166,7 @@ public final class CellLocalRefreshToken extends AbstractLocalToken implements I
      */
     @Override
     public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
-        return new CellLocalRefreshToken(issuedAt, lifespan, this.issuer, this.subject, this.schema, this.scope);
+        return new ResidentRefreshToken(issuedAt, lifespan, this.issuer, this.subject, this.schema, this.scope);
     }
 
 }

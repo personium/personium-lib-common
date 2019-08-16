@@ -36,19 +36,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
  * Unit Test class for CellLocalRefreshToken.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CellLocalRefreshToken.class})
+@PrepareForTest({VisitorRefreshToken.class})
 @PowerMockIgnore({ "javax.xml.crypto.dsig.*", "javax.security.auth.*" })
-public class CellLocalRefreshTokenTest {
+public class VisitorRefreshTokenTest {
 
     /** Target class of unit test. */
-    private CellLocalRefreshToken cellLocalRefreshToken;
+    private VisitorRefreshToken transCellRefreshToken;
 
     /**
      * Before.
      */
     @Before
-    public void before() {
-        cellLocalRefreshToken = PowerMockito.spy(new CellLocalRefreshToken(null, null, null, null));
+    public void befor() {
+        transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(null, null, null, null, null, null));
     }
 
     /**
@@ -70,12 +70,12 @@ public class CellLocalRefreshTokenTest {
         // --------------------
         // Mock settings
         // --------------------
-        IAccessToken ret = new AccountAccessToken(1L, null, null, null, null);
+        IAccessToken ret = new ResidentLocalAccessToken(1L, null, null, null, null);
         ArgumentCaptor<Long> issuedAtCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> targetCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> cellUrlCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<List> roleListCaptor = ArgumentCaptor.forClass(List.class);
-        PowerMockito.doReturn(ret).when(cellLocalRefreshToken).refreshAccessToken(
+        PowerMockito.doReturn(ret).when(transCellRefreshToken).refreshAccessToken(
                 issuedAtCaptor.capture(), targetCaptor.capture(), cellUrlCaptor.capture(),
                 roleListCaptor.capture());
 
@@ -87,7 +87,7 @@ public class CellLocalRefreshTokenTest {
         // --------------------
         // Run method
         // --------------------
-        cellLocalRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
+        transCellRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
 
         // --------------------
         // Confirm result
@@ -105,8 +105,8 @@ public class CellLocalRefreshTokenTest {
      */
     @Test
     public void refreshAccessToken_Normal_schema_is_null_target_is_null() {
-        cellLocalRefreshToken = PowerMockito.spy(new CellLocalRefreshToken(
-                "https://personium/issuer/", "https://personium/subject/", "https://personium/schema/", "scope"));
+        transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(
+                null, null, "https://personium/subject/", null, null, "https://personium/schema/"));
         // --------------------
         // Test method args
         // --------------------
@@ -127,23 +127,25 @@ public class CellLocalRefreshTokenTest {
         // Expected result
         // --------------------
         Long expectedIssuedAt = issuedAt;
-        String expectedIssuer = "https://personium/issuer/";
+        String expectedIssuer = cellUrl;
         String expectedSubject = "https://personium/subject/";
+        List<Role> expectedRoleList = roleList;
         String expectedSchema = "https://personium/schema/";
 
         // --------------------
         // Run method
         // --------------------
-        IAccessToken actual = cellLocalRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
+        IAccessToken actual = transCellRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
 
         // --------------------
         // Confirm result
         // --------------------
-        assertThat(actual, instanceOf(AccountAccessToken.class));
-        AccountAccessToken castActual = (AccountAccessToken) actual;
+        assertThat(actual, instanceOf(VisitorLocalAccessToken.class));
+        VisitorLocalAccessToken castActual = (VisitorLocalAccessToken) actual;
         assertThat(castActual.issuedAt, is(expectedIssuedAt));
         assertThat(castActual.getIssuer(), is(expectedIssuer));
         assertThat(castActual.getSubject(), is(expectedSubject));
+        assertThat(castActual.getRoles(), is(expectedRoleList));
         assertThat(castActual.getSchema(), is(expectedSchema));
     }
 
@@ -155,9 +157,20 @@ public class CellLocalRefreshTokenTest {
      */
     @Test
     public void refreshAccessToken_Normal_schema_not_null_target_not_null() throws Exception {
-        String schema = "https://personium/schema/";
-        cellLocalRefreshToken = PowerMockito.spy(new CellLocalRefreshToken(
-                "https://personium/issuer/", "https://personium/subject/", schema, "scope"));
+        // --------------------
+        // Test method args
+        // --------------------
+        long issuedAt = 1L;
+        String subject = "https://personium/subject/";
+        String target = "https://personium/targetcell/";
+        String cellUrl = "https://personium/testcell02/";
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role("roleName");
+        roleList.add(role);
+        String schema = "https://personium/appcell/";
+
+        transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(
+                null, null, subject, null, null, schema));
 
         // X509 settings.
         String folderPath = "x509/effective/";
@@ -167,15 +180,6 @@ public class CellLocalRefreshTokenTest {
         rootCertificateFileNames[0] = ClassLoader.getSystemResource(folderPath + "cacert.crt").getPath();
         TransCellAccessToken.configureX509(privateKeyFileName, certificateFileName, rootCertificateFileNames);
 
-        // --------------------
-        // Test method args
-        // --------------------
-        long issuedAt = 1L;
-        String target = "https://personium/targetcell/";
-        String cellUrl = "https://personium/testcell02/";
-        List<Role> roleList = new ArrayList<>();
-        Role role = new Role("roleName");
-        roleList.add(role);
 
         // --------------------
         // Mock settings
@@ -186,16 +190,16 @@ public class CellLocalRefreshTokenTest {
         // Expected result
         // --------------------
         Long expectedIssuedAt = issuedAt;
-        String expectedIssuer = "https://personium/issuer/";
-        String expectedSubject = cellUrl + "#" + "https://personium/subject/";
+        String expectedIssuer = cellUrl;
         String expectedTarget = target;
         List<Role> expectedRoleList = roleList;
         String expectedSchema = schema;
+        String expectedSubject = subject;
 
         // --------------------
         // Run method
         // --------------------
-        IAccessToken actual = cellLocalRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
+        IAccessToken actual = transCellRefreshToken.refreshAccessToken(issuedAt, target, cellUrl, roleList);
 
         // --------------------
         // Confirm result
