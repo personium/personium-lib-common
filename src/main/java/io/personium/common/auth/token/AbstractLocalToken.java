@@ -35,7 +35,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
 
-import io.personium.common.utils.PersoniumCoreUtils;
+import io.personium.common.utils.CommonUtils;
 
 /**
  * abstract base class for classes to handle Cell Local Tokens.
@@ -220,7 +220,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
             cipher.init(Cipher.ENCRYPT_MODE, aesKey, new IvParameterSpec(ivBytes));
             byte[] cipherBytes = cipher.doFinal(in.getBytes(CharEncoding.UTF_8));
-            return PersoniumCoreUtils.encodeBase64Url(cipherBytes);
+            return CommonUtils.encodeBase64Url(cipherBytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -235,7 +235,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      * @throws AbstractOAuth2Token.TokenParseException 例外
      */
     public static String decode(final String in, final byte[] ivBytes) throws AbstractOAuth2Token.TokenParseException {
-        byte[] inBytes = PersoniumCoreUtils.decodeBase64Url(in);
+        byte[] inBytes = CommonUtils.decodeBase64Url(in);
         Cipher cipher;
         try {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);

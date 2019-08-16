@@ -72,7 +72,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import io.personium.common.utils.PersoniumCoreUtils;
+import io.personium.common.utils.CommonUtils;
 import net.oauth.signature.pem.PEMReader;
 import net.oauth.signature.pem.PKCS1EncodedKeySpec;
 
@@ -244,7 +244,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         String samlStr = this.toSamlString();
         try {
             // Base64urlする
-            String token = PersoniumCoreUtils.encodeBase64Url(samlStr.getBytes(CharEncoding.UTF_8));
+            String token = CommonUtils.encodeBase64Url(samlStr.getBytes(CharEncoding.UTF_8));
             return token;
         } catch (UnsupportedEncodingException e) {
             // UTF8が処理できないはずがない。
@@ -353,7 +353,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         try {
             signature.sign(dsc);
             // 文字列化する。
-            return PersoniumCoreUtils.nodeToString(doc.getDocumentElement());
+            return CommonUtils.nodeToString(doc.getDocumentElement());
         } catch (MarshalException e1) {
             // DOMのシリアライズに失敗するのは重大な異常
             throw new RuntimeException(e1);
@@ -387,7 +387,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     public static TransCellAccessToken parse(final String token) throws AbstractOAuth2Token.TokenParseException,
     AbstractOAuth2Token.TokenDsigException, AbstractOAuth2Token.TokenRootCrtException {
         try {
-            byte[] samlBytes = PersoniumCoreUtils.decodeBase64Url(token);
+            byte[] samlBytes = CommonUtils.decodeBase64Url(token);
             ByteArrayInputStream bais = new ByteArrayInputStream(samlBytes);
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
@@ -594,7 +594,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         LdapName ln = new LdapName(dn);
         for (Rdn rdn : ln.getRdns()) {
             if (rdn.getType().equalsIgnoreCase("CN")) {
-                PersoniumCoreUtils.setFQDN(rdn.getValue().toString());
+                CommonUtils.setFQDN(rdn.getValue().toString());
                 break;
             }
         }
