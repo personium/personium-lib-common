@@ -18,7 +18,6 @@ package io.personium.common.auth.token;
 
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;;
 
@@ -55,7 +54,7 @@ public class GrantCode extends AbstractLocalAccessToken implements IAccessToken 
      * @param issuer issuer
      * @param subject subject
      * @param roleList roleList
-     * @param schema schema
+     * @param schema authenticated schema
      * @param scope scope
      */
     public GrantCode(final long issuedAt,
@@ -64,59 +63,15 @@ public class GrantCode extends AbstractLocalAccessToken implements IAccessToken 
             final String subject,
             final List<Role> roleList,
             final String schema,
-            final String scope) {
+            final String[] scope) {
         super(issuedAt, lifespan, issuer, subject, schema, scope);
         if (roleList != null) {
             this.roleList = roleList;
         }
     }
 
-    /**
-     * 明示的な有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan トークンの有効時間（ミリ秒）
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
-     */
-    public GrantCode(final long issuedAt,
-            final long lifespan,
-            final String issuer,
-            final String subject,
-            final List<Role> roleList,
-            final String schema) {
-        this(issuedAt, lifespan, issuer, subject, roleList, schema, null);
-    }
 
-    /**
-     * 既定値の有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
-     */
-    public GrantCode(
-            final long issuedAt,
-            final String issuer,
-            final String subject,
-            final List<Role> roleList,
-            final String schema) {
-        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, roleList, schema);
-    }
 
-    /**
-     * 既定値の有効期間と現在を発行日時と設定してトークンを生成する.
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
-     */
-    public GrantCode(final String issuer, final String subject,
-            final List<Role> roleList, final String schema) {
-        this(new DateTime().getMillis(), issuer, subject, roleList, schema);
-    }
 
     /**
      * Create code string and return.
@@ -144,7 +99,6 @@ public class GrantCode extends AbstractLocalAccessToken implements IAccessToken 
 
         GrantCode ret = new GrantCode();
         ret.populate(code.substring(PREFIX_CODE.length()), issuer, 0);
-//      ret.roleList = AbstractOAuth2Token.parseRolesString(ext[0]);
 
         return ret;
     }

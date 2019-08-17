@@ -60,8 +60,8 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
      * @param schema Schema
      */
     public ResidentLocalAccessToken(final long issuedAt, final long lifespan, final String issuer,
-            final String subject, final String schema, String scope) {
-        super(issuedAt, lifespan, issuer, subject, schema, scope);
+            final String subject, final String schema, String[] scopes) {
+        super(issuedAt, lifespan, issuer, subject, schema, scopes);
     }
 
     /**
@@ -71,8 +71,8 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
      * @param subject Subject
      * @param schema Schema
      */
-    public ResidentLocalAccessToken(final long issuedAt, final String issuer, final String subject, final String schema, String scope) {
-        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scope);
+    public ResidentLocalAccessToken(final long issuedAt, final String issuer, final String subject, final String schema, String[] scopes) {
+        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scopes);
     }
 
     @Override

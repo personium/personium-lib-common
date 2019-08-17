@@ -106,7 +106,8 @@ public class ResidentRefreshTokenTest {
     @Test
     public void refreshAccessToken_Normal_schema_is_null_target_is_null() {
         cellLocalRefreshToken = PowerMockito.spy(new ResidentRefreshToken(
-                "https://personium/issuer/", "https://personium/subject/", "https://personium/schema/", "scope"));
+                "https://personium/issuer/", "https://personium/subject/", "https://personium/schema/",
+                new String[] {"scope"}));
         // --------------------
         // Test method args
         // --------------------
@@ -157,7 +158,7 @@ public class ResidentRefreshTokenTest {
     public void refreshAccessToken_Normal_schema_not_null_target_not_null() throws Exception {
         String schema = "https://personium/schema/";
         cellLocalRefreshToken = PowerMockito.spy(new ResidentRefreshToken(
-                "https://personium/issuer/", "https://personium/subject/", schema, "scope"));
+                "https://personium/issuer/", "https://personium/subject/", schema, new String[] {"scope"}));
 
         // X509 settings.
         String folderPath = "x509/effective/";

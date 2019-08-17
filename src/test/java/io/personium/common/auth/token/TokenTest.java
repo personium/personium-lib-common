@@ -66,7 +66,7 @@ public class TokenTest {
     public void testAccountAccessToken() {
         String issuer = "http://issuer.example/";
         ResidentLocalAccessToken token = new ResidentLocalAccessToken(new Date().getTime(), issuer,
-                "http://orig.com/orig/#subj", "http://schema.com/schema", "ROPC");
+                "http://orig.com/orig/#subj", "http://schema.com/schema", new String[] {"someScope"});
         String tokenStr = token.toTokenString();
 
         ResidentLocalAccessToken token2 = null;
@@ -88,7 +88,7 @@ public class TokenTest {
         String issuer = "http://receiver.com/rcv";
 
         ResidentRefreshToken token = new ResidentRefreshToken(new Date().getTime(), issuer,
-                "http://orig.com/orig/#subj",  "http://schema.com/schema", "ROPC");
+                "http://orig.com/orig/#subj",  "http://schema.com/schema", new String[] {"someScope"});
         String tokenStr = token.toTokenString();
 
         ResidentRefreshToken token2 = null;

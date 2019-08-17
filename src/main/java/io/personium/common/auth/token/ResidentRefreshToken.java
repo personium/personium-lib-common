@@ -26,7 +26,9 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Class for creating and parsing Cell Local Refresh Token.
+ * Class for creating and parsing RefreshToken issued for resident subject (subject authenticated at this local cell).
+ * (old name Cell Local Refresh Token).
+ *
  */
 public final class ResidentRefreshToken extends AbstractLocalToken implements IRefreshToken {
 
@@ -65,8 +67,8 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
             final String issuer,
             final String subject,
             final String schema,
-            final String scope) {
-        super(issuedAt, lifespan, issuer, subject, schema, scope);
+            final String[] scopes) {
+        super(issuedAt, lifespan, issuer, subject, schema, scopes);
     }
 
     /**
@@ -81,8 +83,8 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
             final String issuer,
             final String subject,
             final String schema,
-            final String scope) {
-        this(issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scope);
+            final String[] scopes) {
+        this(issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scopes);
     }
 
     /**
@@ -92,8 +94,8 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
      * @param subject アクセス主体URL
      * @param schema クライアント認証されたデータスキーマ
      */
-    public ResidentRefreshToken(final String issuer, final String subject, final String schema, String scope) {
-        this(new DateTime().getMillis(), issuer, subject, schema, scope);
+    public ResidentRefreshToken(final String issuer, final String subject, final String schema, String[] scopes) {
+        this(new DateTime().getMillis(), issuer, subject, schema, scopes);
     }
 
     @Override

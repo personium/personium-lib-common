@@ -92,7 +92,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      * @param schema スキーマ
      */
     public AbstractLocalToken(final long issuedAt, final long lifespan, final String issuer,
-             final String subject, final String schema, String scope) {
+             final String subject, final String schema, String[] scope) {
         this.issuedAt = issuedAt;
         this.lifespan = lifespan;
         this.issuer = issuer;
@@ -134,7 +134,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         }
         raw.append(SEPARATOR);
         if (this.scope != null) {
-            raw.append(this.scope);
+            raw.append(Scope.toConcatValue(this.scope));
         }
         raw.append(SEPARATOR);
         raw.append(this.issuer);
@@ -187,7 +187,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         this.subject =  frag[IDX_SUBJECT];
         this.issuer =  frag[IDX_ISSUER];
         this.schema =  frag[IDX_SCHEMA];
-        this.scope =  frag[IDX_SCOPE];
+        this.scope =  Scope.parse(frag[IDX_SCOPE]);
         return Arrays.copyOfRange(frag, 7, frag.length);
     }
 
@@ -290,5 +290,6 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         }
 
     }
+
 
 }

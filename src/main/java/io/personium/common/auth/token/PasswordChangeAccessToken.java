@@ -42,7 +42,7 @@ public final class PasswordChangeAccessToken extends AbstractLocalAccessToken im
      */
     public PasswordChangeAccessToken(final long issuedAt, final long lifespan, final String issuer,
             final String subject, final String schema) {
-        super(issuedAt, lifespan, issuer, subject, null, schema);
+        super(issuedAt, lifespan, issuer, subject, schema, AbstractOAuth2Token.Scope.EMPTY);
     }
 
     /**

@@ -71,7 +71,7 @@ public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements
             final String subject,
             final List<Role> roleList,
             final String schema,
-            final String scope) {
+            final String[] scope) {
         super(issuedAt, lifespan, issuer, subject, schema, scope);
         if (roleList != null) {
             this.roleList = roleList;

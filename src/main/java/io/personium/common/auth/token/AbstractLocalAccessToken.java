@@ -39,7 +39,7 @@ public abstract class AbstractLocalAccessToken extends AbstractLocalToken implem
      * @param scope Token scope
      */
     public AbstractLocalAccessToken(final long issuedAt, final long lifespan, final String issuer,
-             final String subject, final String schema, String scope) {
+             final String subject, final String schema, String[] scope) {
         this.issuedAt = issuedAt;
         this.lifespan = lifespan;
         this.issuer = issuer;

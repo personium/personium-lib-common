@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 
 
 /**
@@ -33,21 +35,21 @@ import java.util.Map;
  */
 public abstract class AbstractOAuth2Token {
     /**
-     * 一時間あたりのミリ秒数. 3600000
-     */
-    public static final int MILLISECS_IN_AN_HOUR = 3600000;
-    /**
-     * 一秒あたりのミリ秒数. 1000
+     * Milliseconds in a second. 1000
      */
     public static final int MILLISECS_IN_A_SEC = 1000;
     /**
-     * 一時間あたりの秒数.
+     * Seconds in an hour. 3600
      */
-    public static final int SECS_IN_A_HOUR = 60 * 60;
+    public static final int SECS_IN_AN_HOUR = 60 * 60;
     /**
-     * 一日あたり秒数.
+     * Millisec in an hour. 3600000
      */
-    public static final int SECS_IN_AN_DAY = 24 * 60 * 60;
+    public static final int MILLISECS_IN_AN_HOUR = SECS_IN_AN_HOUR * MILLISECS_IN_A_SEC;
+    /**
+     * Seconds in a day.
+     */
+    public static final int SECS_IN_A_DAY = 24 * SECS_IN_AN_HOUR;
 
     /** access token expires hour. */
     public static final int ACCESS_TOKEN_EXPIRES_HOUR = 1;
@@ -87,7 +89,7 @@ public abstract class AbstractOAuth2Token {
         }
     }
     /**
-     * 本パッケージで用いる署名検証例外クラス.
+     * Signature validation exception class.
      */
     @SuppressWarnings("serial")
     public static class TokenDsigException extends Exception {
@@ -144,9 +146,26 @@ public abstract class AbstractOAuth2Token {
     }
 
     public static class Scope {
-        public static final String ROPC = "ROPC";
-        public static final String ENGINE = "engine";
-        public static final String EMPTY = "";
+        public static final String[] ENGINE = new String[] {"root"};
+        public static final String[] EMPTY = new String[0];
+
+        /** openid. It is used with the openid connect of the oauth2 extension. */
+        public static final String OPENID = "openid";
+
+        public static String[] parse(String scopeValue) {
+            if (scopeValue == null) {
+                return new String[0];
+            }
+            String[] ret = scopeValue.split(" ");
+            // TODO 空白があれば消したい。
+            return ret;
+        }
+        public static String toConcatValue(String[] scope) {
+            if (scope == null) {
+                return "";
+            }
+            return StringUtils.join(scope, " ");
+        }
     }
 
     long issuedAt;
@@ -155,7 +174,7 @@ public abstract class AbstractOAuth2Token {
     String subject;
     String schema;
     List<Role> roleList = new ArrayList<Role>();
-    String scope;
+    String[] scope;
 
     /**
      * returns Token Issuer URL.
@@ -185,7 +204,7 @@ public abstract class AbstractOAuth2Token {
      * Get scope.
      * @return scope
      */
-    public String getScope() {
+    public String[] getScope() {
         return this.scope;
     }
     /**
