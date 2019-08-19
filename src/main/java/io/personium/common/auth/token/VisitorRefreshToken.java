@@ -1,5 +1,5 @@
 /**
- * personium.io
+ * Personium
  * Copyright 2014 FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,30 +20,47 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * TransCellTokenで認証したときに発行するリフレッシュトークンを扱うクラス. 生成・パースが基本機能. このトークン自体はRefreshTokenなのでCellをまたぐ納涼は与えていない。
- * あくまで、このトークンを発行したCellがもう一度トークンを発行するのみの用途で用いる。 発行スコープ情報をここでは持っておきたい。
+ * Class to handle refresh token that is issued via Trans Cell Access Token assertion.
  */
-public final class TransCellRefreshToken extends LocalToken implements IRefreshToken, IExtRoleContainingToken {
+public final class VisitorRefreshToken extends AbstractLocalToken implements IRefreshToken, IExtRoleContainingToken {
 
     /**
-     * ログ.
+     * Logger.
      */
-    static Logger log = LoggerFactory.getLogger(TransCellRefreshToken.class);
+    static Logger log = LoggerFactory.getLogger(VisitorRefreshToken.class);
 
     /**
-     * この種類のトークンのプレフィックス.
+     * Token prefix.
      */
-    public static final String PREFIX_TC_REFRESH = "RT~";
+    public static final String PREFIX_TC_REFRESH = "RV~";
+
+    /**
+     * Token Type String.
+     */
+    @Override
+    int getType() {
+        return AbstractLocalToken.Type.RefreshToken.VISITOR;
+    }
+
+    static final int IDX_ID = 0;
+    static final int IDX_ORIG_ISSUER = 1;
+    static final int IDX_ORIG_ROLE_LIST = 2;
+
 
     String id;
     String originalIssuer;
+
+    /**
+     * Default constructor.
+     */
+    public VisitorRefreshToken() {
+    }
 
     /**
      * 明示的な有効期間を設定してトークンを生成する.
@@ -56,7 +73,7 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
      * @param origRoleList このRefreshToken発行の際に使われた、元のTransCell アクセストークンに書かれたロールリスト
      * @param schema クライアント認証されたデータスキーマ
      */
-    public TransCellRefreshToken(
+    public VisitorRefreshToken(
             final String id,
             final long issuedAt,
             final long lifespan,
@@ -65,7 +82,8 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
             final String origIssuer,
             final List<Role> origRoleList,
             final String schema) {
-        super(issuedAt, lifespan, issuer, subject, schema);
+        // TODO Scope null?
+        super(issuedAt, lifespan, issuer, subject, schema, null);
         this.id = id;
         this.originalIssuer = origIssuer;
         this.roleList = origRoleList;
@@ -81,7 +99,7 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
      * @param origRoleList このRefreshToken発行の際に使われた、元のTransCell アクセストークンに書かれたロールリスト
      * @param schema クライアント認証されたデータスキーマ
      */
-    public TransCellRefreshToken(
+    public VisitorRefreshToken(
             final String id,
             final long issuedAt,
             final String issuer,
@@ -101,7 +119,7 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
      * @param origRoleList このRefreshToken発行の際に使われた、元のTransCell アクセストークンに書かれたロールリスト
      * @param schema クライアント認証されたデータスキーマ
      */
-    public TransCellRefreshToken(
+    public VisitorRefreshToken(
             final String id,
             final String issuer,
             final String subject,
@@ -119,16 +137,6 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
         return ret.toString();
     }
 
-    static final int IDX_COUNT = 8;
-    static final int IDX_ID = 4;
-    static final int IDX_ISSUED_AT = 0;
-    static final int IDX_LIFESPAN = 1;
-    static final int IDX_ISSUER = 7;
-    static final int IDX_SUBJECT = 2;
-    static final int IDX_ORIG_ISSUER = 5;
-    static final int IDX_ORIG_ROLE_LIST = 6;
-    static final int IDX_SCHEMA = 3;
-
     /**
      * トークン文字列をissuerで指定されたCellとしてパースする.
      * @param token Token String
@@ -136,27 +144,21 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
      * @return パースされたCellLocalTokenオブジェクト
      * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
      */
-    public static TransCellRefreshToken parse(final String token, final String issuer)
+    public static VisitorRefreshToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {
         if (!token.startsWith(PREFIX_TC_REFRESH) || issuer == null) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
-        String[] frag = LocalToken.doParse(token.substring(PREFIX_TC_REFRESH.length()), issuer, IDX_COUNT);
+
+        VisitorRefreshToken ret = new VisitorRefreshToken();
 
         try {
-            TransCellRefreshToken ret = new TransCellRefreshToken(
-                    frag[IDX_ID],
-                    Long.valueOf(StringUtils.reverse(frag[IDX_ISSUED_AT])),
-                    Long.valueOf(frag[IDX_LIFESPAN]),
-                    frag[IDX_ISSUER],
-                    frag[IDX_SUBJECT],
-                    frag[IDX_ORIG_ISSUER],
-                    AbstractOAuth2Token.parseRolesString(frag[IDX_ORIG_ROLE_LIST]),
-                    frag[IDX_SCHEMA]);
+            String[] extra = ret.populate(token.substring(PREFIX_TC_REFRESH.length()), issuer, 3);
+            ret.id = extra[IDX_ID];
+            ret.originalIssuer = extra[IDX_ORIG_ISSUER];
+            ret.roleList = AbstractOAuth2Token.parseRolesString(extra[IDX_ORIG_ROLE_LIST]);
             return ret;
         } catch (MalformedURLException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        } catch (IllegalStateException e) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
     }
@@ -171,8 +173,10 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
      */
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt, final String target, String url, List<Role> role) {
-        return refreshAccessToken(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, target, url, role, null);
+        return refreshAccessToken(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, target, url, role);
     }
+
+
 
     /**
      * {@inheritDoc}
@@ -180,29 +184,8 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt, final long lifespan, final String target, String url,
             List<Role> role) {
-        return refreshAccessToken(issuedAt, lifespan, target, url, role, null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IAccessToken refreshAccessToken(final long issuedAt, final String target, String url, List<Role> role,
-            String schema) {
-        return refreshAccessToken(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, target, url, role, schema);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IAccessToken refreshAccessToken(final long issuedAt, final long lifespan, final String target, String url,
-            List<Role> role, String schema) {
-        if (schema == null) {
-            schema = this.getSchema();
-        }
         if (target == null) {
-            return new CellLocalAccessToken(issuedAt, lifespan, url, this.getSubject(), role, schema);
+            return new VisitorLocalAccessToken(issuedAt, lifespan, url, this.getSubject(), role, schema);
         } else {
             return new TransCellAccessToken(issuedAt, lifespan, url, this.getSubject(), target, role, schema);
         }
@@ -223,14 +206,10 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
     @Override
     public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
         // TODO 本当は ROLEは再度読み直すべき。
-        return new TransCellRefreshToken(UUID.randomUUID().toString(), issuedAt, lifespan, this.issuer, this.subject,
+        return new VisitorRefreshToken(UUID.randomUUID().toString(), issuedAt, lifespan, this.issuer, this.subject,
                 this.originalIssuer, this.getRoles(), this.schema);
     }
 
-    @Override
-    public String getTarget() {
-        return null;
-    }
 
     @Override
     public String getExtCellUrl() {
@@ -241,4 +220,6 @@ public final class TransCellRefreshToken extends LocalToken implements IRefreshT
     public List<Role> getRoleList() {
         return this.getRoles();
     }
+
+
 }

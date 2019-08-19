@@ -1,6 +1,8 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2019 Personium Project
+ * - FUJITSU LIMITED
+ * - (Add Authors here)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +17,7 @@
  * limitations under the License.
  */
 /**
- * 認証トークン関連モジュールを扱うパッケージ.
+ * Package for OAuth 2.0 Token related modules.
  */
 package io.personium.common.auth.token;
 

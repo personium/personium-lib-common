@@ -72,22 +72,22 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import io.personium.common.utils.PersoniumCoreUtils;
+import io.personium.common.utils.CommonUtils;
 import net.oauth.signature.pem.PEMReader;
 import net.oauth.signature.pem.PKCS1EncodedKeySpec;
 
 /**
- * TransCellのAccessTokenを扱うクラス.
+ * TransCellのAccessTokenを扱うclass.
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public final class TransCellAccessToken extends AbstractOAuth2Token implements IExtRoleContainingToken {
+public final class TransCellAccessToken extends AbstractOAuth2Token implements IAccessToken, IExtRoleContainingToken {
 
     private SignedInfo signedInfo;
 
     private static final String URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion";
 
     /**
-     * ログ.
+     * log.
      */
     static Logger log = LoggerFactory.getLogger(TransCellAccessToken.class);
 
@@ -101,7 +101,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     private static PrivateKey privKey;
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param id トークンの一意識別子
      * @param issuedAt 発行時刻(epochからのミリ秒)
      * @param lifespan トークンの有効時間（ミリ秒）
@@ -160,7 +160,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param id トークンの一意識別子
      * @param issuedAt 発行時刻(epochからのミリ秒)
      * @param issuer 発行 Cell URL
@@ -180,7 +180,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param issuer 発行 Cell URL
      * @param subject アクセス主体URL
      * @param target ターゲットURL
@@ -244,7 +244,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         String samlStr = this.toSamlString();
         try {
             // Base64urlする
-            String token = PersoniumCoreUtils.encodeBase64Url(samlStr.getBytes(CharEncoding.UTF_8));
+            String token = CommonUtils.encodeBase64Url(samlStr.getBytes(CharEncoding.UTF_8));
             return token;
         } catch (UnsupportedEncodingException e) {
             // UTF8が処理できないはずがない。
@@ -353,7 +353,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         try {
             signature.sign(dsc);
             // 文字列化する。
-            return PersoniumCoreUtils.nodeToString(doc.getDocumentElement());
+            return CommonUtils.nodeToString(doc.getDocumentElement());
         } catch (MarshalException e1) {
             // DOMのシリアライズに失敗するのは重大な異常
             throw new RuntimeException(e1);
@@ -387,7 +387,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     public static TransCellAccessToken parse(final String token) throws AbstractOAuth2Token.TokenParseException,
     AbstractOAuth2Token.TokenDsigException, AbstractOAuth2Token.TokenRootCrtException {
         try {
-            byte[] samlBytes = PersoniumCoreUtils.decodeBase64Url(token);
+            byte[] samlBytes = CommonUtils.decodeBase64Url(token);
             ByteArrayInputStream bais = new ByteArrayInputStream(samlBytes);
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
@@ -594,7 +594,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         LdapName ln = new LdapName(dn);
         for (Rdn rdn : ln.getRdns()) {
             if (rdn.getType().equalsIgnoreCase("CN")) {
-                PersoniumCoreUtils.setFQDN(rdn.getValue().toString());
+                CommonUtils.setFQDN(rdn.getValue().toString());
                 break;
             }
         }
@@ -613,6 +613,16 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     @Override
     public List<Role> getRoleList() {
         return this.getRoles();
+    }
+
+    @Override
+    public String getCookieString(String cookiePeer, String issuer) {
+        return null;
+    }
+
+    @Override
+    public String[] getScopes() {
+        return null;
     }
 
 }
