@@ -42,11 +42,12 @@ import org.w3c.dom.Node;
 
 /**
  * Class that defines various utility functions.
+ * Class name changed from PersoniumCoreUtils from 1.5.0
  */
-public final class PersoniumCoreUtils {
+public final class CommonUtils {
 
     /** Logger. */
-    static Logger log = LoggerFactory.getLogger(PersoniumCoreUtils.class);
+    static Logger log = LoggerFactory.getLogger(CommonUtils.class);
 
     private static final String AUTHZ_BASIC = "Basic ";
     private static final String AUTHZ_BEARER = "Bearer ";
@@ -57,7 +58,7 @@ public final class PersoniumCoreUtils {
 
     private static String fqdn = null;
 
-    private PersoniumCoreUtils() {
+    private CommonUtils() {
     }
 
     /**
@@ -233,7 +234,7 @@ public final class PersoniumCoreUtils {
         InputStream is = null;
         BufferedReader br = null;
         try {
-            is = PersoniumCoreUtils.class.getClassLoader().getResourceAsStream(resPath);
+            is = CommonUtils.class.getClassLoader().getResourceAsStream(resPath);
             br = new BufferedReader(new InputStreamReader(is, encoding));
             String line = null;
             StringBuilder sb = new StringBuilder();
@@ -411,7 +412,7 @@ public final class PersoniumCoreUtils {
         }
         try {
             // 認証スキーマ以外の部分を取得
-            byte[] bytes = PersoniumCoreUtils.decodeBase64Url(authzHeaderValue.substring(AUTHZ_BASIC.length()));
+            byte[] bytes = CommonUtils.decodeBase64Url(authzHeaderValue.substring(AUTHZ_BASIC.length()));
             String rawStr = new String(bytes, CharEncoding.UTF_8);
             int pos = rawStr.indexOf(":");
             // 認証トークンの値に「:」を含んでいない場合は認証エラーとする

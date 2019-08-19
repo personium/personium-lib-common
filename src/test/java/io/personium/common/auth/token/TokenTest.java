@@ -27,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -54,16 +55,56 @@ public class TokenTest {
             throws NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, IOException,
             javax.security.cert.CertificateException, javax.naming.InvalidNameException {
         TransCellAccessToken.configureX509(null, null, null);
-        LocalToken.setKeyString("abcdef0123456789");
+        AbstractLocalToken.setKeyString("abcdef0123456789");
+    }
+
+    /**
+     * test test AccountAccessToken.
+     * @throws MalformedURLException
+     */
+    @Test
+    public void testAccountAccessToken() {
+        String issuer = "http://issuer.example/";
+        ResidentLocalAccessToken token = new ResidentLocalAccessToken(new Date().getTime(), issuer,
+                "http://orig.com/orig/#subj", "http://schema.com/schema", new String[] {"someScope"});
+        String tokenStr = token.toTokenString();
+
+        ResidentLocalAccessToken token2 = null;
+        try {
+            token2 = ResidentLocalAccessToken.parse(tokenStr, issuer);
+            assertEquals(tokenStr, token2.toTokenString());
+        } catch (AbstractOAuth2Token.TokenParseException e) {
+            fail(e.getMessage());
+        }
     }
 
 
     /**
-     * testTranceCellRefreshTokenのテスト.
-     * @throws MalformedURLException URLパースエラー
+     * test VisitorRefreshToken.
+     * @throws MalformedURLException
      */
     @Test
-    public void testTranceCellRefreshToken() throws MalformedURLException {
+    public void testSelfRefreshToken() throws MalformedURLException {
+        String issuer = "http://receiver.com/rcv";
+
+        ResidentRefreshToken token = new ResidentRefreshToken(new Date().getTime(), issuer,
+                "http://orig.com/orig/#subj",  "http://schema.com/schema", new String[] {"someScope"});
+        String tokenStr = token.toTokenString();
+
+        ResidentRefreshToken token2 = null;
+        try {
+            token2 = ResidentRefreshToken.parse(tokenStr, issuer);
+            assertEquals(tokenStr, token2.toTokenString());
+        } catch (AbstractOAuth2Token.TokenParseException e) {
+            fail(e.getMessage());
+        }
+    }
+    /**
+     * test VisitorRefreshToken.
+     * @throws MalformedURLException
+     */
+    @Test
+    public void testVisitorRefreshToken() throws MalformedURLException {
         String base = "https://localhost:8080/personium-core/testcell1/__role/__/";
         List<Role> roleList = new ArrayList<Role>();
         roleList.add(new Role(new URL(base + "admin")));
@@ -71,18 +112,19 @@ public class TokenTest {
         roleList.add(new Role(new URL(base + "doctor")));
 
         String id = "1234";
-        TransCellRefreshToken token = new TransCellRefreshToken(id, "http://receiver.com/rcv",
+        VisitorRefreshToken token = new VisitorRefreshToken(id, "http://receiver.com/rcv",
                 "http://orig.com/orig/#subj", "http://orig.com/orig", roleList, "http://schema.com/schema");
         String tokenStr = token.toTokenString();
 
-        TransCellRefreshToken token2 = null;
+        VisitorRefreshToken token2 = null;
         try {
-            token2 = TransCellRefreshToken.parse(tokenStr, "http://receiver.com/rcv");
+            token2 = VisitorRefreshToken.parse(tokenStr, "http://receiver.com/rcv");
             assertEquals(tokenStr, token2.toTokenString());
         } catch (AbstractOAuth2Token.TokenParseException e) {
             fail(e.getMessage());
         }
     }
+
 
     /**
      * testTransCellAccessTokenのテスト.
@@ -123,26 +165,23 @@ public class TokenTest {
     /**
      * testCellLocalAccessTokenのテスト.
      * @throws MalformedURLException URLパースエラー
+     * @throws TokenParseException
      */
     @Test
-    public void testCellLocalAccessToken() throws MalformedURLException {
+    public void testCellLocalAccessToken() throws MalformedURLException, TokenParseException {
         String base = "https://localhost:8080/personium-core/testcell1/__role/__/";
         List<Role> roleList = new ArrayList<Role>();
         roleList.add(new Role(new URL(base + "admin")));
         roleList.add(new Role(new URL(base + "staff")));
         roleList.add(new Role(new URL(base + "doctor")));
 
-        CellLocalAccessToken token = new CellLocalAccessToken("http://hogte.com/", "http://hige.com", roleList,
+        VisitorLocalAccessToken token = new VisitorLocalAccessToken("http://hogte.com/", "http://hige.com", roleList,
                 "http://example.com/schema");
 
         String tokenStr = token.toTokenString();
 
-        CellLocalAccessToken token2 = null;
-        try {
-            token2 = CellLocalAccessToken.parse(tokenStr, "http://hogte.com/");
+        VisitorLocalAccessToken token2 = null;
+            token2 = VisitorLocalAccessToken.parse(tokenStr, "http://hogte.com/");
             assertEquals(tokenStr, token2.toTokenString());
-        } catch (AbstractOAuth2Token.TokenParseException e) {
-            fail(e.getMessage());
-        }
     }
 }

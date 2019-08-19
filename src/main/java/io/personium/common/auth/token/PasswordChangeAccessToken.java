@@ -16,26 +16,19 @@
  */
 package io.personium.common.auth.token;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Class for generating / parsing account password change access Token.
  */
-public final class PasswordChangeAccessToken extends CellLocalAccessToken implements IAccessToken {
+public final class PasswordChangeAccessToken extends AbstractLocalAccessToken implements IAccessToken {
 
     static Logger log = LoggerFactory.getLogger(PasswordChangeAccessToken.class);
 
     /** Token prefix. */
     public static final String PREFIX_ACCESS = "AP~";
 
-    static final int IDX_COUNT = 5;
-    static final int IDX_ISSUED_AT = 0;
-    static final int IDX_LIFESPAN = 1;
-    static final int IDX_ISSUER = 4;
-    static final int IDX_SUBJECT = 2;
-    static final int IDX_SCHEMA = 3;
 
     /**
      * constructor.
@@ -49,7 +42,7 @@ public final class PasswordChangeAccessToken extends CellLocalAccessToken implem
      */
     public PasswordChangeAccessToken(final long issuedAt, final long lifespan, final String issuer,
             final String subject, final String schema) {
-        super(issuedAt, lifespan, issuer, subject, null, schema);
+        super(issuedAt, lifespan, issuer, subject, schema, AbstractOAuth2Token.Scope.EMPTY);
     }
 
     /**
@@ -64,6 +57,9 @@ public final class PasswordChangeAccessToken extends CellLocalAccessToken implem
     public PasswordChangeAccessToken(final long issuedAt, final String issuer, final String subject,
             final String schema) {
         this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema);
+    }
+
+    public PasswordChangeAccessToken() {
     }
 
     /**
@@ -89,18 +85,18 @@ public final class PasswordChangeAccessToken extends CellLocalAccessToken implem
         if (!token.startsWith(PREFIX_ACCESS) || issuer == null) {
             throw AbstractOAuth2Token.PARSE_EXCEPTION;
         }
-        String[] frag = LocalToken.doParse(token.substring(PREFIX_ACCESS.length()), issuer, IDX_COUNT);
+        PasswordChangeAccessToken ret = new PasswordChangeAccessToken();
+        ret.populate(token.substring(PREFIX_ACCESS.length()), issuer, 0);
+        return ret;
+    }
 
-        try {
-            PasswordChangeAccessToken ret = new PasswordChangeAccessToken(
-                    Long.valueOf(StringUtils.reverse(frag[IDX_ISSUED_AT])),
-                    Long.valueOf(frag[IDX_LIFESPAN]),
-                    frag[IDX_ISSUER],
-                    frag[IDX_SUBJECT],
-                    frag[IDX_SCHEMA]);
-            return ret;
-        } catch (Exception e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        }
+    @Override
+    public String getTarget() {
+        return null;
+    }
+
+    @Override
+    int getType() {
+        return AbstractLocalToken.Type.AccessToken.PASSWORDCHANGE;
     }
 }
