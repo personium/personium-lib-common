@@ -54,4 +54,8 @@ public abstract class AbstractLocalAccessToken extends AbstractLocalToken implem
         return AbstractLocalAccessToken.encode(raw, AbstractLocalAccessToken.getIvBytes(issuer));
     }
 
+    public String[] getScopes() {
+        return this.scope;
+    }
+
 }

@@ -45,6 +45,12 @@ public interface IAccessToken {
     String getSchema();
 
     /**
+     * returns the scopes of access token.
+     * @return array of scope strings
+     */
+    String[] getScopes();
+
+    /**
      * constructs token string.
      * @return token string
      */

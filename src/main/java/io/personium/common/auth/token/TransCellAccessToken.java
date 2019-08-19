@@ -620,4 +620,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         return null;
     }
 
+    @Override
+    public String[] getScopes() {
+        return null;
+    }
+
 }
