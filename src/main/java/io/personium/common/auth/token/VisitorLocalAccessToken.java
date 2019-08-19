@@ -47,11 +47,6 @@ public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements
     }
 
 
-    private static final int IDX_ROLE_LIST = 5;
-
-    private static final int COUNT_IDX = 6;
-
-
     public VisitorLocalAccessToken() {
     };
 
