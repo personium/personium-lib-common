@@ -79,7 +79,7 @@ public class X509KeySelecterTest {
 
         // トランスセルトークンの生成
         TransCellAccessToken tcToken = new TransCellAccessToken("https://localhost/X509TestCell/", cellRootUrl
-                + "#admin", target, roleList, schema);
+                + "#admin", target, roleList, schema, new String[] {"scope"});
         String token = tcToken.toTokenString();
 
         try {
@@ -105,7 +105,7 @@ public class X509KeySelecterTest {
         }
 
         TransCellAccessToken tcToken = new TransCellAccessToken("https://localhost/X509TestCell/", cellRootUrl
-                + "#admin", target, roleList, schema);
+                + "#admin", target, roleList, schema, new String[] {"scope"});
         String token = tcToken.toTokenString();
 
         try {
@@ -130,7 +130,7 @@ public class X509KeySelecterTest {
         }
 
         TransCellAccessToken tcToken = new TransCellAccessToken("https://localhost/X509TestCell/", cellRootUrl
-                + "#admin", target, roleList, schema);
+                + "#admin", target, roleList, schema, new String[] {"scope"});
         String token = tcToken.toTokenString();
 
         try {
@@ -159,7 +159,7 @@ public class X509KeySelecterTest {
         }
 
         TransCellAccessToken tcToken = new TransCellAccessToken("https://localhost/X509TestCell/", cellRootUrl
-                + "#admin", target, roleList, schema);
+                + "#admin", target, roleList, schema, new String[] {"scope"});
 
         String token = tcToken.toTokenString();
 
@@ -194,7 +194,7 @@ public class X509KeySelecterTest {
         }
 
         TransCellAccessToken tcToken = new TransCellAccessToken("https://localhost/X509TestCell/", cellRootUrl
-                + "#admin", target, roleList, schema);
+                + "#admin", target, roleList, schema, new String[] {"scope"});
 
         String token = tcToken.toTokenString();
 
@@ -230,7 +230,7 @@ public class X509KeySelecterTest {
         }
 
         TransCellAccessToken tcToken = new TransCellAccessToken("https://hoo/X509TestCell/", cellRootUrl + "#admin",
-                target, roleList, schema);
+                target, roleList, schema, new String[] {"scope"});
 
         String token = tcToken.toTokenString();
 
@@ -269,7 +269,7 @@ public class X509KeySelecterTest {
         }
 
         TransCellAccessToken tcToken = new TransCellAccessToken("https://localhost/X509TestCell/", cellRootUrl
-                + "#admin", target, roleList, schema);
+                + "#admin", target, roleList, schema, new String[] {"scope"});
 
         String tokenStr = tcToken.toTokenString();
 
@@ -306,7 +306,7 @@ public class X509KeySelecterTest {
         }
 
         TransCellAccessToken tcToken = new TransCellAccessToken("https://pio/X509TestCell/", cellRootUrl + "#admin",
-                target, roleList, schema);
+                target, roleList, schema, new String[] {"scope"});
 
         String tokenStr = tcToken.toTokenString();
 
@@ -343,7 +343,7 @@ public class X509KeySelecterTest {
         }
 
         TransCellAccessToken tcToken = new TransCellAccessToken("https://localhost/X509TestCell/", cellRootUrl
-                + "#admin", target, roleList, schema);
+                + "#admin", target, roleList, schema, new String[] {"scope"});
         String token = tcToken.toTokenString();
 
         try {
@@ -378,7 +378,7 @@ public class X509KeySelecterTest {
 
         // トークンのissuerにサーバ証明書のCN（localhost）と異なる値を設定する
         TransCellAccessToken tcToken = new TransCellAccessToken("https://hogehuga/X509TestCell/", cellRootUrl
-                + "#admin", target, roleList, schema);
+                + "#admin", target, roleList, schema, new String[] {"scope"});
         String token = tcToken.toTokenString();
 
         try {

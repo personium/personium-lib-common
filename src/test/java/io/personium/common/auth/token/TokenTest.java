@@ -113,7 +113,7 @@ public class TokenTest {
 
         String id = "1234";
         VisitorRefreshToken token = new VisitorRefreshToken(id, "http://receiver.com/rcv",
-                "http://orig.com/orig/#subj", "http://orig.com/orig", roleList, "http://schema.com/schema");
+                "http://orig.com/orig/#subj", "http://orig.com/orig", roleList, "http://schema.com/schema", null);
         String tokenStr = token.toTokenString();
 
         VisitorRefreshToken token2 = null;
@@ -144,7 +144,7 @@ public class TokenTest {
         roleList.add(new Role("doctor"));
 
         TransCellAccessToken tcToken = new TransCellAccessToken(cellRootUrl, cellRootUrl + "#admin", target, roleList,
-                schema);
+                schema, new String[] {"someScope"});
 
         String token = tcToken.toTokenString();
 
@@ -175,8 +175,11 @@ public class TokenTest {
         roleList.add(new Role(new URL(base + "staff")));
         roleList.add(new Role(new URL(base + "doctor")));
 
-        VisitorLocalAccessToken token = new VisitorLocalAccessToken("http://hogte.com/", "http://hige.com", roleList,
-                "http://example.com/schema");
+        VisitorLocalAccessToken token = new VisitorLocalAccessToken(
+                new Date().getTime(),
+                VisitorLocalAccessToken.ACCESS_TOKEN_EXPIRES_MILLISECS,
+                "http://hogte.com/", "http://hige.com", roleList,
+                "http://example.com/schema", new String[] {"someScope"});
 
         String tokenStr = token.toTokenString();
 

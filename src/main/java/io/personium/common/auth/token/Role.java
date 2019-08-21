@@ -99,7 +99,7 @@ public class Role {
             boxName2 = this.boxName;
         } else {
             // 紐付かない場合、デフォルトボックス名を使用する
-            boxName2 = DEFAULT_BOX_NAME;
+            boxName2 = MAIN_BOX_NAME;
         }
         String url3 = createBaseUrl(url);
         return String.format(ROLE_RESOURCE_FORMAT, url3, boxName2, this.name);
@@ -112,7 +112,7 @@ public class Role {
      */
     public String schemeCreateUrlForTranceCellToken(String url) {
         String url3 = createBaseUrl(url);
-        return String.format(ROLE_RESOURCE_FORMAT, url3, DEFAULT_BOX_NAME, this.name);
+        return String.format(ROLE_RESOURCE_FORMAT, url3, MAIN_BOX_NAME, this.name);
     }
 
     /**
@@ -147,7 +147,7 @@ public class Role {
             boxName2 = this.boxName;
         } else {
             // 紐付かない場合、デフォルトボックス名を使用する
-            boxName2 = DEFAULT_BOX_NAME;
+            boxName2 = MAIN_BOX_NAME;
         }
         // 連結でスラッシュつけてるので、URLの最後がスラッシュだったら消す。
         String url3 = url.replaceFirst("/$", "");
@@ -205,6 +205,6 @@ public class Role {
     /**
      * デフォルトボックス名.
      */
-    public static final String DEFAULT_BOX_NAME = "__";
+    public static final String MAIN_BOX_NAME = "__";
 
 }

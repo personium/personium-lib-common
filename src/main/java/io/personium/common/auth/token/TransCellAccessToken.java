@@ -118,7 +118,8 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
+            final String schema,
+            final String[] scope) {
         this.issuedAt = issuedAt;
         this.lifespan = lifespan;
         this.id = id;
@@ -127,6 +128,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         this.target = target;
         this.roleList = roleList;
         this.schema = schema;
+        this.scope = scope;
 
         try {
             /*
@@ -175,8 +177,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
-        this(id, issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, target, roleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(id, issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, target, roleList, schema, scope);
     }
 
     /**
@@ -192,8 +195,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
-        this(UUID.randomUUID().toString(), new Date().getTime(), issuer, subject, target, roleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(UUID.randomUUID().toString(), new Date().getTime(), issuer, subject, target, roleList, schema, scope);
     }
 
     /**
@@ -211,8 +215,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
-        this(UUID.randomUUID().toString(), issuedAt, issuer, subject, target, roleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(UUID.randomUUID().toString(), issuedAt, issuer, subject, target, roleList, schema, scope);
     }
 
     /**
@@ -232,8 +237,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
-        this(UUID.randomUUID().toString(), issuedAt, lifespan, issuer, subject, target, roleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(UUID.randomUUID().toString(), issuedAt, lifespan, issuer, subject, target, roleList, schema, scope);
     }
 
     /* (non-Javadoc)
@@ -423,6 +429,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             Element aud1 = (Element) (audienceList.item(0));
             String target = aud1.getTextContent();
             String schema = null;
+            String[] scope = new String[0];
             if (audienceList.getLength() > 1) {
                 Element aud2 = (Element) (audienceList.item(1));
                 schema = aud2.getTextContent();
@@ -506,7 +513,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
                 throw new TokenDsigException("Signature failed core validation. unkwnon reason.");
             }
             return new TransCellAccessToken(id, dt.getMillis(), lifespan, issuer.getTextContent(),
-                    subjectNameID.getTextContent(), target, roles, schema);
+                    subjectNameID.getTextContent(), target, roles, schema, scope);
         } catch (UnsupportedEncodingException e) {
             throw new TokenParseException(e.getMessage(), e);
         } catch (SAXException e) {
@@ -621,8 +628,8 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     @Override
-    public String[] getScopes() {
-        return null;
+    public String[] getScope() {
+        return this.getScope();
     }
 
 }

@@ -48,7 +48,7 @@ public class VisitorRefreshTokenTest {
      */
     @Before
     public void befor() {
-        transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(null, null, null, null, null, null));
+        transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(null, null, null, null, null, null, null));
     }
 
     /**
@@ -106,7 +106,7 @@ public class VisitorRefreshTokenTest {
     @Test
     public void refreshAccessToken_Normal_schema_is_null_target_is_null() {
         transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(
-                null, null, "https://personium/subject/", null, null, "https://personium/schema/"));
+                null, null, "https://personium/subject/", null, null, "https://personium/schema/", null));
         // --------------------
         // Test method args
         // --------------------
@@ -170,7 +170,7 @@ public class VisitorRefreshTokenTest {
         String schema = "https://personium/appcell/";
 
         transCellRefreshToken = PowerMockito.spy(new VisitorRefreshToken(
-                null, null, subject, null, null, schema));
+                null, null, subject, null, null, schema, null));
 
         // X509 settings.
         String folderPath = "x509/effective/";
