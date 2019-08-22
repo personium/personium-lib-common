@@ -18,6 +18,7 @@ package io.personium.common.auth.token;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,7 +67,7 @@ public class Role {
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param name ロール名.
      * @param boxName ロールの属するボックス名.
      * @param boxSchema ロールの属するボックスのSchema
@@ -86,6 +87,16 @@ public class Role {
     public Role(final String name) {
         this(name, null, null, null);
     }
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret = obj instanceof Role;
+        Role r = (Role) obj;
+        ret &= Objects.equals(this.name, r.name);
+        ret &= Objects.equals(this.boxSchema, r.boxSchema);
+        ret &= Objects.equals(this.boxName, r.boxName);
+        ret &= Objects.equals(this.baseUrl, r.baseUrl);
+        return ret;
+    }
 
     /**
      * スキーマ用ロールリソースのURLを返す.
@@ -98,7 +109,7 @@ public class Role {
         if (this.boxName != null) {
             boxName2 = this.boxName;
         } else {
-            // 紐付かない場合、デフォルトボックス名を使用する
+            // 紐付かない場合、use main box name.
             boxName2 = MAIN_BOX_NAME;
         }
         String url3 = createBaseUrl(url);
@@ -106,9 +117,9 @@ public class Role {
     }
 
     /**
-     * ロールクラスURLを返す.
+     * Returns Role class URL.
      * @param url ロールリソースのベースURL
-     * @return String ロールリソースのURL
+     * @return String Role resource URL
      */
     public String schemeCreateUrlForTranceCellToken(String url) {
         String url3 = createBaseUrl(url);

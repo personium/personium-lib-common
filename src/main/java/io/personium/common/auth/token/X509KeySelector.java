@@ -169,7 +169,7 @@ public class X509KeySelector extends KeySelector {
         // support per-cell. It changed from exact match to backward match.
         if (cnStr == null || !issureUrl.getHost().endsWith(cnStr)) {
             // トークンとルートCA証明書のissureが等しくない時
-            throw new KeySelectorException("issure not equals.");
+            throw new KeySelectorException("Issuer does not match.");
         }
 
         // サーバ証明書の検証
