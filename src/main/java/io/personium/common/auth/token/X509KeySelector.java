@@ -244,7 +244,7 @@ public class X509KeySelector extends KeySelector {
         x509Root.checkValidity();
         // ルートCA証明書の重複チェック
         if (caCerts.get(x509Root.getIssuerX500Principal().getName()) != null) {
-            throw new CertificateException("ca subject name already use.");
+            throw new CertificateException("ca subject name already in use.");
         }
         caCerts.put(x509Root.getIssuerX500Principal().getName(), x509Root);
     }
