@@ -77,12 +77,11 @@ import net.oauth.signature.pem.PEMReader;
 import net.oauth.signature.pem.PKCS1EncodedKeySpec;
 
 /**
- * TransCellのAccessTokenを扱うclass.
+ * Class for handling Trans-Cell access token.
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public final class TransCellAccessToken extends AbstractOAuth2Token implements IAccessToken, IExtRoleContainingToken {
 
-    private SignedInfo signedInfo;
 
     private static final String URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion";
 
@@ -90,15 +89,49 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * log.
      */
     static Logger log = LoggerFactory.getLogger(TransCellAccessToken.class);
-
-    String id;
-    String target;
-
     private static List<String> x509RootCertificateFileNames;
     private static XMLSignatureFactory xmlSignatureFactory;
     private static X509Certificate x509Certificate;
     private static KeyInfo keyInfo;
     private static PrivateKey privKey;
+    private SignedInfo signedInfo;
+    public static SignedInfo createSignedInfo() {
+        try {
+            /*
+             * creates the Reference object, which identifies the data that will be digested and signed. The Reference
+             * object is assembled by creating and passing as parameters each of its components: the URI, the
+             * DigestMethod, and a list of Transforms
+             */
+            DigestMethod digestMethod = xmlSignatureFactory.newDigestMethod(DigestMethod.SHA1, null);
+            Transform transform = xmlSignatureFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null);
+            Reference reference = xmlSignatureFactory.newReference("", digestMethod,
+                    Collections.singletonList(transform), null, null);
+
+            /*
+             * creates the SignedInfo object that the signature is calculated over. Like the Reference object, the
+             * SignedInfo object is assembled by creating and passing as parameters each of its components: the
+             * CanonicalizationMethod, the SignatureMethod, and a list of References
+             */
+            CanonicalizationMethod c14nMethod = xmlSignatureFactory.newCanonicalizationMethod(
+                    CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
+            SignatureMethod signatureMethod = xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
+            return xmlSignatureFactory.newSignedInfo(c14nMethod, signatureMethod,
+                    Collections.singletonList(reference));
+
+        } catch (NoSuchAlgorithmException e) {
+            // 重大な異常なので非チェックにして上に上げる
+            throw new RuntimeException(e);
+        } catch (InvalidAlgorithmParameterException e) {
+            // 重大な異常なので非チェックにして上に上げる
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    String id;
+    String target;
+
 
     /**
      * Constructor.
@@ -130,34 +163,8 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         this.schema = schema;
         this.scope = scope;
 
-        try {
-            /*
-             * creates the Reference object, which identifies the data that will be digested and signed. The Reference
-             * object is assembled by creating and passing as parameters each of its components: the URI, the
-             * DigestMethod, and a list of Transforms
-             */
-            DigestMethod digestMethod = xmlSignatureFactory.newDigestMethod(DigestMethod.SHA1, null);
-            Transform transform = xmlSignatureFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null);
-            Reference reference = xmlSignatureFactory.newReference("", digestMethod,
-                    Collections.singletonList(transform), null, null);
+        this.signedInfo = createSignedInfo();
 
-            /*
-             * creates the SignedInfo object that the signature is calculated over. Like the Reference object, the
-             * SignedInfo object is assembled by creating and passing as parameters each of its components: the
-             * CanonicalizationMethod, the SignatureMethod, and a list of References
-             */
-            CanonicalizationMethod c14nMethod = xmlSignatureFactory.newCanonicalizationMethod(
-                    CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
-            SignatureMethod signatureMethod = xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
-            signedInfo = xmlSignatureFactory.newSignedInfo(c14nMethod, signatureMethod,
-                    Collections.singletonList(reference));
-        } catch (NoSuchAlgorithmException e) {
-            // 重大な異常なので非チェックにして上に上げる
-            throw new RuntimeException(e);
-        } catch (InvalidAlgorithmParameterException e) {
-            // 重大な異常なので非チェックにして上に上げる
-            throw new RuntimeException(e);
-        }
 
     }
 
@@ -629,7 +636,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
     @Override
     public String[] getScope() {
-        return this.getScope();
+        return this.scope;
     }
 
 }
