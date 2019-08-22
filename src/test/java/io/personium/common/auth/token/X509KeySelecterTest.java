@@ -318,7 +318,7 @@ public class X509KeySelecterTest {
             assertEquals(new CertificateException().getClass(), e.getCause().getClass());
             // ログに出力されるメッセージの確認（真因メッセージはキャッチ出来る例外の１階層目に含まれている事）
             // CA証明書重複の場合、重複チェックでエラーになる
-            assertEquals("ca subject name already use.", e.getMessage());
+            assertEquals("Duplicated ca subject names.", e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
         }
