@@ -350,14 +350,16 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         Element attributeRoles = doc.createElement("Attribute");
         attributeRoles.setAttribute("Name", "Roles");
         attributeRoles.setAttribute("NameFormat", CommonUtils.XmlConst.NS_PERSONIUM);
-        for (Role role : this.roleList) {
-            Element attrValue = doc.createElement("AttributeValue");
-            //Attr attr = doc.createAttributeNS(CommonUtils.XmlConst.NS_XML_SCHEMA_INSTANCE, "type");
-            //attr.setPrefix("xsi");
-            //attr.setValue("string");
-            //attrValue.setAttributeNodeNS(attr);
-            attrValue.setTextContent(role.schemeCreateUrlForTranceCellToken(this.issuer));
-            attributeRoles.appendChild(attrValue);
+        if (this.roleList != null) {
+            for (Role role : this.roleList) {
+                Element attrValue = doc.createElement("AttributeValue");
+                //Attr attr = doc.createAttributeNS(CommonUtils.XmlConst.NS_XML_SCHEMA_INSTANCE, "type");
+                //attr.setPrefix("xsi");
+                //attr.setValue("string");
+                //attrValue.setAttributeNodeNS(attr);
+                attrValue.setTextContent(role.schemeCreateUrlForTranceCellToken(this.issuer));
+                attributeRoles.appendChild(attrValue);
+            }
         }
         attrStmt.appendChild(attributeRoles);
 
@@ -365,14 +367,16 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         Element attributeScopes = doc.createElement("Attribute");
         attributeScopes.setAttribute("Name", "Scopes");
         attributeRoles.setAttribute("NameFormat", CommonUtils.XmlConst.NS_PERSONIUM);
-        for (String scope : this.getScope()) {
-            Element attrValue = doc.createElement("AttributeValue");
-            //Attr attr = doc.createAttributeNS(CommonUtils.XmlConst.NS_XML_SCHEMA_INSTANCE, "type");
-            //attr.setPrefix("xsi");
-            //attr.setValue("string");
-            //attrValue.setAttributeNodeNS(attr);
-            attrValue.setTextContent(scope);
-            attributeScopes.appendChild(attrValue);
+        if (this.getScope() != null) {
+            for (String scope : this.getScope()) {
+                Element attrValue = doc.createElement("AttributeValue");
+                //Attr attr = doc.createAttributeNS(CommonUtils.XmlConst.NS_XML_SCHEMA_INSTANCE, "type");
+                //attr.setPrefix("xsi");
+                //attr.setValue("string");
+                //attrValue.setAttributeNodeNS(attr);
+                attrValue.setTextContent(scope);
+                attributeScopes.appendChild(attrValue);
+            }
         }
         attrStmt.appendChild(attributeScopes);
         assertion.appendChild(attrStmt);
