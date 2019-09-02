@@ -19,12 +19,11 @@ package io.personium.common.auth.token;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Cell Local Token の生成・パースを行うクラス.
+ * Class for creating and parsing Visitor Local Access Token.
  */
 public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements IAccessToken, IExtRoleContainingToken {
 
@@ -73,52 +72,6 @@ public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements
         }
     }
 
-    /**
-     * 明示的な有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan トークンの有効時間（ミリ秒）
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
-     */
-    public VisitorLocalAccessToken(final long issuedAt,
-            final long lifespan,
-            final String issuer,
-            final String subject,
-            final List<Role> roleList,
-            final String schema) {
-        this(issuedAt, lifespan, issuer, subject, roleList, schema, null);
-    }
-
-    /**
-     * 既定値の有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
-     */
-    public VisitorLocalAccessToken(
-            final long issuedAt,
-            final String issuer,
-            final String subject,
-            final List<Role> roleList,
-            final String schema) {
-        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, roleList, schema);
-    }
-
-    /**
-     * 既定値の有効期間と現在を発行日時と設定してトークンを生成する.
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
-     */
-    public VisitorLocalAccessToken(final String issuer, final String subject,
-            final List<Role> roleList, final String schema) {
-        this(new DateTime().getMillis(), issuer, subject, roleList, schema);
-    }
 
     @Override
     public String toTokenString() {

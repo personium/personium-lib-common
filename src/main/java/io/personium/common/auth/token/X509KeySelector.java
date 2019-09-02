@@ -169,7 +169,7 @@ public class X509KeySelector extends KeySelector {
         // support per-cell. It changed from exact match to backward match.
         if (cnStr == null || !issureUrl.getHost().endsWith(cnStr)) {
             // トークンとルートCA証明書のissureが等しくない時
-            throw new KeySelectorException("issure not equals.");
+            throw new KeySelectorException("Issuer does not match.");
         }
 
         // サーバ証明書の検証
@@ -244,7 +244,7 @@ public class X509KeySelector extends KeySelector {
         x509Root.checkValidity();
         // ルートCA証明書の重複チェック
         if (caCerts.get(x509Root.getIssuerX500Principal().getName()) != null) {
-            throw new CertificateException("ca subject name already use.");
+            throw new CertificateException("Duplicated ca subject names.");
         }
         caCerts.put(x509Root.getIssuerX500Principal().getName(), x509Root);
     }

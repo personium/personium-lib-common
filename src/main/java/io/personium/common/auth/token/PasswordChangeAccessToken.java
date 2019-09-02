@@ -41,8 +41,8 @@ public final class PasswordChangeAccessToken extends AbstractLocalAccessToken im
      * @param schema Schema
      */
     public PasswordChangeAccessToken(final long issuedAt, final long lifespan, final String issuer,
-            final String subject, final String schema) {
-        super(issuedAt, lifespan, issuer, subject, schema, AbstractOAuth2Token.Scope.EMPTY);
+            final String subject, final String schema, final String[] scope) {
+        super(issuedAt, lifespan, issuer, subject, schema, scope);
     }
 
     /**
@@ -55,8 +55,8 @@ public final class PasswordChangeAccessToken extends AbstractLocalAccessToken im
      * @param schema Schema
      */
     public PasswordChangeAccessToken(final long issuedAt, final String issuer, final String subject,
-            final String schema) {
-        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema);
+            final String schema, final String[] scope) {
+        this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scope);
     }
 
     public PasswordChangeAccessToken() {
