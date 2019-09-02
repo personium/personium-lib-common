@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyFactory;
@@ -33,8 +34,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.naming.InvalidNameException;
@@ -66,7 +69,7 @@ import org.apache.commons.lang.CharEncoding;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -77,12 +80,11 @@ import net.oauth.signature.pem.PEMReader;
 import net.oauth.signature.pem.PKCS1EncodedKeySpec;
 
 /**
- * TransCellのAccessTokenを扱うclass.
+ * Class for handling Trans-Cell access token.
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public final class TransCellAccessToken extends AbstractOAuth2Token implements IAccessToken, IExtRoleContainingToken {
 
-    private SignedInfo signedInfo;
 
     private static final String URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion";
 
@@ -90,44 +92,13 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * log.
      */
     static Logger log = LoggerFactory.getLogger(TransCellAccessToken.class);
-
-    String id;
-    String target;
-
     private static List<String> x509RootCertificateFileNames;
     private static XMLSignatureFactory xmlSignatureFactory;
     private static X509Certificate x509Certificate;
     private static KeyInfo keyInfo;
     private static PrivateKey privKey;
-
-    /**
-     * Constructor.
-     * @param id トークンの一意識別子
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan トークンの有効時間（ミリ秒）
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param target ターゲットURL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
-     */
-    public TransCellAccessToken(final String id,
-            final long issuedAt,
-            final long lifespan,
-            final String issuer,
-            final String subject,
-            final String target,
-            final List<Role> roleList,
-            final String schema) {
-        this.issuedAt = issuedAt;
-        this.lifespan = lifespan;
-        this.id = id;
-        this.issuer = issuer;
-        this.subject = subject;
-        this.target = target;
-        this.roleList = roleList;
-        this.schema = schema;
-
+    private SignedInfo signedInfo;
+    public static SignedInfo createSignedInfo() {
         try {
             /*
              * creates the Reference object, which identifies the data that will be digested and signed. The Reference
@@ -147,8 +118,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             CanonicalizationMethod c14nMethod = xmlSignatureFactory.newCanonicalizationMethod(
                     CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
             SignatureMethod signatureMethod = xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
-            signedInfo = xmlSignatureFactory.newSignedInfo(c14nMethod, signatureMethod,
+            return xmlSignatureFactory.newSignedInfo(c14nMethod, signatureMethod,
                     Collections.singletonList(reference));
+
         } catch (NoSuchAlgorithmException e) {
             // 重大な異常なので非チェックにして上に上げる
             throw new RuntimeException(e);
@@ -156,6 +128,46 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             // 重大な異常なので非チェックにして上に上げる
             throw new RuntimeException(e);
         }
+
+
+    }
+
+    String id;
+    String target;
+
+
+    /**
+     * Constructor.
+     * @param id トークンの一意識別子
+     * @param issuedAt 発行時刻(epochからのミリ秒)
+     * @param lifespan トークンの有効時間（ミリ秒）
+     * @param issuer 発行 Cell URL
+     * @param subject アクセス主体URL
+     * @param target ターゲットURL
+     * @param roleList ロールリスト
+     * @param schema クライアント認証されたデータスキーマ
+     */
+    public TransCellAccessToken(final String id,
+            final long issuedAt,
+            final long lifespan,
+            final String issuer,
+            final String subject,
+            final String target,
+            final List<Role> roleList,
+            final String schema,
+            final String[] scope) {
+        this.issuedAt = issuedAt;
+        this.lifespan = lifespan;
+        this.id = id;
+        this.issuer = issuer;
+        this.subject = subject;
+        this.target = target;
+        this.roleList = roleList;
+        this.schema = schema;
+        this.scope = scope;
+
+        this.signedInfo = createSignedInfo();
+
 
     }
 
@@ -175,8 +187,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
-        this(id, issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, target, roleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(id, issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, target, roleList, schema, scope);
     }
 
     /**
@@ -192,8 +205,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
-        this(UUID.randomUUID().toString(), new Date().getTime(), issuer, subject, target, roleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(UUID.randomUUID().toString(), new Date().getTime(), issuer, subject, target, roleList, schema, scope);
     }
 
     /**
@@ -211,8 +225,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
-        this(UUID.randomUUID().toString(), issuedAt, issuer, subject, target, roleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(UUID.randomUUID().toString(), issuedAt, issuer, subject, target, roleList, schema, scope);
     }
 
     /**
@@ -232,8 +247,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             final String subject,
             final String target,
             final List<Role> roleList,
-            final String schema) {
-        this(UUID.randomUUID().toString(), issuedAt, lifespan, issuer, subject, target, roleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(UUID.randomUUID().toString(), issuedAt, lifespan, issuer, subject, target, roleList, schema, scope);
     }
 
     /* (non-Javadoc)
@@ -295,8 +311,10 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         Element nameId = doc.createElement("NameID");
         nameId.setTextContent(this.subject);
         Element subjectConfirmation = doc.createElement("SubjectConfirmation");
+        subjectConfirmation.setAttribute("Method", "urn:oasis:names:tc:SAML:2.0:cm:bearer");
         Element subjectConfirmationData = doc.createElement("SubjectConfirmationData");
         subjectConfirmationData.setAttribute("NotOnOrAfter", notOnOrAfterDateTime.toString());
+        subjectConfirmationData.setAttribute("Recipient", this.target + "__token");
         subjectConfirmation.appendChild(subjectConfirmationData);
         subject.appendChild(nameId);
         subject.appendChild(subjectConfirmation);
@@ -325,18 +343,44 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
         // AttributeStatement
         Element attrStmt = doc.createElement("AttributeStatement");
-        Element attribute = doc.createElement("Attribute");
-        for (Role role : this.roleList) {
-            Element attrValue = doc.createElement("AttributeValue");
-            Attr attr = doc.createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "type");
-            attr.setPrefix("xsi");
-            attr.setValue("string");
-            attrValue.setAttributeNodeNS(attr);
-            attrValue.setTextContent(role.schemeCreateUrlForTranceCellToken(this.issuer));
-            attribute.appendChild(attrValue);
+        // this fails
+        //attrStmt.setAttribute("xmlns:xsi", CommonUtils.XmlConst.NS_XML_SCHEMA_INSTANCE);
+
+        // -- Roles
+        Element attributeRoles = doc.createElement("Attribute");
+        attributeRoles.setAttribute("Name", "Roles");
+        attributeRoles.setAttribute("NameFormat", CommonUtils.XmlConst.NS_PERSONIUM);
+        if (this.roleList != null) {
+            for (Role role : this.roleList) {
+                Element attrValue = doc.createElement("AttributeValue");
+                //Attr attr = doc.createAttributeNS(CommonUtils.XmlConst.NS_XML_SCHEMA_INSTANCE, "type");
+                //attr.setPrefix("xsi");
+                //attr.setValue("string");
+                //attrValue.setAttributeNodeNS(attr);
+                attrValue.setTextContent(role.schemeCreateUrlForTranceCellToken(this.issuer));
+                attributeRoles.appendChild(attrValue);
+            }
         }
-        attrStmt.appendChild(attribute);
+        attrStmt.appendChild(attributeRoles);
+
+        // -- Scopes
+        Element attributeScopes = doc.createElement("Attribute");
+        attributeScopes.setAttribute("Name", "Scopes");
+        attributeRoles.setAttribute("NameFormat", CommonUtils.XmlConst.NS_PERSONIUM);
+        if (this.getScope() != null) {
+            for (String scope : this.getScope()) {
+                Element attrValue = doc.createElement("AttributeValue");
+                //Attr attr = doc.createAttributeNS(CommonUtils.XmlConst.NS_XML_SCHEMA_INSTANCE, "type");
+                //attr.setPrefix("xsi");
+                //attr.setValue("string");
+                //attrValue.setAttributeNodeNS(attr);
+                attrValue.setTextContent(scope);
+                attributeScopes.appendChild(attrValue);
+            }
+        }
+        attrStmt.appendChild(attributeScopes);
         assertion.appendChild(attrStmt);
+
 
         // Normalization を実施
         doc.normalizeDocument();
@@ -429,11 +473,19 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             }
 
             List<Role> roles = new ArrayList<Role>();
-            NodeList attrList = assertion.getElementsByTagName("AttributeValue");
-            for (int i = 0; i < attrList.getLength(); i++) {
-                Element attv = (Element) (attrList.item(i));
-                roles.add(new Role(new URL(attv.getTextContent())));
+            Set<String> scopes = new HashSet<>();
+
+            NodeList attributeList = assertion.getElementsByTagName("Attribute");
+            for (int i = 0; i < attributeList.getLength(); i++) {
+                Element attrElem = (Element) (attributeList.item(i));
+                String attrName = attrElem.getAttribute("Name");
+                if (attrName == null || "Roles".equals(attrName)) {
+                    roles = parseRoles(attrElem);
+                } else if ("Scopes".equals(attrName)) {
+                    scopes = parseScopes(attrElem);
+                }
             }
+
 
             NodeList nl = assertion.getElementsByTagName("Signature");
             if (nl.getLength() == 0) {
@@ -506,7 +558,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
                 throw new TokenDsigException("Signature failed core validation. unkwnon reason.");
             }
             return new TransCellAccessToken(id, dt.getMillis(), lifespan, issuer.getTextContent(),
-                    subjectNameID.getTextContent(), target, roles, schema);
+                    subjectNameID.getTextContent(), target, roles, schema, scopes.toArray(new String[0]));
         } catch (UnsupportedEncodingException e) {
             throw new TokenParseException(e.getMessage(), e);
         } catch (SAXException e) {
@@ -515,6 +567,26 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             throw new TokenParseException(e.getMessage(), e);
         }
     }
+    private static List<Role> parseRoles(Element e) throws MalformedURLException, DOMException {
+        List<Role> ret = new ArrayList<>();
+        NodeList attrList = e.getElementsByTagName("AttributeValue");
+        for (int i = 0; i < attrList.getLength(); i++) {
+            Element attv = (Element) (attrList.item(i));
+            ret.add(new Role(new URL(attv.getTextContent())));
+        }
+
+        return ret;
+    }
+    private static Set<String> parseScopes(Element e) {
+        Set<String> ret = new HashSet<>();
+        NodeList attrList = e.getElementsByTagName("AttributeValue");
+        for (int i = 0; i < attrList.getLength(); i++) {
+            Element attv = (Element) (attrList.item(i));
+            ret.add(attv.getTextContent());
+        }
+        return ret;
+    }
+
 
     @Override
     public String getTarget() {
@@ -621,8 +693,8 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     @Override
-    public String[] getScopes() {
-        return null;
+    public String[] getScope() {
+        return this.scope;
     }
 
 }

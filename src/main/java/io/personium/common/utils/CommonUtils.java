@@ -187,6 +187,8 @@ public final class CommonUtils {
         public static final String NS_PERSONIUM = "urn:x-personium:xmlns";
         /** XML Name Space p:. */
         public static final String NS_PREFIX_PERSONIUM = "p";
+        /** http://www.w3.org/2001/XMLSchema-instance. */
+        public static final String NS_XML_SCHEMA_INSTANCE = "http://www.w3.org/2001/XMLSchema-instance";
 
         /** service. */
         public static final String SERVICE = "service";

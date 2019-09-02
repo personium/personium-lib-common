@@ -81,9 +81,9 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
             final String subject,
             final String origIssuer,
             final List<Role> origRoleList,
-            final String schema) {
-        // TODO Scope null?
-        super(issuedAt, lifespan, issuer, subject, schema, null);
+            final String schema,
+            final String[] scope) {
+        super(issuedAt, lifespan, issuer, subject, schema, scope);
         this.id = id;
         this.originalIssuer = origIssuer;
         this.roleList = origRoleList;
@@ -106,8 +106,10 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
             final String subject,
             final String origIssuer,
             final List<Role> origRoleList,
-            final String schema) {
-        this(id, issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS, issuer, subject, origIssuer, origRoleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(id, issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS,
+                issuer, subject, origIssuer, origRoleList, schema, scope);
     }
 
     /**
@@ -125,8 +127,9 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
             final String subject,
             final String origIssuer,
             final List<Role> origRoleList,
-            final String schema) {
-        this(id, new DateTime().getMillis(), issuer, subject, origIssuer, origRoleList, schema);
+            final String schema,
+            final String[] scope) {
+        this(id, new DateTime().getMillis(), issuer, subject, origIssuer, origRoleList, schema, scope);
     }
 
     @Override
@@ -185,9 +188,9 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     public IAccessToken refreshAccessToken(final long issuedAt, final long lifespan, final String target, String url,
             List<Role> role) {
         if (target == null) {
-            return new VisitorLocalAccessToken(issuedAt, lifespan, url, this.getSubject(), role, schema);
+            return new VisitorLocalAccessToken(issuedAt, lifespan, url, this.getSubject(), role, schema, scope);
         } else {
-            return new TransCellAccessToken(issuedAt, lifespan, url, this.getSubject(), target, role, schema);
+            return new TransCellAccessToken(issuedAt, lifespan, url, this.getSubject(), target, role, schema, scope);
         }
     }
 
@@ -207,7 +210,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
         // TODO 本当は ROLEは再度読み直すべき。
         return new VisitorRefreshToken(UUID.randomUUID().toString(), issuedAt, lifespan, this.issuer, this.subject,
-                this.originalIssuer, this.getRoles(), this.schema);
+                this.originalIssuer, this.getRoles(), this.schema, this.scope);
     }
 
 

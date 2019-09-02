@@ -151,7 +151,7 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
         } else {
             // 自分セルローカル払い出し時に払い出されるリフレッシュトークンにはロール入ってないので取得する。
             return new TransCellAccessToken(issuedAt, lifespan, this.issuer, cellUrl + "#" + this.getSubject(),
-                    target, roleList, schema);
+                    target, roleList, schema, scope);
         }
     }
 
