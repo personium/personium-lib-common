@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014-2019 Personium Project
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,22 +38,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ファイルシステムに対してWebDAVのバイナリファイルの入出力を行うアクセサクラス.
+ * Accessor class that performs WebDAV File input / output against File System.
  */
-public class BinaryDataAccessor {
+public class FileDataAccessor {
 
-    private static Logger logger = LoggerFactory.getLogger(BinaryDataAccessor.class);
+    private static Logger logger = LoggerFactory.getLogger(FileDataAccessor.class);
 
     /**
      * Davファイルの読み書き時、ハードリンク作成/ファイル名改変時の最大リトライ回数.
-     * ※本クラスは、Coreに含まれないため、personnium-unit-config.propertiesを参照できないものと考え、システムプロパティで処理を行うものとする
+     * ※本クラスは、Coreに含まれないため、personnium-unit-config.propertiesを参照できないものと考え、
+     * システムプロパティで処理を行うものとする
      */
     private static int maxRetryCount = Integer.parseInt(System.getProperty(
             "io.personium.core.binaryData.dav.retry.count", "100"));
 
     /**
      * Davファイルの読み書き時、ハードリンク作成/ファイル名改変時のリトライ間隔(msec).
-     * ※本クラスは、Coreに含まれないため、personium-unit-config.propertiesを参照できないものと考え、システムプロパティで処理を行うものとする
+     * ※本クラスは、Coreに含まれないため、personium-unit-config.propertiesを参照できないものと考え、
+     * システムプロパティで処理を行うものとする
      */
     private static long retryInterval = Long.parseLong(System.getProperty(
             "io.personium.core.binaryData.dav.retry.interval", "50"));
@@ -64,12 +67,12 @@ public class BinaryDataAccessor {
     private boolean fsyncEnabled = false;
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param path 格納ディレクトリ
      * @param unitUserName ユニットユーザ名
      * @param fsyncEnabled ファイル書き込み時にfsyncを有効にするか否か（true: 有効, false: 無効）
      */
-    public BinaryDataAccessor(String path, String unitUserName, boolean fsyncEnabled) {
+    public FileDataAccessor(String path, String unitUserName, boolean fsyncEnabled) {
         this.baseDir = path;
         if (!this.baseDir.endsWith("/")) {
             this.baseDir += "/";
@@ -79,13 +82,13 @@ public class BinaryDataAccessor {
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      * @param path 格納ディレクトリ
      * @param unitUserName ユニットユーザ名
      * @param isPhysicalDeleteMode ファイル削除時に物理削除するか（true: 物理削除, false: 論理削除）
      * @param fsyncEnabled ファイル書き込み時にfsyncを有効にするか否か（true: 有効, false: 無効）
      */
-    public BinaryDataAccessor(String path, String unitUserName, boolean isPhysicalDeleteMode, boolean fsyncEnabled) {
+    public FileDataAccessor(String path, String unitUserName, boolean isPhysicalDeleteMode, boolean fsyncEnabled) {
         this.baseDir = path;
         if (!this.baseDir.endsWith("/")) {
             this.baseDir += "/";
@@ -99,13 +102,13 @@ public class BinaryDataAccessor {
      * ファイルをストリームにコピーする.
      * @param filename ファイル名
      * @param outputStream コピー先ストリーム
-     * @throws BinaryDataAccessException ファイル入出力で異常が発生した場合にスローする
+     * @throws FileDataAccessException ファイル入出力で異常が発生した場合にスローする
      * @return コピーしたバイト数
      */
-    public long copy(String filename, OutputStream outputStream) throws BinaryDataAccessException {
+    public long copy(String filename, OutputStream outputStream) throws FileDataAccessException {
         String fullPathName = getFilePath(filename);
         if (!exists(fullPathName)) {
-            throw new BinaryDataNotFoundException(fullPathName);
+            throw new FileDataNotFoundException(fullPathName);
         }
         return writeToStream(fullPathName, outputStream);
     }
@@ -113,9 +116,9 @@ public class BinaryDataAccessor {
     /**
      * ファイルを削除する. 設定に従い、論理削除(デフォルト)／物理削除を行う 対象ファイルが存在しない場合は何もしない
      * @param filename ファイル名
-     * @throws BinaryDataAccessException ファイル入出力で異常が発生した場合にスローする
+     * @throws FileDataAccessException ファイル入出力で異常が発生した場合にスローする
      */
-    public void delete(String filename) throws BinaryDataAccessException {
+    public void delete(String filename) throws FileDataAccessException {
         String fullPathName = getFilePath(filename);
         deleteWithFullPath(fullPathName);
     }
@@ -123,9 +126,9 @@ public class BinaryDataAccessor {
     /**
      * ファイルを削除する（フルパス指定）. 設定に従い、論理削除(デフォルト)／物理削除を行う 対象ファイルが存在しない場合は何もしない
      * @param filepath ファイルパス
-     * @throws BinaryDataAccessException ファイル入出力で異常が発生した場合にスローする
+     * @throws FileDataAccessException ファイル入出力で異常が発生した場合にスローする
      */
-    public void deleteWithFullPath(String filepath) throws BinaryDataAccessException {
+    public void deleteWithFullPath(String filepath) throws FileDataAccessException {
         if (exists(filepath)) {
             if (this.isPhysicalDeleteMode) {
                 deletePhysicalFileWithFullPath(filepath);
@@ -138,9 +141,9 @@ public class BinaryDataAccessor {
     /**
      * ファイルを物理削除する.
      * @param filepath ファイル名(フルパス)
-     * @throws BinaryDataAccessException ファイル入出力で異常が発生した場合にスローする
+     * @throws FileDataAccessException ファイル入出力で異常が発生した場合にスローする
      */
-    private void deletePhysicalFileWithFullPath(String filepath) throws BinaryDataAccessException {
+    private void deletePhysicalFileWithFullPath(String filepath) throws FileDataAccessException {
         Path file = new File(filepath).toPath();
         for (int i = 0; i < maxRetryCount; i++) {
             try {
@@ -158,7 +161,7 @@ public class BinaryDataAccessor {
                 }
             }
         }
-        throw new BinaryDataAccessException("Failed to delete file: " + filepath);
+        throw new FileDataAccessException("Failed to delete file: " + filepath);
     }
 
     /**
@@ -196,21 +199,21 @@ public class BinaryDataAccessor {
         return filename.substring(index, index + SUBDIR_NAME_LEN);
     }
 
-    private long writeToStream(String fullPathName, OutputStream outputStream) throws BinaryDataAccessException {
+    private long writeToStream(String fullPathName, OutputStream outputStream) throws FileDataAccessException {
         FileInputStream inputStream = null;
         try {
             inputStream = new FileInputStream(fullPathName);
             return copyStream(inputStream, outputStream);
         } catch (FileNotFoundException e) {
-            throw new BinaryDataNotFoundException(fullPathName);
-        } catch (BinaryDataAccessException ex) {
-            throw new BinaryDataAccessException("WriteToStreamFailed:" + fullPathName, ex);
+            throw new FileDataNotFoundException(fullPathName);
+        } catch (FileDataAccessException ex) {
+            throw new FileDataAccessException("WriteToStreamFailed:" + fullPathName, ex);
         } finally {
             closeInputStream(inputStream);
         }
     }
 
-    private long copyStream(InputStream inputStream, OutputStream outputStream) throws BinaryDataAccessException {
+    private long copyStream(InputStream inputStream, OutputStream outputStream) throws FileDataAccessException {
         BufferedInputStream bufferedInput = null;
         BufferedOutputStream bufferedOutput = null;
         try {
@@ -225,7 +228,7 @@ public class BinaryDataAccessor {
             }
             return totalBytes;
         } catch (IOException ex) {
-            throw new BinaryDataAccessException("CopyStreamFailed.", ex);
+            throw new FileDataAccessException("CopyStreamFailed.", ex);
         } finally {
             closeOutputStream(bufferedOutput);
             closeInputStream(bufferedInput);
@@ -300,7 +303,7 @@ public class BinaryDataAccessor {
         return null;
     }
 
-    private void deleteFile(String srcFullPathName) throws BinaryDataAccessException {
+    private void deleteFile(String srcFullPathName) throws FileDataAccessException {
         String dstFullPathName = srcFullPathName + ".deleted";
         File srcFile = new File(srcFullPathName);
         File dstFile = new File(dstFullPathName);
@@ -321,7 +324,6 @@ public class BinaryDataAccessor {
                 }
             }
         }
-        throw new BinaryDataAccessException("Failed to delete file: " + srcFullPathName);
+        throw new FileDataAccessException("Failed to delete file: " + srcFullPathName);
     }
-
 }

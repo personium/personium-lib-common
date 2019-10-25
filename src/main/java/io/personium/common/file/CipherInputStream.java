@@ -1,5 +1,5 @@
 /**
- * personium.io
+ * Personium
  * Modifications copyright 2014 FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  * limitations under the License.
  * --------------------------------------------------
  * This code is based on CipherInputStream.java, and some modifications
- * for personium.io are applied by us.
+ * for Personium are applied by us.
  *  - The length of the stream before encryption can be acquired.
  * --------------------------------------------------
  * The copyright and the license text of the original code is as follows:
