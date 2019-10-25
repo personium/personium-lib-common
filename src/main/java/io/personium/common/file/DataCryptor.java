@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.personium.core.model.file;
+package io.personium.common.file;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;

@@ -17,5 +17,5 @@
 /**
  * イベントバス用ログファイルのローテートに関するパッケージ.
  */
-package io.personium.logging.rolling;
+package io.personium.common.logging.rolling;
 
