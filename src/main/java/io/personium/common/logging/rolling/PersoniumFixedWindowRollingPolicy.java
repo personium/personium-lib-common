@@ -31,7 +31,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package io.personium.logging.rolling;
+package io.personium.common.logging.rolling;
 
 import java.io.File;
 import java.io.IOException;

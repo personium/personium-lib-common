@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.personium.core.model.file;
+package io.personium.common.file;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -29,6 +29,9 @@ import javax.crypto.Cipher;
 import org.apache.commons.lang.CharEncoding;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import io.personium.common.file.CipherInputStream;
+import io.personium.common.file.DataCryptor;
 
 /**
  * Unit Test class for DataCryptor.<br>
