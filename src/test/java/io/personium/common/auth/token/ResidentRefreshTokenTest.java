@@ -117,7 +117,6 @@ public class ResidentRefreshTokenTest {
         List<Role> roleList = new ArrayList<>();
         Role role = new Role("roleName");
         roleList.add(role);
-        String schema = null;
 
         // --------------------
         // Mock settings

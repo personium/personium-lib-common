@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014-2019 Personium Project
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,32 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.personium.core.model.file;
+package io.personium.common.file;
 
 /**
- * バイナリデータの入出力時にスローする例外.
+ * Exception thrown upon File Data input / output.
  */
-public class BinaryDataAccessException extends Exception {
+public class FileDataNotFoundException extends FileDataAccessException {
 
     /**
-     * デフォルトシリアルバージョンID.
+     * Default Serial Version ID.
      */
     private static final long serialVersionUID = 1L;
 
     /**
-     * コンストラクタ.
-     * @param msg メッセージ
-     * @param cause 原因となったThrowable
+     * Constructor.
+     * @param msg Message
+     * @param cause Causing Throwable
      */
-    public BinaryDataAccessException(String msg, Throwable cause) {
+    public FileDataNotFoundException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
     /**
-     * コンストラクタ.
-     * @param msg メッセージ
+     * Constructor.
+     * @param msg Message
      */
-    public BinaryDataAccessException(String msg) {
+    public FileDataNotFoundException(String msg) {
         super(msg);
     }
 }

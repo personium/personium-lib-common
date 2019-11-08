@@ -17,5 +17,5 @@
 /**
  * バイナリデータ(WebDAV)アクセス.
  */
-package io.personium.core.model.file;
+package io.personium.common.file;
 
