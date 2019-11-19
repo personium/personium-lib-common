@@ -23,38 +23,38 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Roleの定義体.
+ * model of the Role in Personium.
  */
 public class Role {
     /**
-     * Edm EntityType名.
+     * Edm EntityType Name.
      */
     public static final String EDM_TYPE_NAME = "Role";
 
     /**
-     * ロールの名称.
+     * Role Name.
      */
     private String name;
     /**
-     * ロールの属するボックスオブジェクト.
+     * Name of the box, if any, which this box is bound to.
      */
     private String boxName;
     /**
-     * ロールの属するボックスのSchema.
+     * Schema Uri of the box, if any, which this box is bound to.
      */
     private String boxSchema;
     /**
-     * ロールリソースのベースURL.
+     * Cell URL of the role resource corresponding to this role.
      */
     private String baseUrl;
 
     /**
-     * コンストラクタ.
-     * @param url ロールリソースのURL
-     * @throws MalformedURLException URLが不正な場合に発生
+     * Constructor.
+     * @param url Role Resource URL
+     * @throws MalformedURLException if URL is malformed
      */
     public Role(URL url) throws MalformedURLException {
-        // ロールリソースのURL↓
+        // Role Resource URL looks like this.
         // https://localhost:8080/dc1-core/testcell1/__role/box1/rolename
         Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
         Matcher matcher = pattern.matcher(url.toString());
@@ -68,10 +68,10 @@ public class Role {
 
     /**
      * Constructor.
-     * @param name ロール名.
-     * @param boxName ロールの属するボックス名.
-     * @param boxSchema ロールの属するボックスのSchema
-     * @param baseUrl ロールの属するセルのURL
+     * @param name Role Name.
+     * @param boxName Name of the box this role is bound to.
+     * @param boxSchema Schema URI of the box  this role is bound to.
+     * @param baseUrl Cell URL of this role
      */
     public Role(final String name, final String boxName, final String boxSchema, final String baseUrl) {
         this.name = name;
@@ -99,17 +99,17 @@ public class Role {
     }
 
     /**
-     * スキーマ用ロールリソースのURLを返す.
+     * Returns Role instance URL for this role.
      * @param url ロールリソースのベースURL
-     * @return String ロールリソースのURL
+     * @return Role instance URL.
      */
     public String schemeCreateUrl(String url) {
-        // ロールに紐付くBox判断
+        // Roleに紐付くBox判断
         String boxName2 = null;
         if (this.boxName != null) {
             boxName2 = this.boxName;
         } else {
-            // 紐付かない場合、use main box name.
+            // If not bound to any box, then use main box name.
             boxName2 = MAIN_BOX_NAME;
         }
         String url3 = createBaseUrl(url);
@@ -135,7 +135,7 @@ public class Role {
         String url2 = null;
         if (this.boxName != null && this.boxSchema != null && !"null".equals(this.boxSchema)) {
             // BOXに紐付いている場合BOXに設定されているスキーマURLをBaseURLに使う
-            // なお、BOXにスキーマURLが設定されていない場合は設定ミスの可能性があるので紐付いていないとみなす。
+            // aなお、BOXにスキーマURLが設定されていない場合は設定ミスの可能性があるので紐付いていないとみなす。
             url2 = this.boxSchema;
         } else {
             // BOXに紐付いていない場合ISSUERをBaseURLに使う
@@ -174,32 +174,32 @@ public class Role {
     }
 
     /**
-     * ロール名を取得する.
-     * @return name ロール名
+     * gets the name of this role.
+     * @return Role Name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 属するボックス名を取得する.
-     * @return boxName ボックス名.
+     * gets the name of the box this role is bound to.
+     * @return Name of the box this role is bound to.
      */
     public String getBoxName() {
         return boxName;
     }
 
     /**
-     * 属するボックスのスキーマ名を取得する.
-     * @return boxSchema スキーマ名.
+     * gets the schema uri of the box this role is bound to.
+     * @return schema uri of the box this role is bound to.
      */
     public String getBoxSchema() {
         return boxSchema;
     }
 
     /**
-     * 属するBaseUrlを取得する.
-     * @return baseUrl ベースURL.
+     * gets the Base Url of the role.
+     * @return base Url of the role.
      */
     public String getBaseUrl() {
         return baseUrl;
@@ -210,11 +210,11 @@ public class Role {
     private static final int INDEX_ROLE_URL_BOX_NAME = 2;
     private static final int INDEX_ROLE_URL_ROLE_NAME = 3;
     /**
-     * RoleリソースURLフォーマット.
+     * Role Resource URL format.
      */
     public static final String ROLE_RESOURCE_FORMAT = "%s/__role/%s/%s";
     /**
-     * デフォルトボックス名.
+     * Main Box Name.
      */
     public static final String MAIN_BOX_NAME = "__";
 
