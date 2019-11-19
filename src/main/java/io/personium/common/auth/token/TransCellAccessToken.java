@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -572,7 +571,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         NodeList attrList = e.getElementsByTagName("AttributeValue");
         for (int i = 0; i < attrList.getLength(); i++) {
             Element attv = (Element) (attrList.item(i));
-            ret.add(new Role(new URL(attv.getTextContent())));
+            ret.add(Role.createFromRoleClassUrl(attv.getTextContent()));
         }
 
         return ret;
@@ -587,12 +586,17 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         return ret;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getTarget() {
         return this.target;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getId() {
         return this.id;
@@ -677,6 +681,9 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getExtCellUrl() {
         return this.getIssuer();
@@ -692,9 +699,11 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String[] getScope() {
         return this.scope;
     }
-
 }

@@ -65,6 +65,31 @@ public class Role {
         this.boxName = matcher.group(INDEX_ROLE_URL_BOX_NAME);
         this.baseUrl = matcher.group(INDEX_ROLE_URL_BASE);
     }
+    public static Role createFromRoleClassUrl(String roleClassUrl) throws MalformedURLException {
+        Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
+        Matcher matcher = pattern.matcher(roleClassUrl);
+        if (!matcher.find()) {
+            throw new MalformedURLException("This is not a role class url. [" + roleClassUrl + "]");
+        }
+        String name = matcher.group(INDEX_ROLE_URL_ROLE_NAME);
+        String boxName = matcher.group(INDEX_ROLE_URL_BOX_NAME);
+        String baseUrl = matcher.group(INDEX_ROLE_URL_BASE);
+        if (!MAIN_BOX_NAME.equals(boxName)) {
+            throw new MalformedURLException("This is not a role class url. [" + roleClassUrl + "]");
+        }
+        return new Role(name, boxName, baseUrl, baseUrl); 
+    }
+    public static Role createFromRoleInstanceUrl(String roleInstanceUrl) throws MalformedURLException {
+        Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
+        Matcher matcher = pattern.matcher(roleInstanceUrl);
+        if (!matcher.find()) {
+            throw new MalformedURLException("This is not a role instance url. [" + roleInstanceUrl + "]");
+        }
+        String name = matcher.group(INDEX_ROLE_URL_ROLE_NAME);
+        String boxName = matcher.group(INDEX_ROLE_URL_BOX_NAME);
+        String baseUrl = matcher.group(INDEX_ROLE_URL_BASE);
+        return new Role(name, boxName, baseUrl, baseUrl); 
+    }
 
     /**
      * Constructor.
