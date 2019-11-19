@@ -199,7 +199,6 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
      */
     @Override
     public IRefreshToken refreshRefreshToken(final long issuedAt) {
-        // TODO 本当は ROLEは再度読み直すべき。
         return refreshRefreshToken(issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS);
     }
 
