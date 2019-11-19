@@ -147,25 +147,6 @@ public class Role {
     }
 
     /**
-     * ローカル用ロールリソースのURLを返す.
-     * @param url ロールリソースのベースURL
-     * @return String ロールリソースのURL
-     */
-    public String localCreateUrl(String url) {
-        // ロールに紐付くBox判断
-        String boxName2 = null;
-        if (this.boxName != null) {
-            boxName2 = this.boxName;
-        } else {
-            // 紐付かない場合、デフォルトボックス名を使用する
-            boxName2 = MAIN_BOX_NAME;
-        }
-        // 連結でスラッシュつけてるので、URLの最後がスラッシュだったら消す。
-        String url3 = url.replaceFirst("/$", "");
-        return String.format(ROLE_RESOURCE_FORMAT, url3, boxName2, this.name);
-    }
-
-    /**
      * ロールリソースのURLを返す.
      * @return String ロールリソースのURL
      */
