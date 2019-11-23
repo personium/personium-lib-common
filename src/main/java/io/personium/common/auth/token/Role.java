@@ -160,7 +160,7 @@ public class Role {
         String url2 = null;
         if (this.boxName != null && this.boxSchema != null && !"null".equals(this.boxSchema)) {
             // BOXに紐付いている場合BOXに設定されているスキーマURLをBaseURLに使う
-            // aなお、BOXにスキーマURLが設定されていない場合は設定ミスの可能性があるので紐付いていないとみなす。
+            // なお、BOXにスキーマURLが設定されていない場合は設定ミスの可能性があるので紐付いていないとみなす。
             url2 = this.boxSchema;
         } else {
             // BOXに紐付いていない場合ISSUERをBaseURLに使う
