@@ -170,9 +170,18 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         //
         String[] frag = tokenDecoded.split(SEPARATOR, -1);
 
-        // If wrong format, throw exception
+        // If the number of the fields is not as expected
+        if (frag.length != numFields) {
+            throw new TokenParseException(
+                "unexpected field length, expected: [" + numFields +"], actual=[" + frag.length + "]"
+            );
+        }
+
+        // If the issuer mismatch, throw exception
         if (!issuer.equals(frag[IDX_ISSUER])) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(
+                    "issuer mismatch, expected: [" + issuer +"], actual=[" + frag[IDX_ISSUER] + "]"
+                );
         }
 
         return frag;
@@ -238,29 +247,29 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         try {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
         } catch (NoSuchAlgorithmException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(e);
         } catch (NoSuchPaddingException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(e);
         }
         try {
             cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(ivBytes));
         } catch (InvalidKeyException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(e);
         } catch (InvalidAlgorithmParameterException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(e);
         }
         byte[] plainBytes;
         try {
             plainBytes = cipher.doFinal(inBytes);
         } catch (IllegalBlockSizeException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(e);
         } catch (BadPaddingException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(e);
         }
         try {
             return new String(plainBytes, CharEncoding.UTF_8);
         } catch (UnsupportedEncodingException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(e);
         }
     }
 
@@ -286,8 +295,5 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         } else {
             throw new TokenParseException("peer does not match");
         }
-
     }
-
-
 }
