@@ -21,6 +21,7 @@ package io.personium.common.auth.token;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
@@ -208,9 +209,12 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      */
     protected static byte[] getIvBytes(final String issuer) {
         try {
-            return StringUtils.reverse("123456789abcdefg" + issuer)
-                    .substring(0, IV_BYTE_LENGTH).getBytes(CharEncoding.UTF_8);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(issuer.getBytes(CharEncoding.UTF_8));
+            return Arrays.copyOfRange(hash, 3, 19);
         } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
