@@ -68,11 +68,11 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     }
 
     /**
-     * Key文字列を設定します。
-     * @param keyString キー文字列.
+     * set the Key string.
+     * @param keyString Key String.
      */
     public static void setKeyString(String keyString) {
-        keyBytes = keyString.getBytes(); // 16/24/32バイトの鍵バイト列
+        keyBytes = keyString.getBytes(); // 16/24/32 byte key byte array
         aesKey = new SecretKeySpec(keyBytes, "AES");
     }
 
@@ -84,12 +84,12 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
 
 
     /**
-     * 明示的な有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan 有効時間(ミリ秒)
-     * @param issuer 発行者
-     * @param subject 主体
-     * @param schema スキーマ
+     * generates a token by explicitly specifying the contentns.
+     * @param issuedAt time when the token is issued at (millisec from the epoch)
+     * @param lifespan valid time (in millisec)
+     * @param issuer Issuer
+     * @param subject Subject
+     * @param schema Schema
      */
     public AbstractLocalToken(final long issuedAt, final long lifespan, final String issuer,
              final String subject, final String schema, String[] scope) {
@@ -116,7 +116,8 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         StringBuilder raw = new StringBuilder();
 
 
-        // 発行時刻のEpochからのミリ秒を逆順にした文字列が先頭から入るため、推測しづらい。
+        // Make it difficult to attack.
+        // by starting from the reverse string of epoch millisec of issue time.
         String iaS = Long.toString(this.issuedAt);
         String iaSr = StringUtils.reverse(iaS);
         raw.append(iaSr);
@@ -152,14 +153,14 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
 
 
     /**
-     * パース処理.
-     * パース結果のフィールド数がnumFieldsと一致すること.
-     * パース結果のissuerがissuerと一致すること.
-     * @param token トークン
-     * @param issuer 発行者
-     * @param numFields フィールド数
-     * @return パースされたトークン
-     * @throws AbstractOAuth2Token.TokenParseException トークン解釈に失敗したとき
+     * parse token string.
+     * It also checks if the number of the fields is as expected.
+     * and if the issuer of the parsed token is as expected.
+     * @param token token to parsing
+     * @param issuer assumed issuer
+     * @param numFields expected number of fields
+     * @return parsed token as an string array.
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the token
      */
     static String[] doParse(final String token, final String issuer,
       final int numFields) throws AbstractOAuth2Token.TokenParseException {
@@ -192,9 +193,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     }
 
     /**
-     * 指定のIssuer向けのIV (Initial Vector)を生成して返します.
-     * IVとしてissuerの最後の最後の１６文字を逆転させた文字列を用います。
-     * これにより、違うIssuerを想定してパースすると、パースに失敗する。
+     * Generate an IV (Initial Vector) and return it for a specified token issuer.
      * @param issuer Issuer URL
      * @return Initial Vector Byte array
      */
@@ -208,13 +207,12 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     }
 
     /**
-     * 文字列を暗号化する.
-     * @param in 入力文字列
-     * @param ivBytes イニシャルベクトル
-     * @return 暗号化された文字列
+     * encode a string using an initial vector.
+     * @param in plain string to encode
+     * @param ivBytes Initial Vector bytes
+     * @return encoded string
      */
     public static String encode(final String in, final byte[] ivBytes) {
-        // IVに、発行CELLのURL逆順を入れることで、より短いトークンに。
         Cipher cipher;
         try {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
@@ -228,11 +226,11 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     }
 
     /**
-     * 復号する.
-     * @param in 暗号化文字列
-     * @param ivBytes イニシャルベクトル
-     * @return 復号された文字列
-     * @throws AbstractOAuth2Token.TokenParseException 例外
+     * decode a ciphered string using an initial vector.
+     * @param in ciphered string
+     * @param ivBytes Initial Vector bytes
+     * @return decoded string
+     * @throws AbstractOAuth2Token.TokenParseException
      */
     public static String decode(final String in, final byte[] ivBytes) throws AbstractOAuth2Token.TokenParseException {
         byte[] inBytes = CommonUtils.decodeBase64Url(in);
