@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +22,17 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import org.junit.Test;
 
 /**
- * トークン処理ライブラリのユニットテストクラス.
+ * Unit test class for Role class.
  */
 public class RoleTest {
 
     /**
-     * Roleのコンストラクタのテスト.
-     * @throws MalformedURLException URLパースエラー
+     * test for the constructor.
+     * @throws MalformedURLException
      */
     @Test
     public void testRoleConstruct() throws MalformedURLException {
@@ -43,8 +45,9 @@ public class RoleTest {
     }
 
     /**
-     * Roleのコンストラクタのテスト(URLがbaseURLまでしか設定されていない).
-     * @throws MalformedURLException URLパースエラー
+     * test for the constructor.
+     * (URL is configured only upto baseURL).
+     * @throws MalformedURLException
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBaseUrl() throws MalformedURLException {
@@ -55,8 +58,8 @@ public class RoleTest {
     }
 
     /**
-     * Roleのコンストラクタのテスト(URLに"__role"までしかない).
-     * @throws MalformedURLException URLパースエラー
+     * test for the constructor (URL is cut after "__role").
+     * @throws MalformedURLException
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithUnderbar() throws MalformedURLException {
@@ -67,8 +70,8 @@ public class RoleTest {
     }
 
     /**
-     * Roleのコンストラクタのテスト(URLにBox名までしかない).
-     * @throws MalformedURLException URLパースエラー
+     * test for the constructor (URL is cut after the box name).
+     * @throws MalformedURLException
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBox() throws MalformedURLException {
@@ -80,7 +83,7 @@ public class RoleTest {
 
     /**
      * Roleのコンストラクタのテスト(URLがURL形式ではない).
-     * @throws MalformedURLException URLパースエラー
+     * @throws MalformedURLException
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBadURL() throws MalformedURLException {
