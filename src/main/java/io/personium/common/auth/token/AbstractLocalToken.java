@@ -32,7 +32,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.crypto.dsig.DigestMethod;
 
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
@@ -49,6 +48,8 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      */
     public static final String AES_CBC_PKCS5_PADDING = "AES/CBC/PKCS5Padding";
     static final String SEPARATOR = "\t";
+    static final String SHA256 = "SHA256";
+    static final String AES = "AES";
     static final int IV_BYTE_LENGTH = 16;
     static final int IV_OFFSET_FROM_SHA256 = 3;
 
@@ -76,7 +77,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      */
     public static void setKeyString(String keyString) {
         keyBytes = keyString.getBytes(); // 16/24/32 byte key byte array
-        aesKey = new SecretKeySpec(keyBytes, "AES");
+        aesKey = new SecretKeySpec(keyBytes, AES);
     }
 
     /**
@@ -211,7 +212,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      */
     protected static byte[] getIvBytes(final String issuer) {
         try {
-            MessageDigest md = MessageDigest.getInstance(DigestMethod.SHA256);
+            MessageDigest md = MessageDigest.getInstance(SHA256);
             byte[] hash = md.digest(issuer.getBytes(CharEncoding.UTF_8));
             return Arrays.copyOfRange(hash, IV_OFFSET_FROM_SHA256, IV_OFFSET_FROM_SHA256 + IV_BYTE_LENGTH);
         } catch (UnsupportedEncodingException e) {
