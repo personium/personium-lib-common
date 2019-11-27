@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014-2018 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014-2019 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +66,12 @@ public class Role {
         this.boxName = matcher.group(INDEX_ROLE_URL_BOX_NAME);
         this.baseUrl = matcher.group(INDEX_ROLE_URL_BASE);
     }
+    /**
+     * create a Role from role class url.
+     * @param roleClassUrl
+     * @return
+     * @throws MalformedURLException
+     */
     public static Role createFromRoleClassUrl(String roleClassUrl) throws MalformedURLException {
         Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
         Matcher matcher = pattern.matcher(roleClassUrl);
@@ -77,8 +84,15 @@ public class Role {
         if (!MAIN_BOX_NAME.equals(boxName)) {
             throw new MalformedURLException("This is not a role class url. [" + roleClassUrl + "]");
         }
-        return new Role(name, boxName, baseUrl, baseUrl); 
+        return new Role(name, boxName, baseUrl, baseUrl);
     }
+    /**
+     * create a Role from role instance url.
+     * note that the box schema information can not be automatically poplulated in this method.
+     * @param roleClassUrl
+     * @return
+     * @throws MalformedURLException
+     */
     public static Role createFromRoleInstanceUrl(String roleInstanceUrl) throws MalformedURLException {
         Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
         Matcher matcher = pattern.matcher(roleInstanceUrl);
@@ -88,7 +102,7 @@ public class Role {
         String name = matcher.group(INDEX_ROLE_URL_ROLE_NAME);
         String boxName = matcher.group(INDEX_ROLE_URL_BOX_NAME);
         String baseUrl = matcher.group(INDEX_ROLE_URL_BASE);
-        return new Role(name, boxName, baseUrl, baseUrl); 
+        return new Role(name, boxName, null, baseUrl);
     }
 
     /**
