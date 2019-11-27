@@ -153,7 +153,7 @@ public class TokenTest {
 
         for (Role role : roleList) {
             boolean hit = false;
-            for (Role role2 : tcToken2.getRoles()) {
+            for (Role role2 : tcToken2.getRoleList()) {
                 String roleUrl = role.schemeCreateUrl(cellRootUrl);
                 if (roleUrl.equals(role2.createUrl())) {
                     hit = true;

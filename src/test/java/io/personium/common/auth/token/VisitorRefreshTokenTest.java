@@ -144,7 +144,7 @@ public class VisitorRefreshTokenTest {
         assertThat(castActual.issuedAt, is(expectedIssuedAt));
         assertThat(castActual.getIssuer(), is(expectedIssuer));
         assertThat(castActual.getSubject(), is(expectedSubject));
-        assertThat(castActual.getRoles(), is(expectedRoleList));
+        assertThat(castActual.getRoleList(), is(expectedRoleList));
         assertThat(castActual.getSchema(), is(expectedSchema));
     }
 

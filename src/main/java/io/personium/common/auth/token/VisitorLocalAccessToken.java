@@ -119,9 +119,5 @@ public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements
         return this.issuer;
     }
 
-    @Override
-    public List<Role> getRoleList() {
-        return this.roleList;
-    }
 
 }

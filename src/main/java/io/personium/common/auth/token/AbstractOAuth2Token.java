@@ -211,7 +211,7 @@ public abstract class AbstractOAuth2Token {
      * returns Role List.
      * @return Role list
      */
-    public final List<Role> getRoles() {
+    public final List<Role> getRoleList() {
         return this.roleList;
     }
 

@@ -689,10 +689,6 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         return this.getIssuer();
     }
 
-    @Override
-    public List<Role> getRoleList() {
-        return this.getRoles();
-    }
 
     @Override
     public String getCookieString(String cookiePeer, String issuer) {

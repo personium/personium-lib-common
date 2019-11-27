@@ -209,7 +209,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
         // TODO 本当は ROLEは再度読み直すべき。
         return new VisitorRefreshToken(UUID.randomUUID().toString(), issuedAt, lifespan, this.issuer, this.subject,
-                this.originalIssuer, this.getRoles(), this.schema, this.scope);
+                this.originalIssuer, this.getRoleList(), this.schema, this.scope);
     }
 
 
@@ -217,11 +217,5 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     public String getExtCellUrl() {
         return this.originalIssuer;
     }
-
-    @Override
-    public List<Role> getRoleList() {
-        return this.getRoles();
-    }
-
 
 }
