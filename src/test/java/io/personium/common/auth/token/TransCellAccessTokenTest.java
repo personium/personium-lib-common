@@ -102,9 +102,4 @@ public class TransCellAccessTokenTest {
         }
         assertEquals(sb1.toString(), sb2.toString());
     }
-
-    @Test
-    public void toSamlString_Should_Work() throws TokenParseException, TokenDsigException, TokenRootCrtException {
-        System.out.println(this.token.toSamlString());
-    }
 }
