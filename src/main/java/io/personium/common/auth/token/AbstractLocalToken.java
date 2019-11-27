@@ -48,7 +48,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      */
     public static final String AES_CBC_PKCS5_PADDING = "AES/CBC/PKCS5Padding";
     static final String SEPARATOR = "\t";
-    static final String SHA256 = "SHA256";
+    static final String SHA256 = "SHA-256";
     static final String AES = "AES";
     static final int IV_BYTE_LENGTH = 16;
     static final int IV_OFFSET_FROM_SHA256 = 3;
