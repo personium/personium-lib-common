@@ -24,9 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.crypto.SecretKey;
 
@@ -37,18 +35,20 @@ import org.junit.Test;
 import io.personium.common.auth.token.AbstractOAuth2Token.TokenParseException;
 
 /**
- * Unit Test class for GrantCode.
+ * Unit Test class for VisitorLocalAccessToken.
  */
-public class GrantCodeTest {
+public class VisitorLocalAccessTokenTest {
     static final Long ISSUED_AT = new Date().getTime();
     static final Long LIFESPAN = AbstractOAuth2Token.ACCESS_TOKEN_EXPIRES_MILLISECS;
     static final String ISSUER = "https://issuer.localhost/";
     static final String SUBJECT = "https://subject.localhost/#acc";
-    static String TARGET = "https://target.localhost/";
     static String SCHEMA = "https://schema.localhost/";
-    static String[] SCOPE = new String[] {"auth", "message-read"};
     static List<Role> ROLE_LIST = new ArrayList<>();
-    static Set<String> SCOPE_SET = new HashSet<>();
+    static String[] SCOPE = new String[] {"auth", "message-read"};
+    static {
+        ROLE_LIST.add(new Role("role1", "__", SCHEMA, ISSUER));
+        ROLE_LIST.add(new Role("role2", "__", SCHEMA, ISSUER));
+    }
 
     static byte[] shelterKeyBytes;
     static SecretKey shelterAesKey;
@@ -67,23 +67,24 @@ public class GrantCodeTest {
 
     @Test
     public void parse() throws TokenParseException {
-        GrantCode grantCode = new GrantCode(
-            ISSUED_AT, LIFESPAN,
-            ISSUER, SUBJECT, ROLE_LIST, SCHEMA, SCOPE
-        );
-        String gcStr = grantCode.toTokenString();
+        VisitorLocalAccessToken token = new VisitorLocalAccessToken(
+                ISSUED_AT, LIFESPAN,
+                ISSUER, SUBJECT, ROLE_LIST, SCHEMA, SCOPE
+            );
+        String tokenStr = token.toTokenString();
         // --------------------
         // Run method
         // --------------------
-        GrantCode gc = GrantCode.parse(gcStr, ISSUER);
+        VisitorLocalAccessToken t = VisitorLocalAccessToken.parse(tokenStr, ISSUER);
 
         // --------------------
         // Confirm result
         // --------------------
-        assertEquals(ISSUER, gc.getIssuer());
-        assertEquals(SUBJECT, gc.getSubject());
-        assertEquals(ISSUED_AT, Long.valueOf(gc.issuedAt));
-        assertEquals(LIFESPAN, Long.valueOf(gc.lifespan));
-        assertTrue(Arrays.deepEquals(SCOPE, gc.getScope()));
+        assertEquals(ISSUER, t.getIssuer());
+        assertEquals(SUBJECT, t.getSubject());
+        assertEquals(SCHEMA, t.getSchema());
+        assertEquals(ISSUED_AT, Long.valueOf(t.issuedAt));
+        assertEquals(LIFESPAN, Long.valueOf(t.lifespan));
+        assertTrue(Arrays.deepEquals(SCOPE, t.getScope()));
     }
 }

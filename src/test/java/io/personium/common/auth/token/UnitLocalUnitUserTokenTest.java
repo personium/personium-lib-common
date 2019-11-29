@@ -19,14 +19,8 @@
 package io.personium.common.auth.token;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import javax.crypto.SecretKey;
 
@@ -37,18 +31,13 @@ import org.junit.Test;
 import io.personium.common.auth.token.AbstractOAuth2Token.TokenParseException;
 
 /**
- * Unit Test class for GrantCode.
+ * Unit Test class for UnitLocalUnitUserToken.
  */
-public class GrantCodeTest {
+public class UnitLocalUnitUserTokenTest {
     static final Long ISSUED_AT = new Date().getTime();
     static final Long LIFESPAN = AbstractOAuth2Token.ACCESS_TOKEN_EXPIRES_MILLISECS;
     static final String ISSUER = "https://issuer.localhost/";
     static final String SUBJECT = "https://subject.localhost/#acc";
-    static String TARGET = "https://target.localhost/";
-    static String SCHEMA = "https://schema.localhost/";
-    static String[] SCOPE = new String[] {"auth", "message-read"};
-    static List<Role> ROLE_LIST = new ArrayList<>();
-    static Set<String> SCOPE_SET = new HashSet<>();
 
     static byte[] shelterKeyBytes;
     static SecretKey shelterAesKey;
@@ -67,23 +56,22 @@ public class GrantCodeTest {
 
     @Test
     public void parse() throws TokenParseException {
-        GrantCode grantCode = new GrantCode(
+        UnitLocalUnitUserToken token = new UnitLocalUnitUserToken(
             ISSUED_AT, LIFESPAN,
-            ISSUER, SUBJECT, ROLE_LIST, SCHEMA, SCOPE
+            SUBJECT,ISSUER
         );
-        String gcStr = grantCode.toTokenString();
+        String tokenStr = token.toTokenString();
         // --------------------
         // Run method
         // --------------------
-        GrantCode gc = GrantCode.parse(gcStr, ISSUER);
+        UnitLocalUnitUserToken t = UnitLocalUnitUserToken.parse(tokenStr, ISSUER);
 
         // --------------------
         // Confirm result
         // --------------------
-        assertEquals(ISSUER, gc.getIssuer());
-        assertEquals(SUBJECT, gc.getSubject());
-        assertEquals(ISSUED_AT, Long.valueOf(gc.issuedAt));
-        assertEquals(LIFESPAN, Long.valueOf(gc.lifespan));
-        assertTrue(Arrays.deepEquals(SCOPE, gc.getScope()));
+        assertEquals(ISSUER, t.getIssuer());
+        assertEquals(SUBJECT, t.getSubject());
+        assertEquals(ISSUED_AT, Long.valueOf(t.issuedAt));
+        assertEquals(LIFESPAN, Long.valueOf(t.lifespan));
     }
 }

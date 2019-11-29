@@ -1,6 +1,6 @@
 /**
  * Personium
- * Copyright 2019 Personium Project
+ * Copyright 2019 Personium Project Authors
  * - Akio Shimono
  * - FUJITSU LIMITED
  * - (Add Authors here)
@@ -57,8 +57,8 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
             public static int SELF_LOCAL = 0;
             public static int VISITOR_LOCAL = 1;
             public static int TRANC_CELL = 2;
-            public static int UNIT_LOCLAL_UNIT_USER = 3;
-            public static int PASSWORDCHANGE = 4;
+            public static int UNIT_LOCLAL_UNIT_USER = 6;
+            public static int PASSWORDCHANGE = 7;
         }
         public static class RefreshToken {
             public static int RESIDENT = 3;
@@ -115,15 +115,14 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     final String doCreateTokenString(final String[] extendedFields) {
         StringBuilder raw = new StringBuilder();
 
-
         // Make it difficult to attack.
         // by starting from the reverse string of epoch millisec of issue time.
+        // since starting part will change instant-by-instant.
         String iaS = Long.toString(this.issuedAt);
         String iaSr = StringUtils.reverse(iaS);
         raw.append(iaSr);
         raw.append(SEPARATOR);
         raw.append(String.valueOf(this.getType()));
-
 
         raw.append(SEPARATOR);
         raw.append(Long.toString(this.lifespan));
