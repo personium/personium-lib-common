@@ -18,9 +18,7 @@
 package io.personium.common.auth.token;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import java.util.Arrays;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,7 +53,7 @@ public class AbstractLocalTokenTest {
         byte[] b2 = AbstractLocalToken.getIvBytes(issuer2);
         log.info(this.debugStrBytes(b2));
         assertEquals(16, b2.length);
-        assertFalse(Arrays.equals(b1, b2));
+        assertNotEquals(this.debugStrBytes(b1), this.debugStrBytes(b2));
     }
     private String debugStrBytes(byte[] bytes) {
         StringBuilder sb = new StringBuilder(2 * bytes.length);

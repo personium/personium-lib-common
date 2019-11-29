@@ -1,6 +1,7 @@
 /**
  * Personium
  * Copyright 2019 Personium Project
+ * - Akio Shimono
  * - FUJITSU LIMITED
  * - (Add Authors here)
  *
@@ -19,16 +20,11 @@
 package io.personium.common.auth.token;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -88,7 +84,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
 
 
     /**
-     * generates a token by explicitly specifying the contentns.
+     * generates a token by explicitly specifying the contents.
      * @param issuedAt time when the token is issued at (millisec from the epoch)
      * @param lifespan valid time (in millisec)
      * @param issuer Issuer
@@ -184,8 +180,8 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         // If the issuer mismatch, throw exception
         if (!issuer.equals(frag[IDX_ISSUER])) {
             throw new TokenParseException(
-                    "issuer mismatch, expected: [" + issuer +"], actual=[" + frag[IDX_ISSUER] + "]"
-                );
+                "issuer mismatch, expected: [" + issuer +"], actual=[" + frag[IDX_ISSUER] + "]"
+            );
         }
 
         return frag;
@@ -215,9 +211,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
             MessageDigest md = MessageDigest.getInstance(SHA256);
             byte[] hash = md.digest(issuer.getBytes(CharEncoding.UTF_8));
             return Arrays.copyOfRange(hash, IV_OFFSET_FROM_SHA256, IV_OFFSET_FROM_SHA256 + IV_BYTE_LENGTH);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
@@ -253,29 +247,11 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         Cipher cipher;
         try {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
-        } catch (NoSuchAlgorithmException e) {
-            throw new TokenParseException(e);
-        } catch (NoSuchPaddingException e) {
-            throw new TokenParseException(e);
-        }
-        try {
             cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(ivBytes));
-        } catch (InvalidKeyException e) {
-            throw new TokenParseException(e);
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new TokenParseException(e);
-        }
-        byte[] plainBytes;
-        try {
+            byte[] plainBytes;
             plainBytes = cipher.doFinal(inBytes);
-        } catch (IllegalBlockSizeException e) {
-            throw new TokenParseException(e);
-        } catch (BadPaddingException e) {
-            throw new TokenParseException(e);
-        }
-        try {
             return new String(plainBytes, CharEncoding.UTF_8);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             throw new TokenParseException(e);
         }
     }
