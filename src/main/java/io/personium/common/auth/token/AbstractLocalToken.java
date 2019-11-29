@@ -49,8 +49,8 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     static final int IV_BYTE_LENGTH = 16;
     static final int IV_OFFSET_FROM_SHA256 = 3;
 
-    private static byte[] keyBytes;
-    private static SecretKey aesKey;
+    static byte[] keyBytes;
+    static SecretKey aesKey;
 
     public static class Type {
         public static class AccessToken {
