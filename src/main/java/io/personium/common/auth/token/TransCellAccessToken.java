@@ -356,7 +356,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
                 //attr.setPrefix("xsi");
                 //attr.setValue("string");
                 //attrValue.setAttributeNodeNS(attr);
-                attrValue.setTextContent(role.schemeCreateUrlForTranceCellToken(this.issuer));
+                attrValue.setTextContent(role.toRoleClassURL());
                 attributeRoles.appendChild(attrValue);
             }
         }

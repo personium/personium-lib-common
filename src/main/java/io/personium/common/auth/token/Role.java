@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * model of the Role in Personium.
+ * Model of the Role in Personium.
  */
 public class Role {
     /**
@@ -53,6 +53,7 @@ public class Role {
      * Constructor.
      * @param url Role Resource URL
      * @throws MalformedURLException if URL is malformed
+     * @deprecated
      */
     public Role(URL url) throws MalformedURLException {
         // Role Resource URL looks like this.
@@ -121,6 +122,7 @@ public class Role {
 
     /**
      * Constructor for test.
+     * @deprecated
      * @param name role name.
      */
     public Role(final String name) {
@@ -139,7 +141,8 @@ public class Role {
 
     /**
      * Returns Role instance URL for this role.
-     * @param url ロールリソースのベースURL
+     * @deprecated
+     * @param url base URL of role resource
      * @return Role instance URL.
      */
     public String schemeCreateUrl(String url) {
@@ -157,16 +160,53 @@ public class Role {
 
     /**
      * Returns Role class URL.
-     * @param url ロールリソースのベースURL
+     * @deprecated
+     * @param url base URL of role resource
      * @return String Role resource URL
      */
     public String schemeCreateUrlForTranceCellToken(String url) {
-        String url3 = createBaseUrl(url);
-        return String.format(ROLE_RESOURCE_FORMAT, url3, MAIN_BOX_NAME, this.name);
+        return this.toRoleClassURL();
     }
-
+    /**
+     * Returns Role class URL.
+     * @param url base URL of role resource
+     * @return String Role class URL
+     */
+    public String toRoleClassURL() {
+        if (this.boxSchema != null) {
+            return String.format(ROLE_RESOURCE_FORMAT, this.boxSchema, MAIN_BOX_NAME, this.name);
+        }
+        if (MAIN_BOX_NAME.equals(this.boxName) || this.boxName == null) {
+            if (this.baseUrl == null) {
+                throw new RuntimeException("Cannot create role class url since baseUrl is null for boxName = main");
+            }
+            return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, MAIN_BOX_NAME, this.name);
+        }
+        throw new RuntimeException("Cannot create role class url when boxSchema is null and non-main boxName is given.");
+    }
+    /**
+     * Returns Role Instance URL.
+     * @param url base URL of role resource
+     * @return String Role instance URL
+     */
+    public String toRoleInstanceURL() {
+        if (this.baseUrl == null) {
+            throw new RuntimeException("Cannot create role instance url without baseUrl.");
+        }
+        if (this.boxName == null) {
+            if (this.boxSchema != null) {
+                throw new RuntimeException("Illegal State. box schema is given but box name is null ");
+            }
+            return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, MAIN_BOX_NAME, this.name);
+        }
+        if (this.boxSchema == null) {
+            return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, MAIN_BOX_NAME, this.name);
+        }
+        return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, this.boxName, this.name);
+    }
     /**
      * BaseURLを作成する.
+     * @deprecated
      * @param url ロールリソースのベースURL
      * @return String ロールのベースURL
      */
@@ -186,6 +226,7 @@ public class Role {
     }
 
     /**
+     * @deprecated
      * ローカル用ロールリソースのURLを返す.
      * @param url ロールリソースのベースURL
      * @return String ロールリソースのURL
@@ -205,6 +246,7 @@ public class Role {
     }
 
     /**
+     * @deprecated
      * ロールリソースのURLを返す.
      * @return String ロールリソースのURL
      */
@@ -251,10 +293,9 @@ public class Role {
     /**
      * Role Resource URL format.
      */
-    public static final String ROLE_RESOURCE_FORMAT = "%s/__role/%s/%s";
+    public static final String ROLE_RESOURCE_FORMAT = "%s__role/%s/%s";
     /**
      * Main Box Name.
      */
     public static final String MAIN_BOX_NAME = "__";
-
 }

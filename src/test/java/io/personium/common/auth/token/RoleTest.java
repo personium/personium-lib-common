@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+
 import org.junit.Test;
 
 /**
@@ -29,41 +29,39 @@ import org.junit.Test;
 public class RoleTest {
 
     /**
-     * Roleのコンストラクタのテスト.
-     * @throws MalformedURLException URLパースエラー
+     * test for createFromRoleClassUrl normal usage.
+     * @throws MalformedURLException
      */
     @Test
-    public void testRoleConstruct() throws MalformedURLException {
+    public void createFromRoleClassUrl_normal() throws MalformedURLException {
         String baseUrl = "https://localhost:8080/personium-core/testcell1/";
         String roleUrl = "__role/__/role1";
-        URL url = new URL(baseUrl + roleUrl);
-        Role role = new Role(url);
+        Role role = Role.createFromRoleClassUrl(baseUrl + roleUrl);
         assertNotNull(role);
         assertEquals(baseUrl, role.getBaseUrl());
+        assertEquals(baseUrl + roleUrl, role.toRoleClassURL());
     }
 
     /**
-     * Roleのコンストラクタのテスト(URLがbaseURLまでしか設定されていない).
-     * @throws MalformedURLException URLパースエラー
+     * createFromRoleClassUrl when nonRoleUrl given should throw MalformedURLException.
+     * @throws MalformedURLException
      */
     @Test(expected = MalformedURLException.class)
-    public void testRoleConstructWithBaseUrl() throws MalformedURLException {
+    public void createFromRoleClassUrl_nonRoleUrl() throws MalformedURLException {
         String baseUrl = "https://localhost:8080/personium-core/testcell1/";
         String roleUrl = "";
-        URL url = new URL(baseUrl + roleUrl);
-        new Role(url);
+        Role.createFromRoleClassUrl(baseUrl + roleUrl);
     }
 
     /**
-     * Roleのコンストラクタのテスト(URLに"__role"までしかない).
-     * @throws MalformedURLException URLパースエラー
+     * createFromRoleClassUrl when given RoleInstanceUrl should throw MalformedURLException.
+     * @throws MalformedURLException
      */
     @Test(expected = MalformedURLException.class)
-    public void testRoleConstructWithUnderbar() throws MalformedURLException {
+    public void createFromRoleClassUrl_RoleInstanceUrl() throws MalformedURLException {
         String baseUrl = "https://localhost:8080/personium-core/testcell1/";
-        String roleUrl = "__role";
-        URL url = new URL(baseUrl + roleUrl);
-        new Role(url);
+        String roleUrl = "__role/bx/hoge";
+        Role.createFromRoleClassUrl(baseUrl + roleUrl);
     }
 
     /**
@@ -74,8 +72,7 @@ public class RoleTest {
     public void testRoleConstructWithBox() throws MalformedURLException {
         String baseUrl = "https://localhost:8080/personium-core/testcell1/";
         String roleUrl = "__role/__";
-        URL url = new URL(baseUrl + roleUrl);
-        new Role(url);
+        Role.createFromRoleClassUrl(baseUrl + roleUrl);
     }
 
     /**
@@ -85,8 +82,7 @@ public class RoleTest {
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBadURL() throws MalformedURLException {
         String baseUrl = "BadURL";
-        URL url = new URL(baseUrl);
-        new Role(url);
+        Role.createFromRoleInstanceUrl(baseUrl);
     }
 
 }

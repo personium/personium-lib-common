@@ -96,7 +96,7 @@ public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements
         VisitorLocalAccessToken ret = new VisitorLocalAccessToken();
         String[] ext = ret.populate(token.substring(PREFIX_ACCESS.length()), issuer, 1);
         try {
-            ret.roleList = AbstractOAuth2Token.parseRolesString(ext[0]);
+            ret.roleList = AbstractOAuth2Token.parseSpaceSeparatedRoleInstanceUrlString(ext[0]);
             return ret;
         } catch (MalformedURLException e) {
             throw new TokenParseException(e.getMessage(), e);
@@ -119,5 +119,9 @@ public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements
         return this.issuer;
     }
 
+    @Override
+    String makeRolesString() {
+        return makeRoleInstanceUrlListString();
+    };
 
 }

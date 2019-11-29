@@ -19,7 +19,6 @@
 package io.personium.common.auth.token;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -219,29 +218,50 @@ public abstract class AbstractOAuth2Token {
         this.roleList.add(role);
     }
 
-    final String makeRolesString() {
+    final String makeRoleClassUrlListString() {
         if (this.roleList == null || this.roleList.size() == 0) {
             return null;
         }
         StringBuilder sb = new StringBuilder();
         for (Role rl : this.roleList) {
-            sb.append(rl.createUrl());
+            sb.append(rl.toRoleClassURL());
+            sb.append(" ");
+        }
+        return sb.substring(0, sb.length() - 1);
+    }
+    final String makeRoleInstanceUrlListString() {
+        if (this.roleList == null || this.roleList.size() == 0) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Role rl : this.roleList) {
+            sb.append(rl.toRoleInstanceURL());
             sb.append(" ");
         }
         return sb.substring(0, sb.length() - 1);
     }
 
-    static List<Role> parseRolesString(final String rolesStr) throws MalformedURLException {
+
+    static List<Role> parseSpaceSeparatedRoleClassUrlString(final String rolesStr) throws MalformedURLException {
         List<Role> ret = new ArrayList<Role>();
         if ("".equals(rolesStr)) {
             return ret;
         }
         for (String s : rolesStr.split(" ")) {
-            ret.add(new Role(new URL(s)));
+            ret.add(Role.createFromRoleClassUrl(s));
         }
         return ret;
     }
-
+    static List<Role> parseSpaceSeparatedRoleInstanceUrlString(final String rolesStr) throws MalformedURLException {
+        List<Role> ret = new ArrayList<Role>();
+        if ("".equals(rolesStr)) {
+            return ret;
+        }
+        for (String s : rolesStr.split(" ")) {
+            ret.add(Role.createFromRoleInstanceUrl(s));
+        }
+        return ret;
+    }
     static final TokenParseException PARSE_EXCEPTION = new TokenParseException("failed to parse token");
 
     /**
@@ -334,4 +354,7 @@ public abstract class AbstractOAuth2Token {
         }
         return map.toString();
     }
+    String makeRolesString() {
+        return "";
+    };
 }
