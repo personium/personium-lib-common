@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +25,7 @@ import java.net.MalformedURLException;
 import org.junit.Test;
 
 /**
- * トークン処理ライブラリのユニットテストクラス.
+ * Unit test class for Role class.
  */
 public class RoleTest {
 
@@ -65,8 +66,8 @@ public class RoleTest {
     }
 
     /**
-     * Roleのコンストラクタのテスト(URLにBox名までしかない).
-     * @throws MalformedURLException URLパースエラー
+     * test for the constructor (URL is cut after the box name).
+     * @throws MalformedURLException
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBox() throws MalformedURLException {
@@ -77,7 +78,7 @@ public class RoleTest {
 
     /**
      * Roleのコンストラクタのテスト(URLがURL形式ではない).
-     * @throws MalformedURLException URLパースエラー
+     * @throws MalformedURLException
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBadURL() throws MalformedURLException {
