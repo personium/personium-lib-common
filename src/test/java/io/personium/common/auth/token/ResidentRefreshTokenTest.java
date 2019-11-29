@@ -64,7 +64,7 @@ public class ResidentRefreshTokenTest {
         String target = "https://personium/targetcell/";
         String cellUrl = "https://personium/testcell/";
         List<Role> roleList = new ArrayList<>();
-        Role role = new Role("roleName");
+        Role role = new Role("roleName", null, null, cellUrl);
         roleList.add(role);
 
         // --------------------
@@ -115,7 +115,7 @@ public class ResidentRefreshTokenTest {
         String target = null;
         String cellUrl = "https://personium/testcell02/";
         List<Role> roleList = new ArrayList<>();
-        Role role = new Role("roleName");
+        Role role = new Role("roleName", null, null, cellUrl);
         roleList.add(role);
 
         // --------------------
@@ -174,7 +174,7 @@ public class ResidentRefreshTokenTest {
         String target = "https://personium/targetcell/";
         String cellUrl = "https://personium/testcell02/";
         List<Role> roleList = new ArrayList<>();
-        Role role = new Role("roleName");
+        Role role = new Role("roleName", null, null, cellUrl);
         roleList.add(role);
 
         // --------------------
