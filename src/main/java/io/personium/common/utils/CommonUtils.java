@@ -67,9 +67,7 @@ public final class CommonUtils {
      * @param fqdnValue FQDN of this unit
      */
     public static void setFQDN(String fqdnValue) {
-        if (fqdn == null) {
-            fqdn = fqdnValue;
-        }
+        fqdn = fqdnValue;
     }
 
     /**
