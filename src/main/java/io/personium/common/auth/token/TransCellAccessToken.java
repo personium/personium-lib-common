@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014-2017 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014-2019 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +89,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     private static final String URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion";
 
     /**
-     * log.
+     * logger.
      */
     static Logger log = LoggerFactory.getLogger(TransCellAccessToken.class);
     private static List<String> x509RootCertificateFileNames;
@@ -120,15 +121,10 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             return xmlSignatureFactory.newSignedInfo(c14nMethod, signatureMethod,
                     Collections.singletonList(reference));
 
-        } catch (NoSuchAlgorithmException e) {
-            // 重大な異常なので非チェックにして上に上げる
-            throw new RuntimeException(e);
-        } catch (InvalidAlgorithmParameterException e) {
-            // 重大な異常なので非チェックにして上に上げる
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
+            // This should not happen
             throw new RuntimeException(e);
         }
-
-
     }
 
     String id;
@@ -137,14 +133,15 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
     /**
      * Constructor.
-     * @param id トークンの一意識別子
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan トークンの有効時間（ミリ秒）
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param target ターゲットURL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
+     * @param id identifier for this token (SAML assertion)
+     * @param issuedAt token issue time (millisec from the epoch)
+     * @param lifespan Token lifespan (Millisec)
+     * @param issuer Issuer Cell URL
+     * @param subject access Subject URL
+     * @param target target URL
+     * @param roleList Role class List assigned at issuer Cell
+     * @param schema client authenthenticated
+     * @param scope scopes of the token
      */
     public TransCellAccessToken(final String id,
             final long issuedAt,
@@ -166,19 +163,18 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         this.scope = scope;
 
         this.signedInfo = createSignedInfo();
-
-
     }
 
     /**
      * Constructor.
-     * @param id トークンの一意識別子
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param target ターゲットURL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
+     * @param id identifier for this token (SAML assertion)
+     * @param issuedAt token issue time (millisec from the epoch)
+     * @param issuer Issuer Cell URL
+     * @param subject access Subject URL
+     * @param target target URL
+     * @param roleList Role class List assigned at issuer Cell
+     * @param schema client authenthenticated
+     * @param scope scopes of the token
      */
     public TransCellAccessToken(final String id,
             final long issuedAt,
@@ -192,12 +188,14 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * Constructor.
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param target ターゲットURL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
+     * Constructor with automatic ID assignation with an UUID.
+     * @param issuedAt token issue time (millisec from the epoch)
+     * @param issuer Issuer Cell URL
+     * @param subject access Subject URL
+     * @param target target URL
+     * @param roleList Role class List assigned at issuer Cell
+     * @param schema client authenthenticated
+     * @param scope scopes of the token
      */
     public TransCellAccessToken(
             final String issuer,
@@ -210,13 +208,14 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * IDにUUIDを自動採番するコンストラクタ.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param target ターゲットURL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
+     * Constructor with automatic ID assignation with an UUID.
+     * @param issuedAt token issue time (millisec from the epoch)
+     * @param issuer Issuer Cell URL
+     * @param subject access Subject URL
+     * @param target target URL
+     * @param roleList Role class List assigned at issuer Cell
+     * @param schema client authenthenticated
+     * @param scope scopes of the token
      */
     public TransCellAccessToken(
             final long issuedAt,
@@ -230,14 +229,15 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * IDにUUIDを自動採番するコンストラクタ.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan token lifespan
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param target ターゲットURL
-     * @param roleList ロールリスト
-     * @param schema クライアント認証されたデータスキーマ
+     * constructor with automatic ID assignation with an UUID.
+     * @param issuedAt token issue time (millisec from the epoch)
+     * @param lifespan token lifespan (in millisec)
+     * @param issuer Issuer Cell URL
+     * @param subject access Subject URL
+     * @param target target URL
+     * @param roleList Role class List assigned at issuer Cell
+     * @param schema client authenthenticated
+     * @param scope scopes of the token
      */
     public TransCellAccessToken(
             final long issuedAt,
@@ -258,18 +258,18 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     public String toTokenString() {
         String samlStr = this.toSamlString();
         try {
-            // Base64urlする
+            // encode with Base64url
             String token = CommonUtils.encodeBase64Url(samlStr.getBytes(CharEncoding.UTF_8));
             return token;
         } catch (UnsupportedEncodingException e) {
-            // UTF8が処理できないはずがない。
+            // Should never come here. never be unable to understand UTF8
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * トークンからSAML文字列を生成します.
-     * @return SAML文字列
+     * create a SAML String from this token.
+     * @return SAML String
      */
     public String toSamlString() {
 
@@ -284,7 +284,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         try {
             builder = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            // 重大な異常なので非チェックにして上に上げる
+            // Should never happen
             throw new RuntimeException(e);
         }
         Document doc = builder.newDocument();
@@ -381,10 +381,10 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         assertion.appendChild(attrStmt);
 
 
-        // Normalization を実施
+        // Normalization
         doc.normalizeDocument();
 
-        // Dsigをつける。
+        // add a Dsig (Digital Signature)
         // Create a DOMSignContext and specify the RSA PrivateKey and
         // location of the resulting XMLSignature's parent element.
         DOMSignContext dsc = new DOMSignContext(privKey, doc.getDocumentElement());
@@ -395,13 +395,10 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
         // Marshal, generate, and sign the enveloped signature.
         try {
             signature.sign(dsc);
-            // 文字列化する。
+            // Make it to a string and return
             return CommonUtils.nodeToString(doc.getDocumentElement());
-        } catch (MarshalException e1) {
-            // DOMのシリアライズに失敗するのは重大な異常
-            throw new RuntimeException(e1);
-        } catch (XMLSignatureException e1) {
-            // 署名できないような事態は異常
+        } catch (MarshalException |XMLSignatureException e1) {
+            // Should never happen
             throw new RuntimeException(e1);
         }
 
@@ -420,12 +417,12 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * TransCellAccessTokenをパースしてオブジェクト生成する.
-     * @param token トークン文字列
-     * @return TransCellAccessTokenオブジェクト(パース成功時)
-     * @throws AbstractOAuth2Token.TokenParseException トークンのパース失敗
-     * @throws AbstractOAuth2Token.TokenDsigException 証明書の署名検証エラー
-     * @throws AbstractOAuth2Token.TokenRootCrtException ルートCA証明書の検証エラー
+     * parse a TransCellAccessToken and create an object.
+     * @param token Token String
+     * @return TransCellAccessToken object (succeeded in parsing)
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse
+     * @throws AbstractOAuth2Token.TokenDsigException when failed to vaildate the signature of the certificate
+     * @throws AbstractOAuth2Token.TokenRootCrtException when failed to validate Root CA Certificate
      */
     public static TransCellAccessToken parse(final String token) throws AbstractOAuth2Token.TokenParseException,
     AbstractOAuth2Token.TokenDsigException, AbstractOAuth2Token.TokenRootCrtException {
@@ -438,7 +435,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             try {
                 builder = dbf.newDocumentBuilder();
             } catch (ParserConfigurationException e) {
-                // 重大な異常なので非チェックにして上に上げる
+                // This should not happen
                 throw new RuntimeException(e);
             }
 
@@ -492,7 +489,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             }
             Element signatureElement = (Element) nl.item(0);
 
-            // 署名の有効性を確認する。以下の例外はTokenDsigException（署名検証エラー）
+            // Check the Signature validity. 以下の例外はTokenDsigException（署名検証エラー）
             // Create a DOMValidateContext and specify a KeySelector
             // and document context.
             X509KeySelector x509KeySelector = new X509KeySelector(issuer.getTextContent());
@@ -506,15 +503,16 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
                 throw new TokenDsigException(e.getMessage(), e);
             }
 
-            // ルートCA証明書読み込み
+            // read x509 certificate issuer certificate
             try {
                 x509KeySelector.readRoot(x509RootCertificateFileNames);
             } catch (CertificateException e) {
-                // ルートCA証明書設定エラーのため、重大であり、500
+                // 500 error since misconfiguration of
+                // issuer (root) certificate is a severe problem
                 throw new TokenRootCrtException(e.getMessage(), e);
             }
 
-            // Validate the XMLSignature x509証明書検証.
+            // Validate the XMLSignature x509 Certificate validation.
             boolean coreValidity;
             try {
                 coreValidity = signature.validate(valContext);
@@ -530,7 +528,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
             // Check core validation status.
             if (!coreValidity) {
-                // シグネチャ検証
+                // Signature validation
                 boolean isDsigValid;
                 try {
                     isDsigValid = signature.getSignatureValue().validate(valContext);
@@ -541,7 +539,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
                     throw new TokenDsigException("Failed signature validation");
                 }
 
-                // リファレンス検証
+                // Reference validation
                 Iterator i = signature.getSignedInfo().getReferences().iterator();
                 for (int j = 0; i.hasNext(); j++) {
                     boolean refValid;
@@ -603,10 +601,10 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     }
 
     /**
-     * X509の設定をする.
-     * @param privateKeyFileName 秘密鍵ファイル名
-     * @param certificateFileName 証明書ファイル名
-     * @param rootCertificateFileNames ルート証明書ファイル名
+     * configure X509.
+     * @param privateKeyFileName private key file name
+     * @param certificateFileName certificate file name
+     * @param rootCertificateFileNames root (issuer) certificate file name
      * @throws IOException IOException
      * @throws NoSuchAlgorithmException NoSuchAlgorithmException
      * @throws InvalidKeySpecException InvalidKeySpecException
@@ -679,8 +677,6 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
     }
 
-
-
     /**
      * {@inheritDoc}
      */
@@ -688,7 +684,6 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
     public String getExtCellUrl() {
         return this.getIssuer();
     }
-
 
     @Override
     public String getCookieString(String cookiePeer, String issuer) {

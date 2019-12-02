@@ -63,10 +63,10 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     }
 
     /**
-     * 明示的な有効期間を設定してトークンを生成する.
+     * Constructor.
      * @param id トークンの一意識別子
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan 有効期間(ミリ秒)
+     * @param issuedAt time this token is issued (millisec from the epoch)
+     * @param lifespan token lifespan (in millisec)
      * @param issuer 発行者URL
      * @param subject アクセス主体URL
      * @param origIssuer このRefreshToken発行の際に使われた、元のTransCell アクセストークンの発行者
@@ -129,11 +129,11 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     }
 
     /**
-     * parse the Token String,as an issuer Cell specified.
+     * parse a given token string as a Cell specified with the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
      * @return VisitorRefreshToken object as a parse result
-     * @throws AbstractOAuth2Token.TokenParseException when failed to parse
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static VisitorRefreshToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {

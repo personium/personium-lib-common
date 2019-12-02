@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,20 +52,20 @@ import javax.xml.crypto.dsig.keyinfo.X509Data;
 import net.oauth.signature.pem.PEMReader;
 
 /**
- * X509のKeySelectorクラス.
+ * X509 KeySelector class.
  */
 public class X509KeySelector extends KeySelector {
 
     /**
-     * コンストラクタ.
-     * @param issure issureのURL
+     * Constructor.
+     * @param issuer Token issuer URL
      */
-    public X509KeySelector(String issure) {
+    public X509KeySelector(String issuer) {
         super();
-        this.issure = issure;
+        this.issuer = issuer;
     }
 
-    private String issure;
+    private String issuer;
 
     private Map<String, X509Certificate> caCerts = new HashMap<String, X509Certificate>();
 
@@ -113,7 +114,7 @@ public class X509KeySelector extends KeySelector {
                 // Make sure the algorithm is compatible
                 // with the method.
                 if (algEquals(method.getAlgorithm(), key.getAlgorithm())) {
-                    // x509証明書検証
+                    // x509 certificate validation
                     cheakX509validate(x509Certificate);
                     return new KeySelectorResult() {
                         @Override
@@ -127,7 +128,7 @@ public class X509KeySelector extends KeySelector {
         throw new KeySelectorException("No key found!");
     }
     /*
-     * アルゴリズムが同じである場合trueを返す.
+     * true if given two algorithms are identical.
      * @param algURI
      * @param algName
      */
@@ -137,19 +138,19 @@ public class X509KeySelector extends KeySelector {
     }
 
     /**
-     * x509証明書検証.
+     * x509 certificate validation.
      * @param certificate x509certificate
      * @throws KeySelectorException KeySelectorException
      */
     private void cheakX509validate(X509Certificate certificate) throws KeySelectorException {
 
-        // サーバ証明書。検証対象
+        // Issuer (need validation)
         String issuerDn = certificate.getIssuerX500Principal().getName();
 
-        // サーバ証明書のSubject（CN=）の取得
+        // Subject(CN=)
         Map<String, Object> map = new HashMap<String, Object>();
         String subjectDn = certificate.getSubjectX500Principal().getName();
-        // サンプル）1.2.840.113549.1.9.1=#1603706373,CN=pcs,OU=pcs,O=pcs,L=pcs,ST=pcs,C=JP
+        // Example) 1.2.840.113549.1.9.1=#1603706373,CN=pcs,OU=pcs,O=pcs,L=pcs,ST=pcs,C=JP
         String[] pvs = subjectDn.split(",");
         for (int i = 0; i < pvs.length; i++) {
             String[] pv = pvs[i].split("=");
@@ -159,68 +160,67 @@ public class X509KeySelector extends KeySelector {
         }
         String cnStr = (String) map.get("CN");
 
-        // トークンのissureからドメイン名を取得
+        // get domain name form issuer
         URL issureUrl = null;
         try {
-            issureUrl = new URL(issure);
+            issureUrl = new URL(issuer);
         } catch (MalformedURLException e) {
             throw new KeySelectorException(e.getMessage(), e);
         }
-        // support per-cell. It changed from exact match to backward match.
+        // backward match to support subdomain (per-cell).
         if (cnStr == null || !issureUrl.getHost().endsWith(cnStr)) {
-            // トークンとルートCA証明書のissureが等しくない時
+            // when Token CN and issuer of the root ca certificate do not match
             throw new KeySelectorException("Issuer does not match.");
         }
 
-        // サーバ証明書の検証
-        // ■ 1 ■  有効期限切れチェック
+        // Certificate Validation
+        // # 1 # Check for Expiration
         try {
             certificate.checkValidity();
         } catch (CertificateExpiredException e) {
-            // 証明書の有効期限が切れている場合
+            // When it is expired
             throw new KeySelectorException(e.getMessage(), e);
         } catch (CertificateNotYetValidException e) {
-            // 証明書がまだ有効になっていない場合
+            // When it is not yet valid
             throw new KeySelectorException(e.getMessage(), e);
         }
 
-        //  ■ ２  ■  証明書の発行者が信頼するRootCAリストにあるかチェック
+        //  # 2 #  check if the certificate issuer is in the trused RootCA list
         X509Certificate rootCrt = caCerts.get(issuerDn);
-        // なかったらエラー
+        // exception if not in the list
         if (rootCrt == null) {
             throw new KeySelectorException("CA subject not match.");
         }
 
-        //  ■ ３ ■ 実際に証明書発行者の公開鍵で検証対象証明書の署名を検証。
+        //  # 3 # check the signature of the target certificate, using actual public key of the certificate issuer.
         try {
             PublicKey keyRoot = rootCrt.getPublicKey();
             certificate.verify(keyRoot);
         } catch (NoSuchAlgorithmException e) {
-            // サポートされていない署名アルゴリズムの場合
+            // When signature algorithm is not supported
             throw new KeySelectorException(e.getMessage(), e);
         } catch (InvalidKeyException e) {
-            // 無効な鍵の場合
+            // When the key is invalid
             throw new KeySelectorException(e.getMessage(), e);
         } catch (NoSuchProviderException e) {
-            // デフォルトのプロバイダがない場合
+            // When default provider does not exist
             throw new KeySelectorException(e.getMessage(), e);
         } catch (SignatureException e) {
-            // 署名エラーの場合
+            // When signature error
             throw new KeySelectorException(e.getMessage(), e);
         } catch (CertificateException e) {
-            // 符号化エラーの場合
+            // When 符号化エラー
             throw new KeySelectorException(e.getMessage(), e);
         }
     }
     /**
-     * ルートCA証明書の読み込み.
-     * @param rootCaFileName ルートCA証明書ファイルパス
+     * read Root CA certificate.
+     * @param rootCaFileName file path of root CA certificate
      * @throws IOException IOException
      * @throws CertificateException CertificateException
      */
     public void readRoot(List<String> rootCaFileName) throws IOException, CertificateException {
-
-        // 設定が無い場合はデフォルトルートCA証明書を使う
+        // when no configuration, Use default Root CA certificate
         if (rootCaFileName == null || rootCaFileName.size() == 0) {
             readCaFile(TransCellAccessToken.class.getClassLoader().getResourceAsStream(DEFAULT_ROOT_CA_PATH));
             return;
@@ -234,15 +234,14 @@ public class X509KeySelector extends KeySelector {
     }
 
     private void readCaFile(InputStream is) throws IOException, CertificateException {
-
         PEMReader pemReader;
         pemReader = new PEMReader(is);
         byte[] bytesCert = pemReader.getDerBytes();
         CertificateFactory cf = CertificateFactory.getInstance(X509KEY_TYPE);
         X509Certificate x509Root = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(bytesCert));
-        // ルートCA証明書の期限切れチェック
+        // Check if Root CA Certificate is valid
         x509Root.checkValidity();
-        // ルートCA証明書の重複チェック
+        // Check if Root CA Certificate is duplicate
         if (caCerts.get(x509Root.getIssuerX500Principal().getName()) != null) {
             throw new CertificateException("Duplicated ca subject names.");
         }

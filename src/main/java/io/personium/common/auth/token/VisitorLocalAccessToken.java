@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,9 +51,9 @@ public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements
     };
 
     /**
-     * Constructor for generating code.
-     * @param issuedAt issuedAt
-     * @param lifespan lifespan
+     * Constructor.
+     * @param issuedAt token issue time (millisec from the epoch)
+     * @param lifespan token lifespan (in millisec)
      * @param issuer issuer
      * @param subject subject
      * @param roleList roleList
@@ -82,11 +83,11 @@ public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements
 
 
     /**
-     * トークン文字列をissuerで指定されたCellとしてパースする.
-     * @param token Token String
+     * parse a given token string as a Cell specified with the issuer parameter.
+     * @param token Token string
      * @param issuer Cell Root URL
-     * @return パースされたCellLocalTokenオブジェクト
-     * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
+     * @return parsed VisitorLocalAccessToken object
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static VisitorLocalAccessToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {

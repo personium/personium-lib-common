@@ -22,13 +22,12 @@ package io.personium.common.auth.token;
  * abstract base class for classes to handle Cell Local Access Tokens.
  */
 public abstract class AbstractLocalAccessToken extends AbstractLocalToken implements IAccessToken {
-
-
     /**
      * Default Constructor.
      */
     protected AbstractLocalAccessToken() {
     }
+
     /**
      * Constructor.
      * @param issuedAt Token issuance datetime (millisec from the epoch)
@@ -48,12 +47,8 @@ public abstract class AbstractLocalAccessToken extends AbstractLocalToken implem
         this.scope = scope;
     }
 
-
     public String getCookieString(String peer, String issuer) {
         String raw = peer + SEPARATOR + this.toTokenString();
         return AbstractLocalAccessToken.encode(raw, AbstractLocalAccessToken.getIvBytes(issuer));
     }
-
-
-
 }
