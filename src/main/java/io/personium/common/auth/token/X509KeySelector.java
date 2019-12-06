@@ -163,7 +163,7 @@ public class X509KeySelector extends KeySelector {
         // get domain name form issuer
         URL issureUrl = null;
         try {
-            issureUrl = new URL(issuer);
+            issuerUrl = new URL(issuer);
         } catch (MalformedURLException e) {
             throw new KeySelectorException(e.getMessage(), e);
         }
