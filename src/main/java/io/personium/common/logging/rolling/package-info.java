@@ -1,6 +1,6 @@
 /**
  * Personium
- * Copyright 2014 Personium Project Authros
+ * Copyright 2014-2019 Personium Project Authros
  *  - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,4 +19,3 @@
  * a package for eventbus log file rotation.
  */
 package io.personium.common.logging.rolling;
-
