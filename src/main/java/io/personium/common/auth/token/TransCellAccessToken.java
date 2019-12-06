@@ -397,7 +397,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             signature.sign(dsc);
             // Make it to a string and return
             return CommonUtils.nodeToString(doc.getDocumentElement());
-        } catch (MarshalException |XMLSignatureException e1) {
+        } catch (MarshalException | XMLSignatureException e1) {
             // Should never happen
             throw new RuntimeException(e1);
         }
