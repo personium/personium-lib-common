@@ -54,9 +54,9 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
     }
 
     /**
-     * 明示的な有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan トークンの有効時間（ミリ秒）
+     * Constructor.
+     * @param issuedAt token issue time (millisec from the epoch)
+     * @param lifespan Token lifespan (Millisec)
      * @param issuer 発行 Cell URL
      * @param subject アクセス主体URL
      * @param schema クライアント認証されたデータスキーマ
@@ -72,8 +72,8 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
     }
 
     /**
-     * 既定値の有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
+     * Constructor.
+     * @param issuedAt token issue time (millisec from the epoch)
      * @param issuer 発行 Cell URL
      * @param subject アクセス主体URL
      * @param schema クライアント認証されたデータスキーマ
@@ -106,11 +106,11 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
     }
 
     /**
-     * トークン文字列をissuerで指定されたCellとしてパースする.
+     * parse a given token string as a Cell specified with the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
      * @return パースされたCellLocalTokenオブジェクト
-     * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static ResidentRefreshToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {

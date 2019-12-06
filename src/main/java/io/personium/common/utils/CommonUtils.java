@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014-2018 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014-2019 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,9 +67,7 @@ public final class CommonUtils {
      * @param fqdnValue FQDN of this unit
      */
     public static void setFQDN(String fqdnValue) {
-        if (fqdn == null) {
-            fqdn = fqdnValue;
-        }
+        fqdn = fqdnValue;
     }
 
     /**
@@ -83,33 +82,33 @@ public final class CommonUtils {
      * Personium's http headers.
      */
     public static class HttpHeaders {
-        /** Accountのパスワード設定・変更を受け付けるヘッダ. */
+        /** header for receiving Account password configuration and update. */
         public static final String X_PERSONIUM_CREDENTIAL = "X-Personium-Credential";
         /**
-         * X-Personium-Unit-Userヘッダ.
-         * MasterTokenでのアクセス時に、このヘッダがある場合は、
-         * ヘッダ値で指定された任意のユニットユーザとして振る舞う。
+         * X-Personium-Unit-User header.
+         * When accessed with an Unit admin level token, and with this header,
+         * it behave as an arbitrary unit user that is specified in this header value.
          */
         public static final String X_PERSONIUM_UNIT_USER = "X-Personium-Unit-User";
-        /** Depthヘッダ. */
+        /** Depth header. */
         public static final String DEPTH = "Depth";
-        /** X-HTTP-Method-Overrideヘッダ. */
+        /** X-HTTP-Method-Override header. */
         public static final String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
-        /** X-Overrideヘッダ. */
+        /** X-Override header. */
         public static final String X_OVERRIDE = "X-Override";
-        /** X-Forwarded-Protoヘッダ. */
+        /** X-Forwarded-Proto header. */
         public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
-        /** X-Forwarded-Hostヘッダ. */
+        /** X-Forwarded-Host header. */
         public static final String X_FORWARDED_HOST = "X-Forwarded-Host";
-        /** X-Forwarded-Pathヘッダ. */
+        /** X-Forwarded-Path header. */
         public static final String X_FORWARDED_PATH = "X-Forwarded-Path";
-        /** X-Personium-Unit-Hostヘッダ. */
+        /** X-Personium-Unit-Host header. */
         public static final String X_PERSONIUM_UNIT_HOST = "X-Personium-Unit-Host";
-        /** X-Personium-Versionヘッダ. */
+        /** X-Personium-Version header. */
         public static final String X_PERSONIUM_VERSION = "X-Personium-Version";
-        /** X-Personium-Recursiveヘッダ. */
+        /** X-Personium-Recursive header. */
         public static final String X_PERSONIUM_RECURSIVE = "X-Personium-Recursive";
-        /** X-Personium-RequestKeyヘッダ. */
+        /** X-Personium-RequestKey header. */
         public static final String X_PERSONIUM_REQUESTKEY = "X-Personium-RequestKey";
         /** X-Personium-EventId header. */
         public static final String X_PERSONIUM_EVENTID = "X-Personium-EventId";
@@ -133,19 +132,19 @@ public final class CommonUtils {
         /** Access-Control-Max-Age. */
         public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
 
-        /** Originヘッダ. */
+        /** Origin header. */
         public static final String ORIGIN = "Origin";
-        /** Allowヘッダ. */
+        /** Allow header. */
         public static final String ALLOW = "Allow";
-        /** Rangeヘッダ. */
+        /** Range header. */
         public static final String RANGE = "Range";
-        /** Accept-Rangeヘッダ. */
+        /** Accept-Range header. */
         public static final String ACCEPT_RANGES = "Accept-Ranges";
-        /** Content-Rangeヘッダ. */
+        /** Content-Range header. */
         public static final String CONTENT_RANGE = "Content-Range";
 
         /**
-         * 典型的なヘッダ値.
+         * Typical header values.
          */
         public static class Value {
             /**
@@ -210,9 +209,9 @@ public final class CommonUtils {
     }
 
     /**
-     * XMLのDOMノードを文字列に変換します.
-     * @param node 文字列化したいノード
-     * @return 変換結果の文字列
+     * convert XML DOM node to a string.
+     * @param node node to make into a string
+     * @return result String
      */
     public static String nodeToString(final Node node) {
         StringWriter sw = new StringWriter();
@@ -263,11 +262,15 @@ public final class CommonUtils {
     }
 
     /**
-     * Base64urlのエンコードを行う.
-     * 厳密にはRFC４648参照。（といいたいが、少し表現があいまい。） ---------------------------------------------------
-     * http://tools.ietf.org/html/rfc4648 --------------------------------------------------- 5. Base 64 Encoding with
+     * perform a Base64url encoding.
+     * 厳密にはRFC４648参照。（といいたいが、少し表現があいまい。）
+     * ---------------------------------------------------
+     * http://tools.ietf.org/html/rfc4648
+     * ---------------------------------------------------
+     * 5. Base 64 Encoding with
      * URL and Filename Safe Alphabet The Base 64 encoding with an URL and filename safe alphabet has been used in [12].
-     * ＵＲＬとファイル名で安全なアルファベットのベース６４符号化は[12]で 使われました。 An alternative alphabet has been suggested that would use "~" as the
+     * ＵＲＬとファイル名で安全なアルファベットのベース６４符号化は[12]で 使われました。
+     * An alternative alphabet has been suggested that would use "~" as the
      * 63rd character. Since the "~" character has special meaning in some file system environments, the encoding
      * described in this section is recommended instead. The remaining unreserved URI character is ".", but some file
      * system environments do not permit multiple "." in a filename, thus making the "." character unattractive as well.
@@ -293,9 +296,9 @@ public final class CommonUtils {
     }
 
     /**
-     * Base64urlのエンコードを行う.
-     * @param inStr 入力ストリーム
-     * @return 文字列
+     * perform a Base64url encoding.
+     * @param inStr InputStream
+     * @return encoded string.
      */
     public static String encodeBase64Url(final InputStream inStr) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -311,18 +314,19 @@ public final class CommonUtils {
     }
 
     /**
-     * Base64urlのデコードを行う.
-     * @param in デコードしたい文字列
-     * @return デコードされたbyte列
+     * perform a Base64url decoding.
+     * @param in String to decode
+     * @return decoded byte array
      */
     public static byte[] decodeBase64Url(final String in) {
         return Base64.decodeBase64(in);
     }
 
     /**
-     * バイト列を16進数の文字列に変換する. TODO さすがにこんなのどこかにライブラリありそうだけど.
-     * @param input 入力バイト列
-     * @return 16進数文字列
+     * convert an byte array to a hexadecimal string.
+     * TODO we should not create this kind of utility since there should be something like this somewhere...
+     * @param input input byte array
+     * @return hexadecimal string
      */
     public static String byteArray2HexString(final byte[] input) {
         StringBuffer buff = new StringBuffer();
@@ -335,9 +339,9 @@ public final class CommonUtils {
     }
 
     /**
-     * URLエンコードのエンコードを行う.
-     * @param in Urlエンコードしたい文字列
-     * @return Urlエンコードされた文字列
+     * perform an URL encoding.
+     * @param in input string to Url-encode
+     * @return Url encodecd string
      */
     public static String encodeUrlComp(final String in) {
         try {
@@ -348,9 +352,9 @@ public final class CommonUtils {
     }
 
     /**
-     * URLエンコードのデコードを行う.
-     * @param in Urlエンコードされた文字列
-     * @return 元の文字列
+     * perform an URL decoding.
+     * @param in Url encoded string
+     * @return decoded string
      */
     public static String decodeUrlComp(final String in) {
         try {
@@ -361,9 +365,9 @@ public final class CommonUtils {
     }
 
     /**
-     * InputStreamをすべて読み、String型で返す.
+     * read all the InputStream as UTF-8 and return as a String.
      * @param is InputStream
-     * @return 文字列
+     * @return String
      */
     public static String readInputStreamAsString(InputStream is) {
 
@@ -404,9 +408,9 @@ public final class CommonUtils {
     }
 
     /**
-     * Authorizationヘッダの内容をBasic認証のものとしてパースする.
-     * @param authzHeaderValue Authorizationヘッダの内容
-     * @return id, pwの２要素の文字列配列、またはパース失敗時はnull
+     * parse Authorization header content for a Basic auth.
+     * @param authzHeaderValue Authorization header value
+     * @return two factor String array  {username, password} or null when failed to parse
      */
     public static String[] parseBasicAuthzHeader(String authzHeaderValue) {
         if (authzHeaderValue == null || !authzHeaderValue.startsWith(AUTHZ_BASIC)) {
@@ -430,10 +434,10 @@ public final class CommonUtils {
     }
 
     /**
-     * basic認証ヘッダを生成して返します.
+     * create Basic Auth header and return.
      * @param id id
      * @param pw pw
-     * @return basic認証のヘッダ
+     * @return basic auth header value
      */
     public static String createBasicAuthzHeader(final String id, final String pw) {
         String line = encodeUrlComp(id) + ":" + encodeUrlComp(pw);
@@ -466,9 +470,9 @@ public final class CommonUtils {
     }
 
     /**
-     * ODataのDatetime JSONリテラル(Date(\/ ... \/) 形式)を解釈してDateオブジェクトに変換します.
-     * @param odataDatetime ODataのDatetime JSONリテラル
-     * @return Dateオブジェクト
+     * parse OData Datetime JSON literal (Date(\/ ... \/) format) and convert to a Date object.
+     * @param odataDatetime OData Datetime JSON literal
+     * @return Date object
      */
     public static Date parseODataDatetime(final String odataDatetime) {
         String dateValue = odataDatetime

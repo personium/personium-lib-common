@@ -312,11 +312,11 @@ public abstract class AbstractOAuth2Token {
     }
 
     /**
-     * トークン文字列をissuerで指定されたCellとしてパースする.
+     * parse the given token string as an Cell specified in the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
      * @param host リクエストヘッダHostの値
-     * @return パースされたCellLocalTokenオブジェクト
+     * @return parsed CellLocalToken object
      * @throws TokenParseException トークンのパースに失敗したときに投げられる例外
      * @throws TokenDsigException トークンの署名検証に失敗した時に投げられる例外
      * @throws TokenRootCrtException ルートCA証明書の検証に失敗した時に投げられる例外
