@@ -161,7 +161,7 @@ public class X509KeySelector extends KeySelector {
         String cnStr = (String) map.get("CN");
 
         // get domain name form issuer
-        URL issureUrl = null;
+         URL issuerUrl = null;
         try {
             issuerUrl = new URL(issuer);
         } catch (MalformedURLException e) {
