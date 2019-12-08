@@ -176,13 +176,10 @@ public class Role {
         if (this.boxSchema != null) {
             return String.format(ROLE_RESOURCE_FORMAT, this.boxSchema, MAIN_BOX_NAME, this.name);
         }
-        if (MAIN_BOX_NAME.equals(this.boxName) || this.boxName == null) {
-            if (this.baseUrl == null) {
-                throw new RuntimeException("Cannot create role class url since baseUrl is null for boxName = main");
-            }
-            return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, MAIN_BOX_NAME, this.name);
+        if (this.baseUrl == null) {
+            throw new RuntimeException("Cannot create role class url since baseUrl is null for boxName = main");
         }
-        throw new RuntimeException("Cannot create role class url when boxSchema is null and non-main boxName is given.");
+        return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, MAIN_BOX_NAME, this.name);
     }
     /**
      * Returns Role Instance URL.
