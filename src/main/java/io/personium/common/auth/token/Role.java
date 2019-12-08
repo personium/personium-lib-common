@@ -200,7 +200,8 @@ public class Role {
             return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, MAIN_BOX_NAME, this.name);
         }
         if (this.boxSchema == null) {
-            return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, MAIN_BOX_NAME, this.name);
+            // Box name is given but schema is null 
+            return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, this.boxName, this.name);
         }
         return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, this.boxName, this.name);
     }
