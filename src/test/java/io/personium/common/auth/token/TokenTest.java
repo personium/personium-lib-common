@@ -58,11 +58,11 @@ public class TokenTest {
     }
 
     /**
-     * test test AccountAccessToken.
+     * test ResidentLocalAccessToken.
      * @throws MalformedURLException
      */
     @Test
-    public void testAccountAccessToken() {
+    public void testResidentLocalAccessToken() {
         String issuer = "http://issuer.example/";
         ResidentLocalAccessToken token = new ResidentLocalAccessToken(new Date().getTime(), issuer,
                 "http://orig.com/orig/#subj", "http://schema.com/schema", new String[] {"someScope"});
@@ -79,11 +79,11 @@ public class TokenTest {
 
 
     /**
-     * test VisitorRefreshToken.
+     * test ResidentRefreshToken.
      * @throws MalformedURLException
      */
     @Test
-    public void testSelfRefreshToken() throws MalformedURLException {
+    public void testResidentRefreshToken() throws MalformedURLException {
         String issuer = "http://receiver.com/rcv";
 
         ResidentRefreshToken token = new ResidentRefreshToken(new Date().getTime(), issuer,
@@ -171,12 +171,12 @@ public class TokenTest {
         }
     }
     /**
-     * testCellLocalAccessTokenのテスト.
+     * test VisitorLocalAccessToken.
      * @throws MalformedURLException URLパースエラー
      * @throws TokenParseException
      */
     @Test
-    public void testCellLocalAccessToken() throws MalformedURLException, TokenParseException {
+    public void testVisitorLocalAccessToken() throws MalformedURLException, TokenParseException {
         String base = "https://localhost:8080/personium-core/testcell1/__role/__/";
         List<Role> roleList = new ArrayList<Role>();
         roleList.add(Role.createFromRoleClassUrl(base + "admin"));
