@@ -161,14 +161,14 @@ public class X509KeySelector extends KeySelector {
         String cnStr = (String) map.get("CN");
 
         // get domain name form issuer
-         URL issuerUrl = null;
+        URL issuerUrl = null;
         try {
             issuerUrl = new URL(issuer);
         } catch (MalformedURLException e) {
             throw new KeySelectorException(e.getMessage(), e);
         }
         // backward match to support subdomain (per-cell).
-         if (cnStr == null || !issuerUrl.getHost().endsWith(cnStr)) {
+        if (cnStr == null || !issuerUrl.getHost().endsWith(cnStr)) {
             // when Token CN and issuer of the root ca certificate do not match
             throw new KeySelectorException("Issuer does not match.");
         }
