@@ -37,11 +37,11 @@ import io.personium.common.auth.token.AbstractOAuth2Token.TokenParseException;
 import io.personium.common.auth.token.AbstractOAuth2Token.TokenRootCrtException;
 
 /**
- * トークン処理ライブラリのユニットテストクラス.
+ * Unit test class for token processing libraries.
  */
 public class TokenTest {
     /**
-     * トークン処理ライブラリの初期設定.
+     * Initial configuration for token processing libraries.
      * @throws IOException IOException
      * @throws CertificateException CertificateException
      * @throws InvalidKeySpecException InvalidKeySpecException
@@ -132,7 +132,7 @@ public class TokenTest {
 
 
     /**
-     * testTransCellAccessTokenのテスト.
+     * test TransCellAccessToken.
      * @throws TokenParseException TokenParseException
      * @throws TokenRootCrtException TokenRootCrtException
      * @throws TokenDsigException TokenDsigException
@@ -172,7 +172,7 @@ public class TokenTest {
     }
     /**
      * test VisitorLocalAccessToken.
-     * @throws MalformedURLException URLパースエラー
+     * @throws MalformedURLException
      * @throws TokenParseException
      */
     @Test
