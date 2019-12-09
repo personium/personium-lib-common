@@ -151,7 +151,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
             ret.roleList = AbstractOAuth2Token.parseSpaceSeparatedRoleClassUrlString(extra[IDX_ORIG_ROLE_LIST]);
             return ret;
         } catch (MalformedURLException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException("failed to parse token", e);
         }
     }
 
