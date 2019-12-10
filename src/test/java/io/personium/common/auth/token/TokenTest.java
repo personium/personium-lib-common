@@ -37,11 +37,11 @@ import io.personium.common.auth.token.AbstractOAuth2Token.TokenParseException;
 import io.personium.common.auth.token.AbstractOAuth2Token.TokenRootCrtException;
 
 /**
- * トークン処理ライブラリのユニットテストクラス.
+ * Unit test class for token processing libraries.
  */
 public class TokenTest {
     /**
-     * トークン処理ライブラリの初期設定.
+     * Initial configuration for token processing libraries.
      * @throws IOException IOException
      * @throws CertificateException CertificateException
      * @throws InvalidKeySpecException InvalidKeySpecException
@@ -58,11 +58,11 @@ public class TokenTest {
     }
 
     /**
-     * test test AccountAccessToken.
+     * test ResidentLocalAccessToken.
      * @throws MalformedURLException
      */
     @Test
-    public void testAccountAccessToken() {
+    public void testResidentLocalAccessToken() {
         String issuer = "http://issuer.example/";
         ResidentLocalAccessToken token = new ResidentLocalAccessToken(new Date().getTime(), issuer,
                 "http://orig.com/orig/#subj", "http://schema.com/schema", new String[] {"someScope"});
@@ -79,11 +79,11 @@ public class TokenTest {
 
 
     /**
-     * test VisitorRefreshToken.
+     * test ResidentRefreshToken.
      * @throws MalformedURLException
      */
     @Test
-    public void testSelfRefreshToken() throws MalformedURLException {
+    public void testResidentRefreshToken() throws MalformedURLException {
         String issuer = "http://receiver.com/rcv";
 
         ResidentRefreshToken token = new ResidentRefreshToken(new Date().getTime(), issuer,
@@ -132,7 +132,7 @@ public class TokenTest {
 
 
     /**
-     * testTransCellAccessTokenのテスト.
+     * test TransCellAccessToken.
      * @throws TokenParseException TokenParseException
      * @throws TokenRootCrtException TokenRootCrtException
      * @throws TokenDsigException TokenDsigException
@@ -171,12 +171,12 @@ public class TokenTest {
         }
     }
     /**
-     * testCellLocalAccessTokenのテスト.
-     * @throws MalformedURLException URLパースエラー
+     * test VisitorLocalAccessToken.
+     * @throws MalformedURLException
      * @throws TokenParseException
      */
     @Test
-    public void testCellLocalAccessToken() throws MalformedURLException, TokenParseException {
+    public void testVisitorLocalAccessToken() throws MalformedURLException, TokenParseException {
         String base = "https://localhost:8080/personium-core/testcell1/__role/__/";
         List<Role> roleList = new ArrayList<Role>();
         roleList.add(Role.createFromRoleClassUrl(base + "admin"));
