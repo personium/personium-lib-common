@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014-2019 Personium Project Authors
+ *  - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +50,8 @@ public class GrantCode extends AbstractLocalAccessToken implements IAccessToken 
     }
     /**
      * Constructor for generating code.
-     * @param issuedAt issuedAt
-     * @param lifespan lifespan
+     * @param issuedAt the time token is issued (millisec from the epoch)
+     * @param lifespan Token lifespan (Millisec)
      * @param issuer issuer
      * @param subject subject
      * @param roleList roleList
@@ -69,9 +70,6 @@ public class GrantCode extends AbstractLocalAccessToken implements IAccessToken 
             this.roleList = roleList;
         }
     }
-
-
-
 
     /**
      * Create code string and return.
@@ -112,8 +110,4 @@ public class GrantCode extends AbstractLocalAccessToken implements IAccessToken 
     public String getId() {
         return this.subject + ":" + this.issuedAt;
     }
-
-
-
-
 }

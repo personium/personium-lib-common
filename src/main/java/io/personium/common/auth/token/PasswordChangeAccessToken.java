@@ -73,12 +73,11 @@ public final class PasswordChangeAccessToken extends AbstractLocalAccessToken im
     }
 
     /**
-     * Parses the token character string as Cell specified by issuer..
-     *
+     * parse a given token string as a Cell specified with the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
      * @return token object
-     * @throws AbstractOAuth2Token.TokenParseException Exception thrown when token parsing fails
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static PasswordChangeAccessToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {

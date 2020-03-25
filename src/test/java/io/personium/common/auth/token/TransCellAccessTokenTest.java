@@ -1,10 +1,26 @@
+/**
+ * Personium
+ * Copyright 2019 Personium Project Authors
+ *  - Fujitsu Ltd.
+ *  - Akio Shimono
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.personium.common.auth.token;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
@@ -16,6 +32,7 @@ import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,12 +50,8 @@ public class TransCellAccessTokenTest {
     static List<Role> ROLE_LIST = new ArrayList<>();
     static Set<String> SCOPE_SET = new HashSet<>();
     static {
-        try {
-            ROLE_LIST.add(new Role(new URL("https://schema.localhost/__role/__/role1")));
-            ROLE_LIST.add(new Role(new URL("https://schema.localhost/__role/__/role2")));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        ROLE_LIST.add(new Role("role1", "box", "https://schema.localhost/", "https://schema.localhost/"));
+        ROLE_LIST.add(new Role("role2", "box", "https://schema.localhost/", "https://subject.localhost/"));
     }
 
     TransCellAccessToken token;
@@ -69,25 +82,31 @@ public class TransCellAccessTokenTest {
     }
 
     @Test
-    public void testParse_issuer_subject_schema() throws TokenParseException, TokenDsigException, TokenRootCrtException {
+    public void parse_ParsedIssuerSubjectSchema_ShouldBe_SameAs_Original() throws TokenParseException, TokenDsigException, TokenRootCrtException {
         String tokenStr = this.token.toTokenString();
-        TransCellAccessToken token2 = TransCellAccessToken.parse(tokenStr);
-        assertEquals(ISSUER, token2.getIssuer());
-        assertEquals(SUBJECT, token2.getSubject());
-        assertEquals(SCHEMA, token2.getSchema());
+        // parse the prepared token
+        TransCellAccessToken parsedToken = TransCellAccessToken.parse(tokenStr);
+        // Parsed contents are the kept.
+        assertEquals(ISSUER, parsedToken.getIssuer());
+        assertEquals(SUBJECT, parsedToken.getSubject());
+        assertEquals(SCHEMA, parsedToken.getSchema());
+        assertEquals(TARGET, parsedToken.getTarget());
     }
     @Test
-    public void testParse_scopes() throws TokenParseException, TokenDsigException, TokenRootCrtException {
+    public void parse_ParsedScopes_ShouldBe_SameAs_Original() throws TokenParseException, TokenDsigException, TokenRootCrtException {
         String tokenStr = this.token.toTokenString();
-        TransCellAccessToken token2 = TransCellAccessToken.parse(tokenStr);
-        assertEquals(SCOPE.length, token2.getScope().length);
+        // parse the prepared token
+        TransCellAccessToken parsedToken = TransCellAccessToken.parse(tokenStr);
+        // Parsed scopes are kept the same.
+        assertEquals(StringUtils.join(SCOPE, " "), StringUtils.join(parsedToken.getScope(), " "));
     }
 
     @Test
-    public void testParse_roles() throws TokenParseException, TokenDsigException, TokenRootCrtException {
+    public void parse_ParsedRoles_ShouldBe_SameAs_Original() throws TokenParseException, TokenDsigException, TokenRootCrtException {
         String tokenStr = this.token.toTokenString();
-        TransCellAccessToken token2 = TransCellAccessToken.parse(tokenStr);
-        List<Role> parsedRoles = token2.getRoleList();
+        TransCellAccessToken parsedToken = TransCellAccessToken.parse(tokenStr);
+        List<Role> parsedRoles = parsedToken.getRoleList();
+        // Parsed roles should be kept the same.
         assertEquals(ROLE_LIST.size(), parsedRoles.size());
         StringBuilder sb1 = new StringBuilder();
         for (Role role : ROLE_LIST) {
@@ -101,11 +120,4 @@ public class TransCellAccessTokenTest {
         }
         assertEquals(sb1.toString(), sb2.toString());
     }
-
-    @Test
-    public void print() throws TokenParseException, TokenDsigException, TokenRootCrtException {
-        System.out.println(this.token.toSamlString());
-    }
-
-
 }

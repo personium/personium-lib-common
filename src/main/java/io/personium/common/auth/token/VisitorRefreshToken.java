@@ -63,15 +63,16 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     }
 
     /**
-     * 明示的な有効期間を設定してトークンを生成する.
+     * Constructor.
      * @param id トークンの一意識別子
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan 有効期間(ミリ秒)
+     * @param issuedAt time this token is issued (millisec from the epoch)
+     * @param lifespan token lifespan (in millisec)
      * @param issuer 発行者URL
      * @param subject アクセス主体URL
      * @param origIssuer このRefreshToken発行の際に使われた、元のTransCell アクセストークンの発行者
      * @param origRoleList このRefreshToken発行の際に使われた、元のTransCell アクセストークンに書かれたロールリスト
      * @param schema クライアント認証されたデータスキーマ
+     * @param scope array of scopes
      */
     public VisitorRefreshToken(
             final String id,
@@ -90,14 +91,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     }
 
     /**
-     * 既定値の有効期間を設定してトークンを生成する.
-     * @param id トークンの一意識別子
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param issuer 発行者URL
-     * @param subject アクセス主体URL
-     * @param origIssuer このRefreshToken発行の際に使われた、元のTransCell アクセストークンの発行者
-     * @param origRoleList このRefreshToken発行の際に使われた、元のTransCell アクセストークンに書かれたロールリスト
-     * @param schema クライアント認証されたデータスキーマ
+     * @deprecated use other constructor
      */
     public VisitorRefreshToken(
             final String id,
@@ -113,13 +107,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     }
 
     /**
-     * 既定値の有効期間を設定してトークンを生成する.
-     * @param id トークンの一意識別子
-     * @param issuer 発行者URL
-     * @param subject アクセス主体URL
-     * @param origIssuer このRefreshToken発行の際に使われた、元のTransCell アクセストークンの発行者
-     * @param origRoleList このRefreshToken発行の際に使われた、元のTransCell アクセストークンに書かれたロールリスト
-     * @param schema クライアント認証されたデータスキーマ
+     * @deprecated use other constructor
      */
     public VisitorRefreshToken(
             final String id,
@@ -141,11 +129,11 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     }
 
     /**
-     * トークン文字列をissuerで指定されたCellとしてパースする.
+     * parse a given token string as a Cell specified with the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
-     * @return パースされたCellLocalTokenオブジェクト
-     * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
+     * @return VisitorRefreshToken object as a parse result
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static VisitorRefreshToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {
@@ -159,10 +147,11 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
             String[] extra = ret.populate(token.substring(PREFIX_TC_REFRESH.length()), issuer, 3);
             ret.id = extra[IDX_ID];
             ret.originalIssuer = extra[IDX_ORIG_ISSUER];
-            ret.roleList = AbstractOAuth2Token.parseRolesString(extra[IDX_ORIG_ROLE_LIST]);
+            // Role class url list is there in Visitor Refresh Tokens
+            ret.roleList = AbstractOAuth2Token.parseSpaceSeparatedRoleClassUrlString(extra[IDX_ORIG_ROLE_LIST]);
             return ret;
         } catch (MalformedURLException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException("failed to parse token", e);
         }
     }
 
@@ -173,6 +162,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
 
     /**
      * {@inheritDoc}
+     * @deprecated
      */
     @Override
     public IAccessToken refreshAccessToken(final long issuedAt, final String target, String url, List<Role> role) {
@@ -199,7 +189,6 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
      */
     @Override
     public IRefreshToken refreshRefreshToken(final long issuedAt) {
-        // TODO 本当は ROLEは再度読み直すべき。
         return refreshRefreshToken(issuedAt, REFRESH_TOKEN_EXPIRES_MILLISECS);
     }
 
@@ -210,7 +199,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
         // TODO 本当は ROLEは再度読み直すべき。
         return new VisitorRefreshToken(UUID.randomUUID().toString(), issuedAt, lifespan, this.issuer, this.subject,
-                this.originalIssuer, this.getRoles(), this.schema, this.scope);
+                this.originalIssuer, this.getRoleList(), this.schema, this.scope);
     }
 
 
@@ -218,11 +207,11 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     public String getExtCellUrl() {
         return this.originalIssuer;
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<Role> getRoleList() {
-        return this.getRoles();
-    }
-
-
+    String makeRolesString() {
+        return makeRoleClassUrlListString();
+    };
 }

@@ -1,6 +1,7 @@
 /**
  * Personium
- * Copyright 2019 Personium Project
+ * Copyright 2019 Personium Project Authors
+ * - Akio Shimono
  * - FUJITSU LIMITED
  * - (Add Authors here)
  *
@@ -19,15 +20,11 @@
 package io.personium.common.auth.token;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -47,18 +44,20 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      */
     public static final String AES_CBC_PKCS5_PADDING = "AES/CBC/PKCS5Padding";
     static final String SEPARATOR = "\t";
+    static final String MD5 = "MD5";
+    static final String AES = "AES";
     static final int IV_BYTE_LENGTH = 16;
 
-    private static byte[] keyBytes;
-    private static SecretKey aesKey;
+    static byte[] keyBytes;
+    static SecretKey aesKey;
 
     public static class Type {
         public static class AccessToken {
             public static int SELF_LOCAL = 0;
             public static int VISITOR_LOCAL = 1;
             public static int TRANC_CELL = 2;
-            public static int UNIT_LOCLAL_UNIT_USER = 3;
-            public static int PASSWORDCHANGE = 4;
+            public static int UNIT_LOCLAL_UNIT_USER = 6;
+            public static int PASSWORDCHANGE = 7;
         }
         public static class RefreshToken {
             public static int RESIDENT = 3;
@@ -68,12 +67,12 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     }
 
     /**
-     * Key文字列を設定します。
-     * @param keyString キー文字列.
+     * set the Key string.
+     * @param keyString Key String.
      */
     public static void setKeyString(String keyString) {
-        keyBytes = keyString.getBytes(); // 16/24/32バイトの鍵バイト列
-        aesKey = new SecretKeySpec(keyBytes, "AES");
+        keyBytes = keyString.getBytes(); // 16/24/32 byte key byte array
+        aesKey = new SecretKeySpec(keyBytes, AES);
     }
 
     /**
@@ -84,12 +83,12 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
 
 
     /**
-     * 明示的な有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan 有効時間(ミリ秒)
-     * @param issuer 発行者
-     * @param subject 主体
-     * @param schema スキーマ
+     * generates a token by explicitly specifying the contents.
+     * @param issuedAt time when the token is issued at (millisec from the epoch)
+     * @param lifespan valid time (in millisec)
+     * @param issuer Issuer
+     * @param subject Subject
+     * @param schema Schema
      */
     public AbstractLocalToken(final long issuedAt, final long lifespan, final String issuer,
              final String subject, final String schema, String[] scope) {
@@ -115,14 +114,14 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     final String doCreateTokenString(final String[] extendedFields) {
         StringBuilder raw = new StringBuilder();
 
-
-        // 発行時刻のEpochからのミリ秒を逆順にした文字列が先頭から入るため、推測しづらい。
+        // Make it difficult to attack.
+        // by starting from the reverse string of epoch millisec of issue time.
+        // since starting part will change instant-by-instant.
         String iaS = Long.toString(this.issuedAt);
         String iaSr = StringUtils.reverse(iaS);
         raw.append(iaSr);
         raw.append(SEPARATOR);
         raw.append(String.valueOf(this.getType()));
-
 
         raw.append(SEPARATOR);
         raw.append(Long.toString(this.lifespan));
@@ -152,14 +151,14 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
 
 
     /**
-     * パース処理.
-     * パース結果のフィールド数がnumFieldsと一致すること.
-     * パース結果のissuerがissuerと一致すること.
-     * @param token トークン
-     * @param issuer 発行者
-     * @param numFields フィールド数
-     * @return パースされたトークン
-     * @throws AbstractOAuth2Token.TokenParseException トークン解釈に失敗したとき
+     * parse token string.
+     * It also checks if the number of the fields is as expected.
+     * and if the issuer of the parsed token is as expected.
+     * @param token token to parsing
+     * @param issuer assumed issuer
+     * @param numFields expected number of fields
+     * @return parsed token as an string array.
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the token
      */
     static String[] doParse(final String token, final String issuer,
       final int numFields) throws AbstractOAuth2Token.TokenParseException {
@@ -169,9 +168,18 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         //
         String[] frag = tokenDecoded.split(SEPARATOR, -1);
 
-        // If wrong format, throw exception
+        // If the number of the fields is not as expected
+        if (frag.length != numFields) {
+            throw new TokenParseException(
+                "unexpected field length, expected: [" + numFields +"], actual=[" + frag.length + "]"
+            );
+        }
+
+        // If the issuer mismatch, throw exception
         if (!issuer.equals(frag[IDX_ISSUER])) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+            throw new TokenParseException(
+                "issuer mismatch, expected: [" + issuer +"], actual=[" + frag[IDX_ISSUER] + "]"
+            );
         }
 
         return frag;
@@ -192,29 +200,27 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     }
 
     /**
-     * 指定のIssuer向けのIV (Initial Vector)を生成して返します.
-     * IVとしてissuerの最後の最後の１６文字を逆転させた文字列を用います。
-     * これにより、違うIssuerを想定してパースすると、パースに失敗する。
+     * Generate an IV (Initial Vector) and return it for a specified token issuer.
      * @param issuer Issuer URL
      * @return Initial Vector Byte array
      */
     protected static byte[] getIvBytes(final String issuer) {
         try {
-            return StringUtils.reverse("123456789abcdefg" + issuer)
-                    .substring(0, IV_BYTE_LENGTH).getBytes(CharEncoding.UTF_8);
-        } catch (UnsupportedEncodingException e) {
+            MessageDigest md = MessageDigest.getInstance(MD5);
+            byte[] hash = md.digest(issuer.getBytes(CharEncoding.UTF_8));
+            return hash;
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * 文字列を暗号化する.
-     * @param in 入力文字列
-     * @param ivBytes イニシャルベクトル
-     * @return 暗号化された文字列
+     * encode a string using an initial vector.
+     * @param in plain string to encode
+     * @param ivBytes Initial Vector bytes
+     * @return encoded string
      */
     public static String encode(final String in, final byte[] ivBytes) {
-        // IVに、発行CELLのURL逆順を入れることで、より短いトークンに。
         Cipher cipher;
         try {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
@@ -228,41 +234,23 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
     }
 
     /**
-     * 復号する.
-     * @param in 暗号化文字列
-     * @param ivBytes イニシャルベクトル
-     * @return 復号された文字列
-     * @throws AbstractOAuth2Token.TokenParseException 例外
+     * decode a ciphered string using an initial vector.
+     * @param in ciphered string
+     * @param ivBytes Initial Vector bytes
+     * @return decoded string
+     * @throws AbstractOAuth2Token.TokenParseException
      */
     public static String decode(final String in, final byte[] ivBytes) throws AbstractOAuth2Token.TokenParseException {
         byte[] inBytes = CommonUtils.decodeBase64Url(in);
         Cipher cipher;
         try {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
-        } catch (NoSuchAlgorithmException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        } catch (NoSuchPaddingException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        }
-        try {
             cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(ivBytes));
-        } catch (InvalidKeyException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        } catch (InvalidAlgorithmParameterException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        }
-        byte[] plainBytes;
-        try {
+            byte[] plainBytes;
             plainBytes = cipher.doFinal(inBytes);
-        } catch (IllegalBlockSizeException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        } catch (BadPaddingException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
-        }
-        try {
             return new String(plainBytes, CharEncoding.UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            throw AbstractOAuth2Token.PARSE_EXCEPTION;
+        } catch (Exception e) {
+            throw new TokenParseException(e);
         }
     }
 
@@ -288,8 +276,5 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         } else {
             throw new TokenParseException("peer does not match");
         }
-
     }
-
-
 }

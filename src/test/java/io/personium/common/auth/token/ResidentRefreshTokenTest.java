@@ -1,6 +1,8 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2019 Personium Project Autors
+ *  - Fujitsu Ltd.
+ *  - Akio Shimono
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +66,7 @@ public class ResidentRefreshTokenTest {
         String target = "https://personium/targetcell/";
         String cellUrl = "https://personium/testcell/";
         List<Role> roleList = new ArrayList<>();
-        Role role = new Role("roleName");
+        Role role = new Role("roleName", null, null, cellUrl);
         roleList.add(role);
 
         // --------------------
@@ -115,7 +117,7 @@ public class ResidentRefreshTokenTest {
         String target = null;
         String cellUrl = "https://personium/testcell02/";
         List<Role> roleList = new ArrayList<>();
-        Role role = new Role("roleName");
+        Role role = new Role("roleName", null, null, cellUrl);
         roleList.add(role);
 
         // --------------------
@@ -174,7 +176,7 @@ public class ResidentRefreshTokenTest {
         String target = "https://personium/targetcell/";
         String cellUrl = "https://personium/testcell02/";
         List<Role> roleList = new ArrayList<>();
-        Role role = new Role("roleName");
+        Role role = new Role("roleName", null, null, cellUrl);
         roleList.add(role);
 
         // --------------------

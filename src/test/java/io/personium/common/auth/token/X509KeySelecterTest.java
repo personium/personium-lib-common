@@ -54,9 +54,9 @@ public class X509KeySelecterTest {
      */
     @BeforeClass
     public static void beforeClass() {
-        roleList.add(new Role("admin"));
-        roleList.add(new Role("staff"));
-        roleList.add(new Role("doctor"));
+        roleList.add(new Role("admin", null, null, cellRootUrl));
+        roleList.add(new Role("staff", null, null, cellRootUrl));
+        roleList.add(new Role("doctor", null, null, cellRootUrl));
     }
 
     /**

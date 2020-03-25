@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +34,6 @@ public interface IExtRoleContainingToken {
     String getIssuer();
 
     String getSubject();
-
-
 
     /**
      * returns a list of roles assigned at visiting cell (issuer cell).

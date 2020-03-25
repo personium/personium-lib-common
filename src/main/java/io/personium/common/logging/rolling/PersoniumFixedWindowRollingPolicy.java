@@ -1,5 +1,5 @@
 /**
- * personium.io
+ * Personium
  * Modifications copyright 2014 FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,7 +53,7 @@ import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import ch.qos.logback.core.rolling.helper.RenameUtil;
 
 /**
- * EventBus用のRollingPolicyクラス.
+ * RollingPolicy class for EventBus log files.
  * ローテート時に "default.log.{timestamp}.zip" の形式でローテートファイルを作成し、
  * 最大保持世代数を超える場合は、格納ディレクトリに存在する最古の "default.log.{timestamp}.zip" を削除する。 <br />
  * そのため、上記フォーマットに則さないファイルは削除対象とはならない。
@@ -63,7 +63,7 @@ public class PersoniumFixedWindowRollingPolicy extends RollingPolicyBase {
     Logger logger = LoggerFactory.getLogger(PersoniumFixedWindowRollingPolicy.class);
 
     /**
-     * Zipファイルのエントリの日付パターン.
+     * Zip file entry date pattern.
      */
     private static final String ZIP_ENTRY_DATE_PATTERN = "yyyy-MM-dd_HHmm";
 
@@ -72,7 +72,7 @@ public class PersoniumFixedWindowRollingPolicy extends RollingPolicyBase {
      */
     private static final int MAX_WINDOW_SIZE = 12;
 
-    // エラーメッセージ
+    // error message
     static final String FNP_NOT_SET = "The \"FileNamePattern\" property"
             + " must be set before using FixedWindowRollingPolicy. ";
     static final String PRUDENT_MODE_UNSUPPORTED = "See also"
@@ -93,7 +93,7 @@ public class PersoniumFixedWindowRollingPolicy extends RollingPolicyBase {
     FileNamePattern zipEntryFileNamePattern;
 
     /**
-     * コンストラクタ.
+     * constructor.
      * logback.xmlの定義でminIndex/maxIndexの不備があった場合、ここで設定した値が有効になる。
      * 定義不備に関するログが出力されないようなので、startメソッドにて値の不備をログに出力する。
      */

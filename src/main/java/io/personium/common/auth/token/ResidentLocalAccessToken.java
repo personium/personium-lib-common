@@ -52,10 +52,10 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
 
 
     /**
-     * 明示的な有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan 有効期間(ミリ秒)
-     * @param issuer 発行者
+     * Constructor.
+     * @param issuedAt the time token is issued (millisec from the epoch)
+     * @param lifespan Token lifespan (Millisec)
+     * @param issuer Issuer
      * @param subject Subject
      * @param schema Schema
      */
@@ -65,10 +65,10 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
     }
 
     /**
-     * 既定値の有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param issuer 発行者
-     * @param subject Subject
+     * Constructor.
+     * @param issuedAt the time token is issued (millisec from the epoch)
+     * @param issuer Issuer
+     * @param subject Subject (account name)
      * @param schema Schema
      */
     public ResidentLocalAccessToken(final long issuedAt, final String issuer, final String subject, final String schema, String[] scopes) {
@@ -83,11 +83,11 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
     }
 
     /**
-     * トークン文字列をissuerで指定されたCellとしてパースする.
+     * parse a given token string as a Cell specified with the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
      * @return パースされたCellLocalTokenオブジェクト
-     * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static ResidentLocalAccessToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {
@@ -97,15 +97,12 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
         ResidentLocalAccessToken ret = new ResidentLocalAccessToken();
         ret.populate(token.substring(PREFIX_ACCESS.length()), issuer, 0);
         return ret;
-
     }
-
 
     @Override
     public String getId() {
         return this.issuer + ":" + this.issuedAt;
     }
-
 
     @Override
     public String getTarget() {

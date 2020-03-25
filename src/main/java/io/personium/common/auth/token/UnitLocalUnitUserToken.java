@@ -1,6 +1,7 @@
 /**
  * Personium
- * Copyright 2019 Personium Project
+ * Copyright 2019 Personium Project Authors
+ *  - Akio Shimono
  * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,11 +39,11 @@ public class UnitLocalUnitUserToken extends AbstractLocalAccessToken implements 
     }
 
     /**
-     * 明示的な有効期間を設定してトークンを生成する.
-     * @param issuedAt 発行時刻(epochからのミリ秒)
-     * @param lifespan 有効時間(ミリ秒)
-     * @param subject ユニットユーザ名
-     * @param issuer 発行者(自ホスト名)
+     * Constructor.
+     * @param issuedAt token issue time (millisec from the epoch)
+     * @param lifespan token lifespan (in millisec)
+     * @param subject Unit user name
+     * @param issuer Issuer (Unit domain name)
      */
     public UnitLocalUnitUserToken(final long issuedAt, final long lifespan, final String subject, final String issuer) {
         this.issuedAt = issuedAt;
@@ -52,11 +53,11 @@ public class UnitLocalUnitUserToken extends AbstractLocalAccessToken implements 
     }
 
     /**
-     * トークン文字列をissuerで指定されたCellとしてパースする.
+     * parse a token string as a Cell specified with the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
-     * @return パースされたCellLocalTokenオブジェクト
-     * @throws AbstractOAuth2Token.TokenParseException トークンのパースに失敗したとき投げられる例外
+     * @return UnitLocalUnitUserToken object
+     * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static UnitLocalUnitUserToken parse(final String token, final String issuer)
             throws AbstractOAuth2Token.TokenParseException {
