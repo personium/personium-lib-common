@@ -20,4 +20,30 @@ fi
 sed -i \
   "s|^\(io\.personium\.core\.version=[0-9]\+\.[0-9]\+\.\)[0-9]\+|\1${MINOR_VERSION}|" \
   src/main/resources/personium-unit-config-default.properties
-  
+
+
+git branch
+git --version
+git diff
+git add .
+
+git config --global user.name "Personium Bot"
+git config --global user.email "personium.io@gmail.com"
+
+VERSION=$(
+  sed -n 's|^    <version>\([0-9]\+\.[0-9]\+\.[0-9]\+-SNAPSHOT\)</version>|\1|p' pom.xml
+)
+echo ${VERSION}
+
+git commit -m "Update to v${VERSION}"
+
+cat << EOS >~/.netrc
+machine github.com
+login $GITHUB_USER
+password $GITHUB_TOKEN
+EOS
+
+git remote -v
+git push origin develop
+
+echo 'Suceeded!'
