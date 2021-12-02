@@ -58,6 +58,7 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
      * @param issuer Issuer
      * @param subject Subject
      * @param schema Schema
+     * @param scopes Scopes in the form of String array
      */
     public ResidentLocalAccessToken(final long issuedAt, final long lifespan, final String issuer,
             final String subject, final String schema, String[] scopes) {
@@ -70,6 +71,7 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
      * @param issuer Issuer
      * @param subject Subject (account name)
      * @param schema Schema
+     * @param scopes scopes in the form of String array
      */
     public ResidentLocalAccessToken(final long issuedAt, final String issuer, final String subject, final String schema, String[] scopes) {
         this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scopes);
@@ -86,7 +88,7 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
      * parse a given token string as a Cell specified with the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
-     * @return パースされたCellLocalTokenオブジェクト
+     * @return parsed CellLocalToken object
      * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static ResidentLocalAccessToken parse(final String token, final String issuer)

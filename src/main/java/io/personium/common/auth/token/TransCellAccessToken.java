@@ -189,7 +189,6 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
 
     /**
      * Constructor with automatic ID assignation with an UUID.
-     * @param issuedAt token issue time (millisec from the epoch)
      * @param issuer Issuer Cell URL
      * @param subject access Subject URL
      * @param target target URL
