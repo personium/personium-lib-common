@@ -89,6 +89,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      * @param issuer Issuer
      * @param subject Subject
      * @param schema Schema
+     * @param scope Scope
      */
     public AbstractLocalToken(final long issuedAt, final long lifespan, final String issuer,
              final String subject, final String schema, String[] scope) {

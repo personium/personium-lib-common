@@ -90,7 +90,7 @@ public class Role {
     /**
      * create a Role from role instance url.
      * note that the box schema information can not be automatically poplulated in this method.
-     * @param roleClassUrl
+     * @param roleInstanceUrl
      * @return
      * @throws MalformedURLException
      */
@@ -169,7 +169,6 @@ public class Role {
     }
     /**
      * Returns Role class URL.
-     * @param url base URL of role resource
      * @return String Role class URL
      */
     public String toRoleClassURL() {
@@ -183,7 +182,6 @@ public class Role {
     }
     /**
      * Returns Role Instance URL.
-     * @param url base URL of role resource
      * @return String Role instance URL
      */
     public String toRoleInstanceURL() {
