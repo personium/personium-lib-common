@@ -14,13 +14,13 @@
  * limitations under the License.
  *
  ****************************************************************************
- * 
+ *
  * @author:     zhang
  * @version:    $Revision$
  * @created:    Apr 24, 2009
  *
  * Description: A KeySpec for PKCS#1 encoded RSA private key
- * 
+ *
  ****************************************************************************/
 package net.oauth.signature.pem;
 
@@ -42,7 +42,7 @@ public class PKCS1EncodedKeySpec {
     /**
      * Create a PKCS#1 keyspec from DER encoded buffer
      * @param keyBytes DER encoded octet stream
-     * @throws IOException
+     * @throws IOException when failing to decode the given bytes
      */
     public PKCS1EncodedKeySpec(final byte[] keyBytes) throws IOException {
         decode(keyBytes);
@@ -60,22 +60,22 @@ public class PKCS1EncodedKeySpec {
      * Decode PKCS#1 encoded private key into RSAPrivateCrtKeySpec.
      * <p>
      * The ASN.1 syntax for the private key with CRT is
-     * 
+     *
      * <pre>
-     * -- 
+     * --
      * -- Representation of RSA private key with information for the CRT algorithm.
      * --
      * RSAPrivateKey ::= SEQUENCE {
-     *   version           Version, 
+     *   version           Version,
      *   modulus           INTEGER,  -- n
      *   publicExponent    INTEGER,  -- e
      *   privateExponent   INTEGER,  -- d
      *   prime1            INTEGER,  -- p
      *   prime2            INTEGER,  -- q
      *   exponent1         INTEGER,  -- d mod (p-1)
-     *   exponent2         INTEGER,  -- d mod (q-1) 
+     *   exponent2         INTEGER,  -- d mod (q-1)
      *   coefficient       INTEGER,  -- (inverse of q) mod p
-     *   otherPrimeInfos   OtherPrimeInfos OPTIONAL 
+     *   otherPrimeInfos   OtherPrimeInfos OPTIONAL
      * }
      * </pre>
      * @param keyBytes PKCS#1 encoded key

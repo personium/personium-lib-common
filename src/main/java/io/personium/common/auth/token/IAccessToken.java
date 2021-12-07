@@ -58,8 +58,8 @@ public interface IAccessToken {
 
     /**
      * constructs p_cookie string.
-     * @param cookiePeer
-     * @param issuer
+     * @param cookiePeer Cookie Peer string
+     * @param issuer issuer
      * @return cookie string
      */
     String getCookieString(String cookiePeer, String issuer);

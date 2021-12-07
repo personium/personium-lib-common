@@ -54,9 +54,10 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
 
 /**
  * RollingPolicy class for EventBus log files.
- * ローテート時に "default.log.{timestamp}.zip" の形式でローテートファイルを作成し、
- * 最大保持世代数を超える場合は、格納ディレクトリに存在する最古の "default.log.{timestamp}.zip" を削除する。 <br>
- * そのため、上記フォーマットに則さないファイルは削除対象とはならない。
+ * On log rotations, create a rotated file named in "default.log.{timestamp}.zip" format.
+ * If the max generation number is exceeded, the oldest rotated file following the above naming
+ * convention in the directory is deleted. <br>
+ * (Therefore, files not following the above naming convention will not be deleted)
  */
 public class PersoniumFixedWindowRollingPolicy extends RollingPolicyBase {
 
@@ -275,8 +276,8 @@ public class PersoniumFixedWindowRollingPolicy extends RollingPolicyBase {
     }
 
     /**
-     * minIndexを設定する.
-     * @param minIndex minIndexに設定する値.
+     * setter for minIndex.
+     * @param minIndex value to set.
      */
     public void setMinIndex(int minIndex) {
         this.minIndex = minIndex;

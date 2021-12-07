@@ -39,6 +39,7 @@ public final class PasswordChangeAccessToken extends AbstractLocalAccessToken im
      * @param issuer Issuer
      * @param subject Subject
      * @param schema Schema
+     * @param scope scopes in the form of String array
      */
     public PasswordChangeAccessToken(final long issuedAt, final long lifespan, final String issuer,
             final String subject, final String schema, final String[] scope) {
@@ -53,6 +54,7 @@ public final class PasswordChangeAccessToken extends AbstractLocalAccessToken im
      * @param issuer Issuer
      * @param subject Subject
      * @param schema Schema
+     * @param scope scopes in the form of String array
      */
     public PasswordChangeAccessToken(final long issuedAt, final String issuer, final String subject,
             final String schema, final String[] scope) {

@@ -33,7 +33,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 package net.oauth.signature.pem;
@@ -90,7 +90,7 @@ public class PEMReader {
 
     /**
      * Read the PEM file and save the DER encoded octet stream and begin marker.
-     * @throws IOException
+     * @throws IOException when failing to read
      */
     protected void readFile() throws IOException {
 
@@ -114,7 +114,7 @@ public class PEMReader {
     /**
      * Read the lines between BEGIN and END marker and convert the Base64 encoded content into binary byte array.
      * @return DER encoded octet stream
-     * @throws IOException
+     * @throws IOException when failing to read
      */
     private byte[] readBytes(final BufferedReader reader, final String endMarker) throws IOException {
         String line = null;

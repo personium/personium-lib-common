@@ -89,7 +89,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      * @param issuer Issuer
      * @param subject Subject
      * @param schema Schema
-     * @param scope Scope
+     * @param scope Scopes in the form of String array
      */
     public AbstractLocalToken(final long issuedAt, final long lifespan, final String issuer,
              final String subject, final String schema, String[] scope) {
@@ -239,7 +239,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
      * @param in ciphered string
      * @param ivBytes Initial Vector bytes
      * @return decoded string
-     * @throws AbstractOAuth2Token.TokenParseException
+     * @throws AbstractOAuth2Token.TokenParseException when invalid inputs are provided
      */
     public static String decode(final String in, final byte[] ivBytes) throws AbstractOAuth2Token.TokenParseException {
         byte[] inBytes = CommonUtils.decodeBase64Url(in);

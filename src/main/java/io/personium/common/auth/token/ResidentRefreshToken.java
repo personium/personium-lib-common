@@ -57,9 +57,10 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
      * Constructor.
      * @param issuedAt token issue time (millisec from the epoch)
      * @param lifespan Token lifespan (Millisec)
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param schema クライアント認証されたデータスキーマ
+     * @param issuer issuer Cell URL
+     * @param subject access subject url
+     * @param schema client-authenticated data schema
+     * @param scopes Scopes in the form of String array
      */
     public ResidentRefreshToken(
             final long issuedAt,
@@ -74,9 +75,10 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
     /**
      * Constructor.
      * @param issuedAt token issue time (millisec from the epoch)
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param schema クライアント認証されたデータスキーマ
+     * @param issuer issuer Cell URL
+     * @param subject access subject url
+     * @param schema client-authenticated data schema
+     * @param scopes Scopes in the form of String array
      */
     public ResidentRefreshToken(
             final long issuedAt,
@@ -89,10 +91,10 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
 
     /**
      * Constructor.
-     * 既定値の有効期間と現在を発行日時と設定してトークンを生成する.
-     * @param issuer 発行 Cell URL
-     * @param subject アクセス主体URL
-     * @param schema クライアント認証されたデータスキーマ
+     * @param issuer issuer Cell URL
+     * @param subject access subject url
+     * @param schema client-authenticated data schema
+     * @param scopes scopes in the form of String array
      */
     public ResidentRefreshToken(final String issuer, final String subject, final String schema, String[] scopes) {
         this(new DateTime().getMillis(), issuer, subject, schema, scopes);
@@ -109,7 +111,7 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
      * parse a given token string as a Cell specified with the issuer parameter.
      * @param token Token String
      * @param issuer Cell Root URL
-     * @return パースされたCellLocalTokenオブジェクト
+     * @return parsed CellLocalToken object
      * @throws AbstractOAuth2Token.TokenParseException when failed to parse the string
      */
     public static ResidentRefreshToken parse(final String token, final String issuer)
@@ -149,7 +151,8 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
         if (target == null) {
             return new ResidentLocalAccessToken(issuedAt, lifespan, this.issuer, this.getSubject(), schema, scope);
         } else {
-            // 自分セルローカル払い出し時に払い出されるリフレッシュトークンにはロール入ってないので取得する。
+            // obtain and put role info in the token
+            // since resident refresh tokens do not contain it.
             return new TransCellAccessToken(issuedAt, lifespan, this.issuer, cellUrl + "#" + this.getSubject(),
                     target, roleList, schema, scope);
         }
@@ -170,5 +173,4 @@ public final class ResidentRefreshToken extends AbstractLocalToken implements IR
     public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
         return new ResidentRefreshToken(issuedAt, lifespan, this.issuer, this.subject, this.schema, this.scope);
     }
-
 }
