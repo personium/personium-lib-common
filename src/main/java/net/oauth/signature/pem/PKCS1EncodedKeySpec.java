@@ -58,7 +58,7 @@ public class PKCS1EncodedKeySpec {
 
     /**
      * Decode PKCS#1 encoded private key into RSAPrivateCrtKeySpec.
-     * <p/>
+     * <p>
      * The ASN.1 syntax for the private key with CRT is
      *
      * <pre>

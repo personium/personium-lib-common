@@ -276,8 +276,8 @@ public class PersoniumFixedWindowRollingPolicy extends RollingPolicyBase {
     }
 
     /**
-     * minIndexを設定する.
-     * @param minIndex minIndexに設定する値.
+     * setter for minIndex.
+     * @param minIndex value to set.
      */
     public void setMinIndex(int minIndex) {
         this.minIndex = minIndex;
