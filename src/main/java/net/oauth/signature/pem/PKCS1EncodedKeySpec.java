@@ -31,7 +31,7 @@ import java.security.spec.RSAPrivateCrtKeySpec;
 /**
  * PKCS#1 encoded private key is commonly used with OpenSSL. It provides CRT parameters so the private key operation can
  * be much faster than using exponent/modulus alone, which is the case for PKCS#8 encoded key.
- * <p/>
+ * <p>
  * Unfortunately, JCE doesn't have an API to decode the DER. This class takes DER buffer and decoded into CRT key.
  * @author zhang
  */
@@ -58,7 +58,7 @@ public class PKCS1EncodedKeySpec {
 
     /**
      * Decode PKCS#1 encoded private key into RSAPrivateCrtKeySpec.
-     * <p/>
+     * <p>
      * The ASN.1 syntax for the private key with CRT is
      * 
      * <pre>

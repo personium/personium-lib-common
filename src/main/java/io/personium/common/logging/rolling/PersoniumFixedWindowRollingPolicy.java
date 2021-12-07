@@ -55,7 +55,7 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
 /**
  * RollingPolicy class for EventBus log files.
  * ローテート時に "default.log.{timestamp}.zip" の形式でローテートファイルを作成し、
- * 最大保持世代数を超える場合は、格納ディレクトリに存在する最古の "default.log.{timestamp}.zip" を削除する。 <br />
+ * 最大保持世代数を超える場合は、格納ディレクトリに存在する最古の "default.log.{timestamp}.zip" を削除する。 <br>
  * そのため、上記フォーマットに則さないファイルは削除対象とはならない。
  */
 public class PersoniumFixedWindowRollingPolicy extends RollingPolicyBase {

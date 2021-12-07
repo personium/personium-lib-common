@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.personium</groupId>
     <artifactId>personium-lib-common</artifactId>
@@ -14,7 +14,6 @@
     </licenses>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <final.name>personium-lib-common</final.name>
         <java.version>1.8</java.version>
         <logback.version>1.2.3</logback.version>
         <jacoco.include.package>io.personium.*</jacoco.include.package>
@@ -37,15 +36,6 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
-            <resource>
-                <targetPath>META-INF</targetPath>
-                <directory>..</directory>
-                <includes>
-                    <include>LICENSE.txt</include>
-                    <include>NOTICE.txt</include>
-                    <include>CHANGES.txt</include>
-                </includes>
-            </resource>
         </resources>
         <extensions>
             <extension>
@@ -54,7 +44,6 @@
                 <version>2.12</version>
             </extension>
         </extensions>
-        <finalName>${final.name}</finalName>
         <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
         <plugins>
             <plugin>
