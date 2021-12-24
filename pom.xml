@@ -8,7 +8,6 @@
     <name>personium-lib-common</name>
     <description>Common libraries used in personium-core module and personium-engine module.</description>
     <url>https://github.com/personium/personium-lib-common</url>
-
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -19,7 +18,6 @@
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
