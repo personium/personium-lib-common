@@ -38,7 +38,7 @@ jobs:
 
     - name: Remove -SNAPSHOT from pom.xml, and get release string which is to be released.
       run: |
-        mvn -B versions:set -DremoveSnapshot && mvn -B versions:commit
+        sed -i 's|\-SNAPSHOT||' pom.xml
         echo "RELEASE_VERSION=$(mvn -B help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
     - name: Get extension of artifact
