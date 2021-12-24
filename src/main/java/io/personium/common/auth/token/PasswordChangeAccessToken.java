@@ -1,6 +1,7 @@
 /**
- * personium.io
- * Copyright 2019 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014-2019 Personium Project Authors
+ * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +40,7 @@ public final class PasswordChangeAccessToken extends AbstractLocalAccessToken im
      * @param issuer Issuer
      * @param subject Subject
      * @param schema Schema
+     * @param scope scopes in the form of String array
      */
     public PasswordChangeAccessToken(final long issuedAt, final long lifespan, final String issuer,
             final String subject, final String schema, final String[] scope) {
@@ -53,6 +55,7 @@ public final class PasswordChangeAccessToken extends AbstractLocalAccessToken im
      * @param issuer Issuer
      * @param subject Subject
      * @param schema Schema
+     * @param scope scopes in the form of String array
      */
     public PasswordChangeAccessToken(final long issuedAt, final String issuer, final String subject,
             final String schema, final String[] scope) {

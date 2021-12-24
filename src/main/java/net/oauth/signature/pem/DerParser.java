@@ -25,10 +25,10 @@ import java.math.BigInteger;
 /**
  * A bare-minimum ASN.1 DER decoder, just having enough functions to decode PKCS#1 private keys. Especially, it doesn't
  * handle explicitly tagged types with an outer tag.
- * <p/>
+ * <p>
  * This parser can only handle one layer. To parse nested constructs, get a new parser for each layer using
  * <code>Asn1Object.getParser()</code>.
- * <p/>
+ * <p>
  * There are many DER decoders in JRE but using them will tie this program to a specific JCE/JVM.
  * @author zhang
  */
@@ -119,7 +119,7 @@ class DerParser {
 
     /**
      * Decode the length of the field. Can only support length encoding up to 4 octets.
-     * <p/>
+     * <p>
      * In BER/DER encoding, length can be encoded in 2 forms,
      * <ul>
      * <li>Short form. One octet. Bit 8 has value "0" and bits 7-1 give the length.

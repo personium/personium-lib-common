@@ -1,6 +1,6 @@
 /**
- * personium.io
- * Copyright 2014 FUJITSU LIMITED
+ * Personium
+ * Copyright 2014-2019 Personium Project Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,6 @@ import javax.crypto.Cipher;
 import org.apache.commons.lang.CharEncoding;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import io.personium.common.file.CipherInputStream;
-import io.personium.common.file.DataCryptor;
 
 /**
  * Unit Test class for DataCryptor.<br>

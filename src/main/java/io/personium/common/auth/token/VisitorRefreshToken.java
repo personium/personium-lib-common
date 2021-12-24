@@ -64,15 +64,15 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
 
     /**
      * Constructor.
-     * @param id トークンの一意識別子
+     * @param id Token id
      * @param issuedAt time this token is issued (millisec from the epoch)
      * @param lifespan token lifespan (in millisec)
-     * @param issuer 発行者URL
-     * @param subject アクセス主体URL
-     * @param origIssuer このRefreshToken発行の際に使われた、元のTransCell アクセストークンの発行者
-     * @param origRoleList このRefreshToken発行の際に使われた、元のTransCell アクセストークンに書かれたロールリスト
-     * @param schema クライアント認証されたデータスキーマ
-     * @param scope array of scopes
+     * @param issuer issuer Cell URL
+     * @param subject access subject url
+     * @param origIssuer original TransCellAccessToken issuer used when this token is issued
+     * @param origRoleList Role list in the original TransCellAccessToken used to issue this token
+     * @param schema client-authenticated data schema
+     * @param scope scopes in the form of String array
      */
     public VisitorRefreshToken(
             final String id,
@@ -91,7 +91,15 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     }
 
     /**
-     * @deprecated use other constructor
+     * @deprecated use other constructor.
+     * @param id Token id
+     * @param issuedAt time this token is issued (millisec from the epoch)
+     * @param issuer issuer Cell URL
+     * @param subject subject URL
+     * @param origIssuer original TransCellAccessToken issuer used when this token is issued
+     * @param origRoleList Role list in the original TransCellAccessToken used to issue this token
+     * @param schema client-authenticated data schema
+     * @param scope scopes in the form of String array
      */
     public VisitorRefreshToken(
             final String id,
@@ -107,7 +115,14 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     }
 
     /**
-     * @deprecated use other constructor
+     * @deprecated use other constructor.
+     * @param id Token id
+     * @param issuer issuer Cell URL
+     * @param subject subject URL
+     * @param origIssuer original TransCellAccessToken issuer used when this token is issued
+     * @param origRoleList Role list in the original TransCellAccessToken used to issue this token
+     * @param schema client-authenticated data schema
+     * @param scope scopes in the form of String array
      */
     public VisitorRefreshToken(
             final String id,
@@ -197,7 +212,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
      */
     @Override
     public IRefreshToken refreshRefreshToken(final long issuedAt, final long lifespan) {
-        // TODO 本当は ROLEは再度読み直すべき。
+        // TODO Should reload RoleList info.
         return new VisitorRefreshToken(UUID.randomUUID().toString(), issuedAt, lifespan, this.issuer, this.subject,
                 this.originalIssuer, this.getRoleList(), this.schema, this.scope);
     }
@@ -213,5 +228,5 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     @Override
     String makeRolesString() {
         return makeRoleClassUrlListString();
-    };
+    }
 }

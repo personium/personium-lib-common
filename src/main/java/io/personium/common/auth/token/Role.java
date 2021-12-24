@@ -69,9 +69,9 @@ public class Role {
     }
     /**
      * create a Role from role class url.
-     * @param roleClassUrl
-     * @return
-     * @throws MalformedURLException
+     * @param roleClassUrl role class url
+     * @return Role object
+     * @throws MalformedURLException when the given url is invalid
      */
     public static Role createFromRoleClassUrl(String roleClassUrl) throws MalformedURLException {
         Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
@@ -90,9 +90,9 @@ public class Role {
     /**
      * create a Role from role instance url.
      * note that the box schema information can not be automatically poplulated in this method.
-     * @param roleClassUrl
-     * @return
-     * @throws MalformedURLException
+     * @param roleInstanceUrl role instance url
+     * @return Role object
+     * @throws MalformedURLException when the given url is invalid
      */
     public static Role createFromRoleInstanceUrl(String roleInstanceUrl) throws MalformedURLException {
         Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
@@ -169,7 +169,6 @@ public class Role {
     }
     /**
      * Returns Role class URL.
-     * @param url base URL of role resource
      * @return String Role class URL
      */
     public String toRoleClassURL() {
@@ -183,7 +182,6 @@ public class Role {
     }
     /**
      * Returns Role Instance URL.
-     * @param url base URL of role resource
      * @return String Role instance URL
      */
     public String toRoleInstanceURL() {
@@ -197,16 +195,12 @@ public class Role {
             return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, MAIN_BOX_NAME, this.name);
         }
         if (this.boxSchema == null) {
-            // Box name is given but schema is null 
+            // Box name is given but schema is null
             return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, this.boxName, this.name);
         }
         return String.format(ROLE_RESOURCE_FORMAT, this.baseUrl, this.boxName, this.name);
     }
     /**
-     * BaseURLを作成する.
-     * @deprecated
-     * @param url ロールリソースのベースURL
-     * @return String ロールのベースURL
      */
     private String createBaseUrl(String url) {
         String url2 = null;
