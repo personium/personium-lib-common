@@ -182,6 +182,8 @@ public final class CommonUtils {
      * Constant definition for XML.
      */
     public static class XmlConst {
+        /** DAV:. */
+        public static final String NS_DAV = "DAV:";
         /** urn:x-personium:xmlns. */
         public static final String NS_PERSONIUM = "urn:x-personium:xmlns";
         /** XML Name Space p:. */
