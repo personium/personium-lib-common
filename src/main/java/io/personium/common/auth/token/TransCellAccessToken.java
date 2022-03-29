@@ -443,7 +443,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             Element assertion = doc.getDocumentElement();
             Element issuer = (Element) (doc.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Issuer").item(0));
             Element subject = (Element) (assertion.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Subject").item(0));
-            Element subjectNameID = (Element) (subject.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION,/*  */ "NameID").item(0));
+            Element subjectNameID = (Element) (subject.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "NameID").item(0));
             String id = assertion.getAttribute("ID");
             String issuedAtStr = assertion.getAttribute("IssueInstant");
 
