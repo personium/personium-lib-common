@@ -190,6 +190,8 @@ public final class CommonUtils {
         public static final String NS_PREFIX_PERSONIUM = "p";
         /** http://www.w3.org/2001/XMLSchema-instance. */
         public static final String NS_XML_SCHEMA_INSTANCE = "http://www.w3.org/2001/XMLSchema-instance";
+        /** http://www.w3.org/2000/09/xmldsig# */
+        public static final String NS_XML_DSIG = "http://www.w3.org/2000/09/xmldsig#";
 
         /** service. */
         public static final String SERVICE = "service";
