@@ -1,6 +1,6 @@
 /**
  * Personium
- * Copyright 2019 Personium Project
+ * Copyright 2019-2022 Personium Project Authors
  * - FUJITSU LIMITED
  * - (Add Authors here)
  *
