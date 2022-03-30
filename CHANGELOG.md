@@ -1,3 +1,11 @@
+## 1.5.5
+IMPROVEMENTS:
+* Improve stricity about SAML elements with validating SAML namespace.
+([personium/personium-lib-common#92](https://github.com/personium/personium-lib-common/pull/92))
+
+MISC:
+* Update copyright year to 2022. ([personium/personium-lib-common#93](https://github.com/personium/personium-lib-common/pull/93))
+
 ## 1.5.4
 IMPROVEMENTS:
 * Update pom.xml for releasing to Maven central repository
