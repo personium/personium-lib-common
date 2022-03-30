@@ -1,8 +1,8 @@
 /**
  * Personium
- * Copyright 2019 Personium Project Authors
- *  - Fujitsu Ltd.
- *  - Akio Shimono
+ * Copyright 2014-2022 Personium Project Authors
+ * - FUJITSU LIMITED
+ * - Akio Shimono
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

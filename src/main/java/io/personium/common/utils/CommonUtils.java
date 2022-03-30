@@ -1,6 +1,6 @@
 /**
  * Personium
- * Copyright 2014-2019 Personium Project Authors
+ * Copyright 2014-2022 Personium Project Authors
  * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -182,12 +182,16 @@ public final class CommonUtils {
      * Constant definition for XML.
      */
     public static class XmlConst {
+        /** DAV:. */
+        public static final String NS_DAV = "DAV:";
         /** urn:x-personium:xmlns. */
         public static final String NS_PERSONIUM = "urn:x-personium:xmlns";
         /** XML Name Space p:. */
         public static final String NS_PREFIX_PERSONIUM = "p";
         /** http://www.w3.org/2001/XMLSchema-instance. */
         public static final String NS_XML_SCHEMA_INSTANCE = "http://www.w3.org/2001/XMLSchema-instance";
+        /** http://www.w3.org/2000/09/xmldsig# */
+        public static final String NS_XML_DSIG = "http://www.w3.org/2000/09/xmldsig#";
 
         /** service. */
         public static final String SERVICE = "service";

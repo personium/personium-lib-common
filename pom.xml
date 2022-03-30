@@ -4,7 +4,7 @@
     <groupId>io.personium</groupId>
     <artifactId>personium-lib-common</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.4</version>
+    <version>1.5.5-SNAPSHOT</version>
     <name>personium-lib-common</name>
     <description>Common libraries used in personium-core module and personium-engine module.</description>
     <url>https://github.com/personium/personium-lib-common</url>

@@ -1,6 +1,6 @@
 /**
  * Personium
- * Copyright 2014-2019 Personium Project Authors
+ * Copyright 2014-2022 Personium Project Authors
  * - FUJITSU LIMITED
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -441,16 +441,16 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             Document doc = builder.parse(bais);
 
             Element assertion = doc.getDocumentElement();
-            Element issuer = (Element) (doc.getElementsByTagName("Issuer").item(0));
-            Element subject = (Element) (assertion.getElementsByTagName("Subject").item(0));
-            Element subjectNameID = (Element) (subject.getElementsByTagName("NameID").item(0));
+            Element issuer = (Element) (doc.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Issuer").item(0));
+            Element subject = (Element) (assertion.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Subject").item(0));
+            Element subjectNameID = (Element) (subject.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "NameID").item(0));
             String id = assertion.getAttribute("ID");
             String issuedAtStr = assertion.getAttribute("IssueInstant");
 
             DateTime dt = new DateTime(issuedAtStr);
 
-            Element sc = (Element) (subject.getElementsByTagName("SubjectConfirmation").item(0));
-            Element scd = (Element) (sc.getElementsByTagName("SubjectConfirmationData").item(0));
+            Element sc = (Element) (subject.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "SubjectConfirmation").item(0));
+            Element scd = (Element) (sc.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "SubjectConfirmationData").item(0));
             String notOnOrAfterStr = scd.getAttribute("NotOnOrAfter");
             long lifespan = ACCESS_TOKEN_EXPIRES_MILLISECS;
             if (notOnOrAfterStr != null && !notOnOrAfterStr.isEmpty()) {
@@ -458,7 +458,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
                 lifespan = notOnOrAfterDateTime.getMillis() - dt.getMillis();
             }
 
-            NodeList audienceList = assertion.getElementsByTagName("Audience");
+            NodeList audienceList = assertion.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Audience");
             Element aud1 = (Element) (audienceList.item(0));
             String target = aud1.getTextContent();
             String schema = null;
@@ -470,7 +470,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             List<Role> roles = new ArrayList<Role>();
             Set<String> scopes = new HashSet<>();
 
-            NodeList attributeList = assertion.getElementsByTagName("Attribute");
+            NodeList attributeList = assertion.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Attribute");
             for (int i = 0; i < attributeList.getLength(); i++) {
                 Element attrElem = (Element) (attributeList.item(i));
                 String attrName = attrElem.getAttribute("Name");
@@ -482,7 +482,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             }
 
 
-            NodeList nl = assertion.getElementsByTagName("Signature");
+            NodeList nl = assertion.getElementsByTagNameNS(CommonUtils.XmlConst.NS_XML_DSIG, "Signature");
             if (nl.getLength() == 0) {
                 throw new TokenParseException("Cannot find Signature element");
             }
@@ -514,6 +514,8 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             // Validate the XMLSignature x509 Certificate validation.
             boolean coreValidity;
             try {
+                // Workaround for https://bugs.openjdk.java.net/browse/JDK-8017265
+                valContext.setIdAttributeNS(assertion, null, "ID");
                 coreValidity = signature.validate(valContext);
             } catch (XMLSignatureException e) {
                 if (e.getCause().getClass() == new KeySelectorException().getClass()) {
