@@ -113,7 +113,15 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
-                    <argLine>${jacocoArgs} -Xms512m -Xmx512m</argLine>
+                    <argLine>
+                        ${jacocoArgs} -Xms512m -Xmx512m
+                        -Djava.security.properties=./src/test/resources/java.security
+                        --add-opens=java.base/java.io=ALL-UNNAMED
+                        --add-opens=java.base/java.net=ALL-UNNAMED
+                        --add-opens=java.base/java.util=ALL-UNNAMED
+                        --add-opens=java.base/java.lang=ALL-UNNAMED
+                        --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+                    </argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -187,7 +195,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
+                <version>0.8.7</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
