@@ -1,3 +1,7 @@
+## 1.6.0
+IMPROVEMENTS:
+* Supporting Java 17. ([#99](https://github.com/personium/personium-lib-common/pull/99) [#100](https://github.com/personium/personium-lib-common/pull/100))
+
 ## 1.5.5
 IMPROVEMENTS:
 * Improve stricity about SAML elements with validating SAML namespace.
