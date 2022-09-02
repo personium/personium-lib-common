@@ -72,8 +72,11 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken {
      * @param schema Schema
      * @param scopes scopes in the form of String array
      */
-    public ResidentLocalAccessToken(final long issuedAt, final String issuer,
-            final String subject, final String schema, String[] scopes) {
+    public ResidentLocalAccessToken(final long issuedAt,
+            final String issuer,
+            final String subject,
+            final String schema,
+            String[] scopes) {
         this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scopes);
     }
 
