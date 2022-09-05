@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for generating / parsing account password change access Token.
  */
-public final class PasswordChangeAccessToken extends AbstractLocalAccessToken implements IAccessToken {
+public final class PasswordChangeAccessToken extends AbstractLocalAccessToken {
 
     static Logger log = LoggerFactory.getLogger(PasswordChangeAccessToken.class);
 
