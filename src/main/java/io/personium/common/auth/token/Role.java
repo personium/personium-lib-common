@@ -18,7 +18,6 @@
 package io.personium.common.auth.token;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,24 +48,6 @@ public class Role {
      */
     private String baseUrl;
 
-    /**
-     * Constructor.
-     * @param url Role Resource URL
-     * @throws MalformedURLException if URL is malformed
-     * @deprecated
-     */
-    public Role(URL url) throws MalformedURLException {
-        // Role Resource URL looks like this.
-        // https://localhost:8080/dc1-core/testcell1/__role/box1/rolename
-        Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
-        Matcher matcher = pattern.matcher(url.toString());
-        if (!matcher.find()) {
-            throw new MalformedURLException("No match found.");
-        }
-        this.name = matcher.group(INDEX_ROLE_URL_ROLE_NAME);
-        this.boxName = matcher.group(INDEX_ROLE_URL_BOX_NAME);
-        this.baseUrl = matcher.group(INDEX_ROLE_URL_BASE);
-    }
     /**
      * create a Role from role class url.
      * @param roleClassUrl role class url
