@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for creating and parsing Visitor Local Access Token.
  */
-public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements IAccessToken, IExtRoleContainingToken {
+public class VisitorLocalAccessToken extends AbstractLocalAccessToken implements IExtRoleContainingToken {
 
     /**
      * Logger.

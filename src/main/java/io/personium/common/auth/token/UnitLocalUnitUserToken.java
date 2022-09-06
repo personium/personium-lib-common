@@ -21,7 +21,7 @@ package io.personium.common.auth.token;
 /**
  * class for creating / parsing Unit Local Unit User Token.
  */
-public class UnitLocalUnitUserToken extends AbstractLocalAccessToken implements IAccessToken {
+public class UnitLocalUnitUserToken extends AbstractLocalAccessToken {
 
     /**
      * Token Prefix.
