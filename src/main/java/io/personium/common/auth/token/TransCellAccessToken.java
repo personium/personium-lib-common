@@ -441,17 +441,23 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             Document doc = builder.parse(bais);
 
             Element assertion = doc.getDocumentElement();
-            Element issuer = (Element) (doc.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Issuer").item(0));
-            Element subject = (Element) (assertion.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Subject").item(0));
-            Element subjectNameID = (Element) (subject.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "NameID").item(0));
+            Element issuer = (Element) (doc
+                .getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Issuer").item(0));
+            Element subject = (Element) (assertion
+                .getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Subject").item(0));
+            Element subjectNameID = (Element) (subject
+                .getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "NameID").item(0));
             String id = assertion.getAttribute("ID");
             String issuedAtStr = assertion.getAttribute("IssueInstant");
 
             DateTime dt = new DateTime(issuedAtStr);
 
-            Element sc = (Element) (subject.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "SubjectConfirmation").item(0));
-            Element scd = (Element) (sc.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "SubjectConfirmationData").item(0));
-            String notOnOrAfterStr = scd.getAttribute("NotOnOrAfter");
+            Element sc = (Element) (subject
+                .getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "SubjectConfirmation").item(0));
+            Element scd = (Element) (sc
+                .getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "SubjectConfirmationData").item(0));
+            String notOnOrAfterStr = scd
+                .getAttribute("NotOnOrAfter");
             long lifespan = ACCESS_TOKEN_EXPIRES_MILLISECS;
             if (notOnOrAfterStr != null && !notOnOrAfterStr.isEmpty()) {
                 DateTime notOnOrAfterDateTime = new DateTime(notOnOrAfterStr);
@@ -470,7 +476,8 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
             List<Role> roles = new ArrayList<Role>();
             Set<String> scopes = new HashSet<>();
 
-            NodeList attributeList = assertion.getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Attribute");
+            NodeList attributeList = assertion
+                .getElementsByTagNameNS(URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION, "Attribute");
             for (int i = 0; i < attributeList.getLength(); i++) {
                 Element attrElem = (Element) (attributeList.item(i));
                 String attrName = attrElem.getAttribute("Name");
