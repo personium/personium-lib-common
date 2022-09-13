@@ -109,15 +109,42 @@ public class Role {
     public Role(final String name) {
         this(name, null, null, null);
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj) {
         boolean ret = obj instanceof Role;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         Role r = (Role) obj;
         ret &= Objects.equals(this.name, r.name);
         ret &= Objects.equals(this.boxSchema, r.boxSchema);
         ret &= Objects.equals(this.boxName, r.boxName);
         ret &= Objects.equals(this.baseUrl, r.baseUrl);
         return ret;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Objects.hashCode(baseUrl);
+        result = prime * result + Objects.hashCode(boxName);
+        result = prime * result + Objects.hashCode(boxSchema);
+        result = prime * result + Objects.hashCode(name);
+        return result;
     }
 
     /**
