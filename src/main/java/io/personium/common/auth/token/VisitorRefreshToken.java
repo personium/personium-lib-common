@@ -53,6 +53,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
     static final int IDX_ORIG_ISSUER = 1;
     static final int IDX_ORIG_ROLE_LIST = 2;
 
+    static final int COUNT_IDX_EXTRA = 3;
 
     String id;
     String originalIssuer;
@@ -160,7 +161,7 @@ public final class VisitorRefreshToken extends AbstractLocalToken implements IRe
         VisitorRefreshToken ret = new VisitorRefreshToken();
 
         try {
-            String[] extra = ret.populate(token.substring(PREFIX_TC_REFRESH.length()), issuer, 3);
+            String[] extra = ret.populate(token.substring(PREFIX_TC_REFRESH.length()), issuer, COUNT_IDX_EXTRA);
             ret.id = extra[IDX_ID];
             ret.originalIssuer = extra[IDX_ORIG_ISSUER];
             // Role class url list is there in Visitor Refresh Tokens
