@@ -44,11 +44,11 @@ public class GrantCodeTest {
     static final Long LIFESPAN = AbstractOAuth2Token.ACCESS_TOKEN_EXPIRES_MILLISECS;
     static final String ISSUER = "https://issuer.localhost/";
     static final String SUBJECT = "https://subject.localhost/#acc";
-    static String TARGET = "https://target.localhost/";
-    static String SCHEMA = "https://schema.localhost/";
-    static String[] SCOPE = new String[] {"auth", "message-read"};
-    static List<Role> ROLE_LIST = new ArrayList<>();
-    static Set<String> SCOPE_SET = new HashSet<>();
+    static final String TARGET = "https://target.localhost/";
+    static final String SCHEMA = "https://schema.localhost/";
+    static final String[] SCOPE = new String[] {"auth", "message-read"};
+    static final List<Role> ROLE_LIST = new ArrayList<>();
+    static final Set<String> SCOPE_SET = new HashSet<>();
 
     static byte[] shelterKeyBytes;
     static SecretKey shelterAesKey;

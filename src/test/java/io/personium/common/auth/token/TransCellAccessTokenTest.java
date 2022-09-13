@@ -44,11 +44,11 @@ import io.personium.common.auth.token.AbstractOAuth2Token.TokenRootCrtException;
 public class TransCellAccessTokenTest {
     static final String ISSUER = "https://issuer.localhost/";
     static final String SUBJECT = "https://subject.localhost/#acc";
-    static String TARGET = "https://target.localhost/";
-    static String SCHEMA = "https://schema.localhost/";
-    static String[] SCOPE = new String[] {"auth", "message-read"};
-    static List<Role> ROLE_LIST = new ArrayList<>();
-    static Set<String> SCOPE_SET = new HashSet<>();
+    static final String TARGET = "https://target.localhost/";
+    static final String SCHEMA = "https://schema.localhost/";
+    static final String[] SCOPE = new String[] {"auth", "message-read"};
+    static final List<Role> ROLE_LIST = new ArrayList<>();
+    static final Set<String> SCOPE_SET = new HashSet<>();
     static {
         ROLE_LIST.add(new Role("role1", "box", "https://schema.localhost/", "https://schema.localhost/"));
         ROLE_LIST.add(new Role("role2", "box", "https://schema.localhost/", "https://subject.localhost/"));
@@ -82,7 +82,8 @@ public class TransCellAccessTokenTest {
     }
 
     @Test
-    public void parse_ParsedIssuerSubjectSchema_ShouldBe_SameAs_Original() throws TokenParseException, TokenDsigException, TokenRootCrtException {
+    public void parse_ParsedIssuerSubjectSchema_ShouldBe_SameAs_Original()
+            throws TokenParseException, TokenDsigException, TokenRootCrtException {
         String tokenStr = this.token.toTokenString();
         // parse the prepared token
         TransCellAccessToken parsedToken = TransCellAccessToken.parse(tokenStr);
@@ -93,7 +94,8 @@ public class TransCellAccessTokenTest {
         assertEquals(TARGET, parsedToken.getTarget());
     }
     @Test
-    public void parse_ParsedScopes_ShouldBe_SameAs_Original() throws TokenParseException, TokenDsigException, TokenRootCrtException {
+    public void parse_ParsedScopes_ShouldBe_SameAs_Original()
+            throws TokenParseException, TokenDsigException, TokenRootCrtException {
         String tokenStr = this.token.toTokenString();
         // parse the prepared token
         TransCellAccessToken parsedToken = TransCellAccessToken.parse(tokenStr);
@@ -102,7 +104,8 @@ public class TransCellAccessTokenTest {
     }
 
     @Test
-    public void parse_ParsedRoles_ShouldBe_SameAs_Original() throws TokenParseException, TokenDsigException, TokenRootCrtException {
+    public void parse_ParsedRoles_ShouldBe_SameAs_Original()
+            throws TokenParseException, TokenDsigException, TokenRootCrtException {
         String tokenStr = this.token.toTokenString();
         TransCellAccessToken parsedToken = TransCellAccessToken.parse(tokenStr);
         List<Role> parsedRoles = parsedToken.getRoleList();
@@ -110,12 +113,12 @@ public class TransCellAccessTokenTest {
         assertEquals(ROLE_LIST.size(), parsedRoles.size());
         StringBuilder sb1 = new StringBuilder();
         for (Role role : ROLE_LIST) {
-            sb1.append(role.getBoxSchema() + ":" +role.getName());
+            sb1.append(role.getBoxSchema() + ":" + role.getName());
             sb1.append(" ");
         }
         StringBuilder sb2 = new StringBuilder();
         for (Role role : parsedRoles) {
-            sb2.append(role.getBoxSchema() + ":" +role.getName());
+            sb2.append(role.getBoxSchema() + ":" + role.getName());
             sb2.append(" ");
         }
         assertEquals(sb1.toString(), sb2.toString());

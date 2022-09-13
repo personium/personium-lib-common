@@ -145,7 +145,9 @@ public abstract class AbstractOAuth2Token {
     }
 
     public static class Scope {
+        /** engine. */ //TODO this comment should be fixed
         public static final String[] ENGINE = new String[] {"root"};
+        /** empty. */ //TODO this comment should be fixed
         public static final String[] EMPTY = new String[0];
 
         /** openid. It is used with the openid connect of the oauth2 extension. */
