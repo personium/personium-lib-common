@@ -18,7 +18,10 @@
 package io.personium.common.auth.token;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 
@@ -31,7 +34,7 @@ public class RoleTest {
 
     /**
      * test for createFromRoleClassUrl normal usage.
-     * @throws MalformedURLException
+     * @throws MalformedURLException .
      */
     @Test
     public void createFromRoleClassUrl_normal() throws MalformedURLException {
@@ -45,7 +48,7 @@ public class RoleTest {
 
     /**
      * createFromRoleClassUrl when nonRoleUrl given should throw MalformedURLException.
-     * @throws MalformedURLException
+     * @throws MalformedURLException .
      */
     @Test(expected = MalformedURLException.class)
     public void createFromRoleClassUrl_nonRoleUrl() throws MalformedURLException {
@@ -56,7 +59,7 @@ public class RoleTest {
 
     /**
      * createFromRoleClassUrl when given RoleInstanceUrl should throw MalformedURLException.
-     * @throws MalformedURLException
+     * @throws MalformedURLException .
      */
     @Test(expected = MalformedURLException.class)
     public void createFromRoleClassUrl_RoleInstanceUrl() throws MalformedURLException {
@@ -67,7 +70,7 @@ public class RoleTest {
 
     /**
      * test for the constructor (URL is cut after the box name).
-     * @throws MalformedURLException
+     * @throws MalformedURLException .
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBox() throws MalformedURLException {
@@ -78,7 +81,7 @@ public class RoleTest {
 
     /**
      * Roleのコンストラクタのテスト(URLがURL形式ではない).
-     * @throws MalformedURLException
+     * @throws MalformedURLException .
      */
     @Test(expected = MalformedURLException.class)
     public void testRoleConstructWithBadURL() throws MalformedURLException {
@@ -86,4 +89,28 @@ public class RoleTest {
         Role.createFromRoleInstanceUrl(baseUrl);
     }
 
+    /**
+     * Test for hashCode and equals of Role.
+     */
+    @Test
+    public void testRoleHashCodeAndEquals() {
+        Role baseRole = new Role("name", "boxName", "boxSchema", "baseUrl");
+
+        assertTrue(baseRole.equals(baseRole));
+
+        //CHECKSTYLE.OFF: AvoidNestedBlocksCheck
+        {
+            Role target = new Role(null, null, null, "hoge");
+            assertFalse(baseRole == target);
+            assertNotEquals(baseRole, target);
+            assertNotEquals(baseRole.hashCode(), target.hashCode());
+        }
+        {
+            Role target = new Role("name", "boxName", "boxSchema", "baseUrl");
+            assertFalse(baseRole == target);
+            assertEquals(baseRole, target);
+            assertEquals(baseRole.hashCode(), target.hashCode());
+        }
+        //CHECKSTYLE.ON: AvoidNestedBlocksCheck
+    }
 }

@@ -47,13 +47,12 @@ public class TokenTest {
      * @throws CertificateException CertificateException
      * @throws InvalidKeySpecException InvalidKeySpecException
      * @throws NoSuchAlgorithmException NoSuchAlgorithmException
-     * @throws javax.security.cert.CertificateException CertificateException
      * @throws javax.naming.InvalidNameException InvalidNameException
      */
     @BeforeClass
     public static void beforeClass()
             throws NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, IOException,
-            javax.security.cert.CertificateException, javax.naming.InvalidNameException {
+            javax.naming.InvalidNameException {
         TransCellAccessToken.configureX509(null, null, null);
         AbstractLocalToken.setKeyString("abcdef0123456789");
     }
@@ -81,7 +80,7 @@ public class TokenTest {
 
     /**
      * test ResidentRefreshToken.
-     * @throws MalformedURLException
+     * @throws MalformedURLException .
      */
     @Test
     public void testResidentRefreshToken() throws MalformedURLException {
@@ -101,7 +100,7 @@ public class TokenTest {
     }
     /**
      * test VisitorRefreshToken.
-     * @throws MalformedURLException
+     * @throws MalformedURLException .
      */
     @Test
     public void testVisitorRefreshToken() throws MalformedURLException {
@@ -137,10 +136,11 @@ public class TokenTest {
      * @throws TokenParseException TokenParseException
      * @throws TokenRootCrtException TokenRootCrtException
      * @throws TokenDsigException TokenDsigException
-     * @throws MalformedURLException
+     * @throws MalformedURLException .
      */
     @Test
-    public void testTransCellAccessToken() throws TokenParseException, TokenDsigException, TokenRootCrtException, MalformedURLException {
+    public void testTransCellAccessToken()
+            throws TokenParseException, TokenDsigException, TokenRootCrtException, MalformedURLException {
         String cellRootUrl = "https://localhost/TranscellAccessTokenTestCell/";
         String target = "https://example.com/targetCell/";
         String schema = "https://example.com/schemaCell/";
@@ -173,8 +173,8 @@ public class TokenTest {
     }
     /**
      * test VisitorLocalAccessToken.
-     * @throws MalformedURLException
-     * @throws TokenParseException
+     * @throws MalformedURLException .
+     * @throws TokenParseException .
      */
     @Test
     public void testVisitorLocalAccessToken() throws MalformedURLException, TokenParseException {

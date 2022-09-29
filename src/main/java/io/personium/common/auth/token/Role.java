@@ -18,7 +18,6 @@
 package io.personium.common.auth.token;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,24 +48,6 @@ public class Role {
      */
     private String baseUrl;
 
-    /**
-     * Constructor.
-     * @param url Role Resource URL
-     * @throws MalformedURLException if URL is malformed
-     * @deprecated
-     */
-    public Role(URL url) throws MalformedURLException {
-        // Role Resource URL looks like this.
-        // https://localhost:8080/dc1-core/testcell1/__role/box1/rolename
-        Pattern pattern = Pattern.compile("(.+/)__role/([^/]+)/(.+)");
-        Matcher matcher = pattern.matcher(url.toString());
-        if (!matcher.find()) {
-            throw new MalformedURLException("No match found.");
-        }
-        this.name = matcher.group(INDEX_ROLE_URL_ROLE_NAME);
-        this.boxName = matcher.group(INDEX_ROLE_URL_BOX_NAME);
-        this.baseUrl = matcher.group(INDEX_ROLE_URL_BASE);
-    }
     /**
      * create a Role from role class url.
      * @param roleClassUrl role class url
@@ -128,15 +109,42 @@ public class Role {
     public Role(final String name) {
         this(name, null, null, null);
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj) {
         boolean ret = obj instanceof Role;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         Role r = (Role) obj;
         ret &= Objects.equals(this.name, r.name);
         ret &= Objects.equals(this.boxSchema, r.boxSchema);
         ret &= Objects.equals(this.boxName, r.boxName);
         ret &= Objects.equals(this.baseUrl, r.baseUrl);
         return ret;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Objects.hashCode(baseUrl);
+        result = prime * result + Objects.hashCode(boxName);
+        result = prime * result + Objects.hashCode(boxSchema);
+        result = prime * result + Objects.hashCode(name);
+        return result;
     }
 
     /**

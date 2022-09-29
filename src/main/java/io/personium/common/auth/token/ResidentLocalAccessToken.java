@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * Class for creating / parsing non-Trans-cell access token issued at and for the account subjects on the local cell.
  * old name: AccountAccessToken.
  */
-public final class ResidentLocalAccessToken extends AbstractLocalAccessToken implements IAccessToken {
+public final class ResidentLocalAccessToken extends AbstractLocalAccessToken {
 
     /**
      * Logger.
@@ -72,7 +72,11 @@ public final class ResidentLocalAccessToken extends AbstractLocalAccessToken imp
      * @param schema Schema
      * @param scopes scopes in the form of String array
      */
-    public ResidentLocalAccessToken(final long issuedAt, final String issuer, final String subject, final String schema, String[] scopes) {
+    public ResidentLocalAccessToken(final long issuedAt,
+            final String issuer,
+            final String subject,
+            final String schema,
+            String[] scopes) {
         this(issuedAt, ACCESS_TOKEN_EXPIRES_MILLISECS, issuer, subject, schema, scopes);
     }
 

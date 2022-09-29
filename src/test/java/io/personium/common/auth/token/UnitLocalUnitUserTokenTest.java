@@ -58,7 +58,7 @@ public class UnitLocalUnitUserTokenTest {
     public void parse() throws TokenParseException {
         UnitLocalUnitUserToken token = new UnitLocalUnitUserToken(
             ISSUED_AT, LIFESPAN,
-            SUBJECT,ISSUER
+            SUBJECT, ISSUER
         );
         String tokenStr = token.toTokenString();
         // --------------------

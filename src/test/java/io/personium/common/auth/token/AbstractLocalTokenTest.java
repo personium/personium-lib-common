@@ -57,8 +57,8 @@ public class AbstractLocalTokenTest {
     }
     private String debugStrBytes(byte[] bytes) {
         StringBuilder sb = new StringBuilder(2 * bytes.length);
-        for(byte b: bytes) {
-                sb.append(String.format("%02x ", b&0xff) );
+        for (byte b: bytes) {
+                sb.append(String.format("%02x ", b & 0xff));
         }
         return sb.toString();
     }

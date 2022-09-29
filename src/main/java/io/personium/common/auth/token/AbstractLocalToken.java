@@ -53,17 +53,25 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
 
     public static class Type {
         public static class AccessToken {
-            public static int SELF_LOCAL = 0;
-            public static int VISITOR_LOCAL = 1;
-            public static int TRANC_CELL = 2;
-            public static int UNIT_LOCLAL_UNIT_USER = 6;
-            public static int PASSWORDCHANGE = 7;
+            /** . */
+            public static final int SELF_LOCAL = 0;
+            /** . */
+            public static final int VISITOR_LOCAL = 1;
+            /** . */
+            public static final int TRANC_CELL = 2;
+            /** . */
+            public static final int UNIT_LOCLAL_UNIT_USER = 6;
+            /** . */
+            public static final int PASSWORDCHANGE = 7;
         }
         public static class RefreshToken {
-            public static int RESIDENT = 3;
-            public static int VISITOR = 4;
+            /** . */
+            public static final int RESIDENT = 3;
+            /** . */
+            public static final int VISITOR = 4;
         }
-        public static int GRANT_CODE = 5;
+        /** . */
+        public static final int GRANT_CODE = 5;
     }
 
     /**
@@ -172,22 +180,30 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         // If the number of the fields is not as expected
         if (frag.length != numFields) {
             throw new TokenParseException(
-                "unexpected field length, expected: [" + numFields +"], actual=[" + frag.length + "]"
+                "unexpected field length, expected: [" + numFields + "], actual=[" + frag.length + "]"
             );
         }
 
         // If the issuer mismatch, throw exception
         if (!issuer.equals(frag[IDX_ISSUER])) {
             throw new TokenParseException(
-                "issuer mismatch, expected: [" + issuer +"], actual=[" + frag[IDX_ISSUER] + "]"
+                "issuer mismatch, expected: [" + issuer + "], actual=[" + frag[IDX_ISSUER] + "]"
             );
         }
 
         return frag;
     }
 
+    /**
+     * parse and load parameters from token.
+     * @param token token to be parsed.
+     * @param issuer issuer.
+     * @param numExtraFields the number of extra fields.
+     * @return extra fields.
+     * @throws TokenParseException .
+     */
     public String[] populate(final String token, final String issuer, int numExtraFields) throws TokenParseException {
-        String[] frag = doParse(token, issuer, numExtraFields + 7);
+        String[] frag = doParse(token, issuer, numExtraFields + COUNT_IDX);
         if (this.getType() != Integer.valueOf(frag[IDX_TYPE])) {
             throw new TokenParseException("Malformed Token : Token Type mismatch");
         }
@@ -197,7 +213,7 @@ public abstract class AbstractLocalToken extends AbstractOAuth2Token {
         this.issuer =  frag[IDX_ISSUER];
         this.schema =  frag[IDX_SCHEMA];
         this.scope =  Scope.parse(frag[IDX_SCOPE]);
-        return Arrays.copyOfRange(frag, 7, frag.length);
+        return Arrays.copyOfRange(frag, COUNT_IDX, frag.length);
     }
 
     /**

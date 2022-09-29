@@ -42,9 +42,9 @@ public class VisitorLocalAccessTokenTest {
     static final Long LIFESPAN = AbstractOAuth2Token.ACCESS_TOKEN_EXPIRES_MILLISECS;
     static final String ISSUER = "https://issuer.localhost/";
     static final String SUBJECT = "https://subject.localhost/#acc";
-    static String SCHEMA = "https://schema.localhost/";
-    static List<Role> ROLE_LIST = new ArrayList<>();
-    static String[] SCOPE = new String[] {"auth", "message-read"};
+    static final String SCHEMA = "https://schema.localhost/";
+    static final List<Role> ROLE_LIST = new ArrayList<>();
+    static final String[] SCOPE = new String[] {"auth", "message-read"};
     static {
         ROLE_LIST.add(new Role("role1", "__", SCHEMA, ISSUER));
         ROLE_LIST.add(new Role("role2", "__", SCHEMA, ISSUER));

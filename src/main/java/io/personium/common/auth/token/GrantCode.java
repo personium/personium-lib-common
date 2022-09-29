@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;;
 /**
  * class for creating and parsing grant code.
  */
-public class GrantCode extends AbstractLocalAccessToken implements IAccessToken {
+public class GrantCode extends AbstractLocalAccessToken {
 
     /**
      * Logger.
