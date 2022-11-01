@@ -105,7 +105,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
              * object is assembled by creating and passing as parameters each of its components: the URI, the
              * DigestMethod, and a list of Transforms
              */
-            DigestMethod digestMethod = xmlSignatureFactory.newDigestMethod(DigestMethod.SHA1, null);
+            DigestMethod digestMethod = xmlSignatureFactory.newDigestMethod(DigestMethod.SHA256, null);
             Transform transform = xmlSignatureFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null);
             Reference reference = xmlSignatureFactory.newReference("", digestMethod,
                     Collections.singletonList(transform), null, null);
@@ -117,7 +117,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
              */
             CanonicalizationMethod c14nMethod = xmlSignatureFactory.newCanonicalizationMethod(
                     CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
-            SignatureMethod signatureMethod = xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
+            SignatureMethod signatureMethod = xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA256, null);
             return xmlSignatureFactory.newSignedInfo(c14nMethod, signatureMethod,
                     Collections.singletonList(reference));
 
