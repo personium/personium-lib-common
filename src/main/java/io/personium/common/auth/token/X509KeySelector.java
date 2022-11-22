@@ -89,6 +89,21 @@ public class X509KeySelector extends KeySelector {
      */
     public static final String X509KEY_TYPE = "X.509";
 
+    /** List of available signature methods with DSA. */
+    public static final List<String> AVAILABLE_DSA_SIGNATURE_METHODS = List.of(
+        SignatureMethod.DSA_SHA1,
+        SignatureMethod.DSA_SHA256
+    );
+
+    /** List of available signature methods with RSA. */
+    public static final List<String> AVAILABLE_RSA_SIGNATURE_METHODS = List.of(
+        SignatureMethod.RSA_SHA1,
+        SignatureMethod.RSA_SHA224,
+        SignatureMethod.RSA_SHA256,
+        SignatureMethod.RSA_SHA384,
+        SignatureMethod.RSA_SHA512
+    );
+
     @SuppressWarnings("rawtypes")
     @Override
     public final KeySelectorResult select(
@@ -133,8 +148,10 @@ public class X509KeySelector extends KeySelector {
      * @param algName
      */
     static boolean algEquals(final String algURI, final String algName) {
-        return  ((algName.equalsIgnoreCase("DSA") && algURI.equalsIgnoreCase(SignatureMethod.DSA_SHA1)) //NOPMD
-                || (algName.equalsIgnoreCase("RSA") && algURI.equalsIgnoreCase(SignatureMethod.RSA_SHA1))); //NOPMD
+        return  ((algName.equalsIgnoreCase("DSA")
+                && AVAILABLE_DSA_SIGNATURE_METHODS.stream().anyMatch(algURI::equalsIgnoreCase))
+                || (algName.equalsIgnoreCase("RSA")
+                        && AVAILABLE_RSA_SIGNATURE_METHODS.stream().anyMatch(algURI::equalsIgnoreCase)));
     }
 
     /**
