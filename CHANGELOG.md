@@ -1,3 +1,7 @@
+## 1.6.2
+IMPROVEMENTS:
+* Change the hash algorithm of signing XML signature from SHA-1 to SHA-256. ([#116](https://github.com/personium/personium-lib-common/pull/116))
+
 ## 1.6.1
 MISC:  
 * Fix checkstyle warnings.  

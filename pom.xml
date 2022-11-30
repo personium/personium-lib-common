@@ -4,7 +4,7 @@
     <groupId>io.personium</groupId>
     <artifactId>personium-lib-common</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.1</version>
+    <version>1.6.2-SNAPSHOT</version>
     <name>personium-lib-common</name>
     <description>Common libraries used in personium-core module and personium-engine module.</description>
     <url>https://github.com/personium/personium-lib-common</url>
@@ -174,7 +174,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.8</version>
+                <version>1.6.13</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
