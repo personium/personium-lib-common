@@ -83,8 +83,8 @@ import net.oauth.signature.pem.PKCS1EncodedKeySpec;
  * Class for handling Trans-Cell access token.
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public final class TransCellAccessToken extends AbstractOAuth2Token implements IAccessToken, IExtRoleContainingToken {
-
+public final class TransCellAccessTokenSHA1
+    extends AbstractOAuth2Token implements IAccessToken, IExtRoleContainingToken {
 
     private static final String URN_OASIS_NAMES_TC_SAML_2_0_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion";
 
@@ -105,7 +105,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
              * object is assembled by creating and passing as parameters each of its components: the URI, the
              * DigestMethod, and a list of Transforms
              */
-            DigestMethod digestMethod = xmlSignatureFactory.newDigestMethod(DigestMethod.SHA256, null);
+            DigestMethod digestMethod = xmlSignatureFactory.newDigestMethod(DigestMethod.SHA1, null);
             Transform transform = xmlSignatureFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null);
             Reference reference = xmlSignatureFactory.newReference("", digestMethod,
                     Collections.singletonList(transform), null, null);
@@ -117,7 +117,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
              */
             CanonicalizationMethod c14nMethod = xmlSignatureFactory.newCanonicalizationMethod(
                     CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec) null);
-            SignatureMethod signatureMethod = xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA256, null);
+            SignatureMethod signatureMethod = xmlSignatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
             return xmlSignatureFactory.newSignedInfo(c14nMethod, signatureMethod,
                     Collections.singletonList(reference));
 
@@ -143,7 +143,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * @param schema client authenthenticated
      * @param scope scopes of the token
      */
-    public TransCellAccessToken(final String id,
+    public TransCellAccessTokenSHA1(final String id,
             final long issuedAt,
             final long lifespan,
             final String issuer,
@@ -176,7 +176,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * @param schema client authenthenticated
      * @param scope scopes of the token
      */
-    public TransCellAccessToken(final String id,
+    public TransCellAccessTokenSHA1(final String id,
             final long issuedAt,
             final String issuer,
             final String subject,
@@ -196,7 +196,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * @param schema client authenthenticated
      * @param scope scopes of the token
      */
-    public TransCellAccessToken(
+    public TransCellAccessTokenSHA1(
             final String issuer,
             final String subject,
             final String target,
@@ -216,7 +216,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * @param schema client authenthenticated
      * @param scope scopes of the token
      */
-    public TransCellAccessToken(
+    public TransCellAccessTokenSHA1(
             final long issuedAt,
             final String issuer,
             final String subject,
@@ -238,7 +238,7 @@ public final class TransCellAccessToken extends AbstractOAuth2Token implements I
      * @param schema client authenthenticated
      * @param scope scopes of the token
      */
-    public TransCellAccessToken(
+    public TransCellAccessTokenSHA1(
             final long issuedAt,
             final long lifespan,
             final String issuer,

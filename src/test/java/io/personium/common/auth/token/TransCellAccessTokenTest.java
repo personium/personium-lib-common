@@ -20,7 +20,9 @@ package io.personium.common.auth.token;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
@@ -31,22 +33,31 @@ import java.util.List;
 import java.util.Set;
 
 import javax.naming.InvalidNameException;
+import javax.xml.crypto.dsig.SignatureMethod;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import io.personium.common.auth.token.AbstractOAuth2Token.TokenDsigException;
 import io.personium.common.auth.token.AbstractOAuth2Token.TokenParseException;
 import io.personium.common.auth.token.AbstractOAuth2Token.TokenRootCrtException;
+import io.personium.common.utils.CommonUtils;
 
 public class TransCellAccessTokenTest {
     static final String ISSUER = "https://issuer.localhost/";
     static final String SUBJECT = "https://subject.localhost/#acc";
     static final String TARGET = "https://target.localhost/";
     static final String SCHEMA = "https://schema.localhost/";
-    static final String[] SCOPE = new String[] {"auth", "message-read"};
+    static final String[] SCOPE = new String[] { "auth", "message-read" };
     static final List<Role> ROLE_LIST = new ArrayList<>();
     static final Set<String> SCOPE_SET = new HashSet<>();
     static {
@@ -55,26 +66,25 @@ public class TransCellAccessTokenTest {
     }
 
     TransCellAccessToken token;
+    TransCellAccessTokenSHA1 tokenSHA1;
+
     @Before
     public void setUp() throws Exception {
         String keyPath = ClassLoader.getSystemResource("x509/localhost.key").getPath();
         String crtPath = ClassLoader.getSystemResource("x509/localhost.crt").getPath();
         String cacPath = ClassLoader.getSystemResource("x509/personium_ca.crt").getPath();
-        //URL r = c.getResource("x509/localhost.key");
+        // URL r = c.getResource("x509/localhost.key");
         try {
-
-            TransCellAccessToken.configureX509(keyPath, crtPath, new String[] {cacPath});
+            TransCellAccessToken.configureX509(keyPath, crtPath, new String[] { cacPath });
+            TransCellAccessTokenSHA1.configureX509(keyPath, crtPath, new String[] { cacPath });
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | CertificateException | InvalidNameException
                 | IOException e) {
             e.printStackTrace();
         }
-        this.token = new TransCellAccessToken(new Date().getTime(),
-                AbstractOAuth2Token.ACCESS_TOKEN_EXPIRES_MILLISECS,
-                ISSUER,
-                SUBJECT,
-                TARGET,
-                ROLE_LIST,
-                SCHEMA, SCOPE);
+        this.token = new TransCellAccessToken(new Date().getTime(), AbstractOAuth2Token.ACCESS_TOKEN_EXPIRES_MILLISECS,
+                ISSUER, SUBJECT, TARGET, ROLE_LIST, SCHEMA, SCOPE);
+        this.tokenSHA1 = new TransCellAccessTokenSHA1(new Date().getTime(),
+                AbstractOAuth2Token.ACCESS_TOKEN_EXPIRES_MILLISECS, ISSUER, SUBJECT, TARGET, ROLE_LIST, SCHEMA, SCOPE);
     }
 
     @After
@@ -93,6 +103,7 @@ public class TransCellAccessTokenTest {
         assertEquals(SCHEMA, parsedToken.getSchema());
         assertEquals(TARGET, parsedToken.getTarget());
     }
+
     @Test
     public void parse_ParsedScopes_ShouldBe_SameAs_Original()
             throws TokenParseException, TokenDsigException, TokenRootCrtException {
@@ -122,5 +133,63 @@ public class TransCellAccessTokenTest {
             sb2.append(" ");
         }
         assertEquals(sb1.toString(), sb2.toString());
+    }
+
+    /**
+     * TranscellToken has signature signed with SHA-256 algorithm.
+     * @throws IOException
+     * @throws SAXException
+     * @throws TokenParseException
+     */
+    @Test
+    public void TranscellToken_has_signature_signed_with_sha256()
+            throws IOException, SAXException, TokenParseException {
+        String samlStr = this.token.toSamlString();
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder builder = null;
+        try {
+            builder = dbf.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            // This should not happen
+            throw new RuntimeException(e);
+        }
+
+        Document doc = null;
+        try (var is = new ByteArrayInputStream(samlStr.getBytes(StandardCharsets.UTF_8))) {
+            doc = builder.parse(is);
+        }
+
+        Element assertion = doc.getDocumentElement();
+        NodeList nl = assertion.getElementsByTagNameNS(CommonUtils.XmlConst.NS_XML_DSIG, "Signature");
+        if (nl.getLength() == 0) {
+            throw new TokenParseException("Cannot find Signature element");
+        }
+        Element signatureElement = (Element) nl.item(0);
+
+        var signatureMethodElement = (Element) signatureElement
+                .getElementsByTagNameNS(CommonUtils.XmlConst.NS_XML_DSIG, "SignatureMethod").item(0);
+        var algorithm = signatureMethodElement.getAttribute("Algorithm");
+        assertEquals(algorithm, SignatureMethod.RSA_SHA256);
+    }
+
+    /**
+     * TranscellToken signed with SHA-1 can be verified and parsed.
+     * @throws IOException
+     * @throws SAXException
+     * @throws TokenParseException
+     */
+    @Test
+    public void parse_TranscellToken_signed_with_SHA1_can_be_parsed()
+            throws TokenParseException, TokenDsigException, TokenRootCrtException {
+        String tokenStr = this.tokenSHA1.toTokenString();
+        // parse the prepared token
+        TransCellAccessToken parsedToken = TransCellAccessToken.parse(tokenStr);
+        // Parsed contents are the kept.
+        assertEquals(ISSUER, parsedToken.getIssuer());
+        assertEquals(SUBJECT, parsedToken.getSubject());
+        assertEquals(SCHEMA, parsedToken.getSchema());
+        assertEquals(TARGET, parsedToken.getTarget());
     }
 }
