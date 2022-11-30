@@ -91,16 +91,3 @@ jobs:
         git commit -m "Update to v${NEXT_SNAPSHOT_VERSION}"
         git push origin develop
 
-    - name: Create pull request for next release
-      uses: peter-evans/create-pull-request@v4
-      with:
-        base: master
-        branch: develop
-        token: ${{ secrets.PERSONIUM_GITHUB_TOKEN }}
-        title: 'Release v${{ env.NEXT_VERSION }}'
-        commit-message: "Update to v${{ env.NEXT_SNAPSHOT_VERSION }}"
-        committer: "Personium Bot <personium.io@gmail.com>"
-        author: "Personium Bot <personium.io@gmail.com>"
-        add-paths: |
-          pom.xml
-          src/main/resources/**/*.properties
